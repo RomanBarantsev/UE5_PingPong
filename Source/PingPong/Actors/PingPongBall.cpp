@@ -20,10 +20,8 @@ APingPongBall::APingPongBall()
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetIsReplicated(true);	
 	SetReplicateMovement(true);
-	bReplicates=true;
-	
-	static ConstructorHelpers::FObjectFinderM<UstaticMesh>LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
-	
+	bReplicates=true;	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
 }
 
 // Called when the game starts or when spawned

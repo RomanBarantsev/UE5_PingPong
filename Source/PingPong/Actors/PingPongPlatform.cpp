@@ -4,6 +4,8 @@
 #include "PingPongPlatform.h"
 
 #include "Components/BoxComponent.h"
+#include "Kismet/KismetGuidLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 APingPongPlatform::APingPongPlatform()
@@ -42,9 +44,10 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
     }
     FVector currLocation = GetActorLocation();
     FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * AxisValue;
-    if(!SetActorLocation(nextLocation, true))
+    auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,0.5);
+    if(!SetActorLocation(lerpNewLocation, true))
     {
-		SetActorLocation(currLocation);
+		SetActorLocation(lerpNewLocation);
     }
 
 }

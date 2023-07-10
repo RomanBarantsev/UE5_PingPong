@@ -5,6 +5,16 @@
 
 #include "Actors/PingPongPlatform.h"
 
+void APingPongPlayerController::BeginPlay()
+{
+	AHUD* HUD = GetHUD();
+	if(HUD)
+	{
+		PingPongHUD = Cast<APingPongHUD>(HUD);
+	}
+	Super::BeginPlay();
+}
+
 APingPongPlayerController::APingPongPlayerController()
 {
 	

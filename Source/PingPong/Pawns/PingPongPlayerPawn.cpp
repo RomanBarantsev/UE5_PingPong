@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "PingPong/PingPongPlayerState.h"
 
 // Sets default values
 APingPongPlayerPawn::APingPongPlayerPawn()
@@ -22,24 +23,6 @@ APingPongPlayerPawn::APingPongPlayerPawn()
 	bReplicates=true;
 }
 
-// Called when the game starts or when spawned
-void APingPongPlayerPawn::BeginPlay()
-{
-	Super::BeginPlay();
-	// if (WidgetTemplate)
-	// {
-	// 	if (!WidgetInstance)
-	// 	{
-	// 		this;
-	// 		WidgetInstance = CreateWidget<UMainScreenWidget>(GetWorld()->GetFirstPlayerController(), WidgetTemplate);
-	// 	}
-	// 	if (!WidgetInstance->GetIsVisible())
-	// 	{
-	// 		WidgetInstance->AddToViewport();
-	// 	}
-	// }	
-}
-
 // Called every frame
 void APingPongPlayerPawn::Tick(float DeltaTime)
 {
@@ -53,8 +36,16 @@ void APingPongPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	
 }
 
+
+void APingPongPlayerPawn::SetReadyState()
+{
+	auto playerState = Cast<APingPongPlayerState>(GetPlayerState());
+	checkfSlow(playerState,TEXT("PlayerPawn: PlayerState failed to Get"));	
+	playerState->SetReady(true);	
+}
+
 void APingPongPlayerPawn::ScoreUpdate(int value)
 {
-	//WidgetInstance->SetScoreText(value);
+	//WidgetTemplate->SetScoreText(value);
 }
 

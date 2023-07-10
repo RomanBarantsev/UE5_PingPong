@@ -2,4 +2,18 @@
 
 
 #include "PingPongHUD.h"
+#include "Blueprint/UserWidget.h"
 
+
+void APingPongHUD::BeginPlay()
+{
+	HUDMainWidowDraw();
+	Super::BeginPlay();
+}
+
+void APingPongHUD::HUDMainWidowDraw()
+{
+	auto HUDWidget = CreateWidget(GetWorld(),WidgetTemplate);
+	check(HUDWidget);
+	HUDWidget->AddToViewport(0);
+}

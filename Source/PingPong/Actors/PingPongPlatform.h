@@ -31,7 +31,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 100;
+	float MoveSpeed = 50;
 
 public:
 	UFUNCTION(Server, Reliable, WithValidation)

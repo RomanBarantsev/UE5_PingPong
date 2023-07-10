@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "UI/PingPongHUD.h"
 #include "PingPongPlayerController.generated.h"
 
 /**
@@ -14,6 +15,8 @@ class PINGPONG_API APingPongPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY()
 	FTransform StartTransform;
 
@@ -31,7 +34,6 @@ public:
 
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Initialize();
-	
 	virtual void PreInitializeComponents() override;
 	
 	UFUNCTION(Server,Reliable,WithValidation)
@@ -45,4 +47,7 @@ protected:
 
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue);
+
+	UPROPERTY()
+	APingPongHUD* PingPongHUD;
 };

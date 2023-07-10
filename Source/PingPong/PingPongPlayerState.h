@@ -13,5 +13,9 @@ UCLASS()
 class PINGPONG_API APingPongPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-	
+protected:
+	bool PlayerReady=false;
+public:
+	UFUNCTION()
+	void SetReady(bool State);
 };

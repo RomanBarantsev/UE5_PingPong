@@ -13,5 +13,10 @@ UCLASS()
 class PINGPONG_API APingPongHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void BeginPlay() override;
+	UFUNCTION()
+	void HUDMainWidowDraw();
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
+	TSubclassOf<UUserWidget> WidgetTemplate;	
 };
