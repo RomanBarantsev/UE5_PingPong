@@ -18,5 +18,5 @@ public:
 	UFUNCTION()
 	void HUDMainWidowDraw();
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
-	TSubclassOf<UUserWidget> WidgetTemplate;	
+	TSubclassOf<UUserWidget> MainScreenWidget;	
 };

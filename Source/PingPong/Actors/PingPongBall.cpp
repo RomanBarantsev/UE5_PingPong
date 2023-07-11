@@ -8,17 +8,19 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "PingPong/PingPongGameStateBase.h"
+#include "Math/RotationTranslationMatrix.h"
+#include "Math/Quat.h"
+#include "Math/Vector.h"
 
 // Sets default values
 APingPongBall::APingPongBall()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BodyCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Ball Body Collider"));
-	SetRootComponent(BodyCollision);
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Body	Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetIsReplicated(true);	
+	BodyMesh->SetIsReplicated(true);
+	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
 	SetReplicateMovement(true);
 	bReplicates=true;	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
@@ -28,12 +30,11 @@ APingPongBall::APingPongBall()
 void APingPongBall::BeginPlay()
 {
 	Super::BeginPlay();
-	StartPosition = GetActorLocation();
+	StartPosition = GetActorLocation();	
 	PingPongGameState = Cast<APingPongGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
 	verify(PingPongGameState);
-	BodyCollision->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);
 	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);
-	
+	ResetBall();
 }
 
 // Called every frame
@@ -78,43 +79,25 @@ void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp,
 			PingPongGameState->AddScoreToBluePlayer(PingPongGameState->GetBallHits());
 			ResetBall();
 		}
-	}
-	else
-	{
-		PingPongGameState->AddValueToBallHits(1);
-		UE_LOG(LogTemp, Warning, TEXT("Ball %s Collided with %s"), *GetName(),*SweepResult.GetActor()->GetName());
-		FVector moveVector = forward - currLoc;
-		moveVector.Normalize();
-		DrawDebugDirectionalArrow(GetWorld(), newLoc + moveVector * 300, newLoc,30, FColor::Yellow, true, 3.f, 0, 3);
-		FVector impactCorrection = SweepResult.ImpactPoint + SweepResult.ImpactNormal * 300;
-		DrawDebugDirectionalArrow(GetWorld(), SweepResult.ImpactPoint,SweepResult.ImpactPoint + SweepResult.ImpactNormal * 300, 30, FColor::Blue, true, 3, 0,3);
-		float AimAtAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(moveVector,SweepResult.ImpactNormal)));
-		moveVector = moveVector.RotateAngleAxis(AimAtAngle*2, FVector(0,0,1));
-		FVector newTargetMove = newLoc + moveVector * 300;
-		newTargetMove.Z = currLoc.Z;
-		DrawDebugDirectionalArrow(GetWorld(), newLoc, newTargetMove, 30,FColor::Yellow, true, 3.f, 0, 3);
-		FRotator currRotation = GetActorRotation();
-		FRotator newRotation = UKismetMathLibrary::FindLookAtRotation(currLoc,newTargetMove);
-		newRotation.Pitch = currRotation.Pitch;
-		SetActorRotation(newRotation);
-		Multicast_HitEffect();
-		
-	}
+	}	
 }
 
 
 void APingPongBall::ResetBall()
 {
+	
+	FQuat ActorQuat = GetActorRotation().Quaternion();
+	forwardVector=ActorQuat.GetForwardVector();
 	SetActorLocation(StartPosition);
-	PingPongGameState->ResetBallHits();
+	PingPongGameState->ResetBallHits();	
 }
 
-void APingPongBall::Multicast_HitEffect_Implementation()
+void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
 {
 	UWorld * world = GetWorld();
 	if(world && HitEffect)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,GetActorLocation());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,location);
 	}
 }
 
@@ -139,18 +122,17 @@ bool APingPongBall::Server_StartMove_Validate()
 }
 
 void APingPongBall::Server_Move_Implementation(float DeltaTime)
-{
-	// TArray<AActor*> Actors;
-	// UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlayerPawn::StaticClass(),Actors);
-	// if(Actors.Num()!=2) return;
-	
-	forward = GetActorForwardVector();
+{	
 	currLoc = GetActorLocation();
-	newLoc = currLoc + forward * MoveSpeed * DeltaTime;
+	newLoc = currLoc + forwardVector * MoveSpeed * DeltaTime;
 	FHitResult hitResult;
 	if(!SetActorLocation(newLoc, true, &hitResult))
 	{
-		
+		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
+		Vec.Normalize();
+		forwardVector=FVector(Vec.X,Vec.Y,0);
+		PingPongGameState->AddValueToBallHits(1);
+		Multicast_HitEffect(hitResult.Location);
     }
 }
 

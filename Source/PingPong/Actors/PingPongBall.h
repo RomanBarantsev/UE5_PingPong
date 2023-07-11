@@ -26,8 +26,6 @@ public:
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	USphereComponent* BodyCollision;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float MoveSpeed = 100;
@@ -35,8 +33,8 @@ protected:
 	UParticleSystem* HitEffect;
 	UPROPERTY(Replicated)
 	bool isMoving = true;
-
-	FVector forward;
+	UPROPERTY(BlueprintReadWrite)
+	FVector forwardVector;
 	FVector currLoc;
 	FVector newLoc ;
 protected:
@@ -47,7 +45,7 @@ protected:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_StopMove();
 	UFUNCTION(NetMulticast, Unreliable)
-	void Multicast_HitEffect();
+	void Multicast_HitEffect(FVector location);
 	virtual void GetLifetimeReplicatedProps(TArray < class FLifetimeProperty >& OutLifetimeProps) const override;
 	
 public:

@@ -25,9 +25,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
-	UBoxComponent * BodyCollision;
+protected:	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

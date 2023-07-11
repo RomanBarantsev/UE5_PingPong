@@ -13,7 +13,6 @@ void APingPongHUD::BeginPlay()
 
 void APingPongHUD::HUDMainWidowDraw()
 {
-	auto HUDWidget = CreateWidget(GetWorld(),WidgetTemplate);
-	check(HUDWidget);
-	HUDWidget->AddToViewport(0);
+	auto HUDWidget = CreateWidget(GetWorld(),MainScreenWidget);
+	if(HUDWidget) HUDWidget->AddToViewport(0);
 }

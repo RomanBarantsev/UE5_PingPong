@@ -22,6 +22,11 @@ protected:
 	UTextBlock* TextScoreGreen;
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* TouchCountBar;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* TimerText;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* WaitingPlayersText;
+	
 // public:
 // 	UFUNCTION(BlueprintCallable)
 // 	void SetScoreBlue(int Value);

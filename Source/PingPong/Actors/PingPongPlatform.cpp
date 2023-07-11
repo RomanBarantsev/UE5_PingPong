@@ -4,7 +4,6 @@
 #include "PingPongPlatform.h"
 
 #include "Components/BoxComponent.h"
-#include "Kismet/KismetGuidLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -12,11 +11,10 @@ APingPongPlatform::APingPongPlatform()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BodyCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("PlatfromBody Collider"));
-	SetRootComponent(BodyCollision);
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetIsReplicated(true);	
+	SetRootComponent(BodyMesh);
 	bReplicates=true;
 	SetReplicateMovement(true);
 }
@@ -44,10 +42,10 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
     }
     FVector currLocation = GetActorLocation();
     FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * AxisValue;
-    auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,0.5);
+    auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
     if(!SetActorLocation(lerpNewLocation, true))
     {
-		SetActorLocation(lerpNewLocation);
+		
     }
 
 }

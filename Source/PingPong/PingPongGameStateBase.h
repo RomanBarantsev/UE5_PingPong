@@ -20,7 +20,8 @@ protected:
 	UPROPERTY(EditAnywhere,Replicated)
 	int ScoreBlue;
 	UPROPERTY(EditAnywhere,Replicated)
-	int BallHits;	
+	int BallHits;
+	APingPongGameStateBase();
 public:
 	UFUNCTION(BlueprintCallable)
 	void AddScoreToGreenPlayer(int Value);
@@ -37,6 +38,6 @@ public:
 	UFUNCTION(BlueprintCallable) 
 	void ResetBallHits()  {BallHits=1;}
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
-	APingPongGameStateBase();
+	
 	
 };
