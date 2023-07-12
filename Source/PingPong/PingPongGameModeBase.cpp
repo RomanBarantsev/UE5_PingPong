@@ -69,4 +69,16 @@ void APingPongGameModeBase::PostLogin(APlayerController* NewPlayer)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Start position not setted in PingPongGameMode!"));
 	}
+	PlayerControllers.Add(NewPlayer);
+}
+
+APlayerController* APingPongGameModeBase::GetPlayerController(int index)
+{
+	return PlayerControllers[index];
+}
+
+bool APingPongGameModeBase::IsPaused() const
+{
+	UE_LOG(LogTemp, Error, TEXT("Paused"));
+	return Super::IsPaused();
 }

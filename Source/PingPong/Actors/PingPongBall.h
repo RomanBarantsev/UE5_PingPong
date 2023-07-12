@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PingPong/PingPongGameModeBase.h"
 #include "PingPongBall.generated.h"
 
 class APingPongGameStateBase;
@@ -32,7 +33,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
 	UPROPERTY(Replicated)
-	bool isMoving = true;
+	bool isMoving = false;
 	UPROPERTY(BlueprintReadWrite)
 	FVector forwardVector;
 	FVector currLoc;
@@ -59,12 +60,17 @@ public:
 	
 public:
 	void ResetBall();
+	void RotateBallToPlayer();
 protected:
 	FVector StartPosition;
 	
 protected:
 	UPROPERTY()
 	APingPongGameStateBase* PingPongGameState;
-
+UPROPERTY()
+	APingPongGameModeBase* PingPongGameMode;
+	UPROPERTY()
+	TArray<AActor*> Actors;
+		
 };
 

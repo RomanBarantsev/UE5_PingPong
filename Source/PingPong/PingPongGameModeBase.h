@@ -23,10 +23,14 @@ protected:
 	APlayerStart* Player1Start;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	APlayerStart* Player2Start;
-		
+	UPROPERTY()
+	TArray<APlayerController*> PlayerControllers;
 public:
 	APingPongGameModeBase();
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+	UFUNCTION()
+	APlayerController* GetPlayerController(int index);
+	virtual bool IsPaused() const override;
 	
 };

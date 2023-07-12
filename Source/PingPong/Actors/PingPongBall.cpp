@@ -3,12 +3,12 @@
 
 #include "PingPongBall.h"
 #include "PingPongGoal.h"
+#include "PingPongPlatform.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "PingPong/PingPongGameStateBase.h"
-#include "Math/RotationTranslationMatrix.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
 
@@ -32,8 +32,8 @@ void APingPongBall::BeginPlay()
 	Super::BeginPlay();
 	StartPosition = GetActorLocation();	
 	PingPongGameState = Cast<APingPongGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
-	verify(PingPongGameState);
-	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);
+	PingPongGameMode = Cast<APingPongGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);	
 	ResetBall();
 }
 
@@ -41,7 +41,7 @@ void APingPongBall::BeginPlay()
 void APingPongBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
-	if (GetNetMode() != ENetMode::NM_Client)
+	if (GetNetMode() != ENetMode::NM_Client && isMoving)
 	{
 		Server_Move(DeltaTime);
 	}
@@ -78,18 +78,31 @@ void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp,
 		{
 			PingPongGameState->AddScoreToBluePlayer(PingPongGameState->GetBallHits());
 			ResetBall();
+			
 		}
 	}	
 }
 
 
 void APingPongBall::ResetBall()
+{	
+	SetActorLocation(StartPosition);
+	PingPongGameState->ResetBallHits();
+	RotateBallToPlayer();
+}
+
+void APingPongBall::RotateBallToPlayer()
 {
-	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlatform::StaticClass(),Actors);	
+	if(!Actors.IsEmpty())
+	{		
+		FVector Direction = GetActorLocation()-Actors[(UKismetMathLibrary::RandomInteger(Actors.Num()-1))]->GetActorLocation();
+		Direction.Normalize();
+		FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+		SetActorRotation(FRotator(0,TargetRotation.Yaw-180,0));
+	}
 	FQuat ActorQuat = GetActorRotation().Quaternion();
 	forwardVector=ActorQuat.GetForwardVector();
-	SetActorLocation(StartPosition);
-	PingPongGameState->ResetBallHits();	
 }
 
 void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
