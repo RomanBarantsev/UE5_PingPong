@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameStateBase.h"
-#include "PingPongGameStateBase.generated.h"
+#include "GameFramework/GameState.h"
+#include "PingPongGameState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PINGPONG_API APingPongGameStateBase : public AGameStateBase
+class PINGPONG_API APingPongGameState : public AGameState
 {
 	GENERATED_BODY()
 	
@@ -21,7 +21,7 @@ protected:
 	int ScoreBlue;
 	UPROPERTY(EditAnywhere,Replicated)
 	int BallHits;
-	APingPongGameStateBase();
+	APingPongGameState();
 public:
 	UFUNCTION(BlueprintCallable)
 	void AddScoreToGreenPlayer(int Value);

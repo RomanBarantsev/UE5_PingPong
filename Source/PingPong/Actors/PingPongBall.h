@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PingPong/PingPongGameModeBase.h"
 #include "PingPongBall.generated.h"
 
-class APingPongGameStateBase;
+class APingPongGameMode;
+class APingPongGameState;
 class USphereComponent;
 UCLASS()
 class PINGPONG_API APingPongBall : public AActor
@@ -66,9 +66,9 @@ protected:
 	
 protected:
 	UPROPERTY()
-	APingPongGameStateBase* PingPongGameState;
+	APingPongGameState* PingPongGameState;
 UPROPERTY()
-	APingPongGameModeBase* PingPongGameMode;
+	APingPongGameMode* PingPongGameMode;
 	UPROPERTY()
 	TArray<AActor*> Actors;
 		

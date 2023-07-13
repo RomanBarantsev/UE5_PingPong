@@ -8,9 +8,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
-#include "PingPong/PingPongGameStateBase.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
+#include "PingPong/PingPongGameMode.h"
+#include "PingPong/PingPongGameState.h"
 
 // Sets default values
 APingPongBall::APingPongBall()
@@ -31,8 +32,8 @@ void APingPongBall::BeginPlay()
 {
 	Super::BeginPlay();
 	StartPosition = GetActorLocation();	
-	PingPongGameState = Cast<APingPongGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
-	PingPongGameMode = Cast<APingPongGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);	
 	ResetBall();
 }

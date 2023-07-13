@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "PingPongGameModeBase.h"
+#include "PingPongGameMode.h"
 
 #include "GameplayTagContainer.h"
 #include "PingPongPlayerController.h"
@@ -9,20 +9,20 @@
 #include "Kismet/GameplayStatics.h"
 #include "Pawns/PingPongPlayerPawn.h"
 
-APingPongGameModeBase::APingPongGameModeBase()
+APingPongGameMode::APingPongGameMode()
 {
 	DefaultPawnClass = APingPongPlayerPawn::StaticClass();
 	PlayerControllerClass = APingPongPlayerController::StaticClass();
 }
 
-void APingPongGameModeBase::BeginPlay()
+void APingPongGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void APingPongGameModeBase::PostLogin(APlayerController* NewPlayer)
+void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	Super::PostLogin(NewPlayer);
+	
 	UWorld* world = GetWorld();
 	if(world && (!Player1Start || !Player2Start))
 	{
@@ -70,14 +70,15 @@ void APingPongGameModeBase::PostLogin(APlayerController* NewPlayer)
 		UE_LOG(LogTemp, Error, TEXT("Start position not setted in PingPongGameMode!"));
 	}
 	PlayerControllers.Add(NewPlayer);
+	Super::PostLogin(NewPlayer);
 }
 
-APlayerController* APingPongGameModeBase::GetPlayerController(int index)
+APlayerController* APingPongGameMode::GetPlayerController(int index)
 {
 	return PlayerControllers[index];
 }
 
-bool APingPongGameModeBase::IsPaused() const
+bool APingPongGameMode::IsPaused() const
 {
 	UE_LOG(LogTemp, Error, TEXT("Paused"));
 	return Super::IsPaused();

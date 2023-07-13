@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/GameMode.h"
 #include "GameFramework/GameModeBase.h"
-#include "PingPongGameModeBase.generated.h"
+#include "PingPongGameMode.generated.h"
 
 class APlayerStart;
 /**
  * 
  */
 UCLASS()
-class PINGPONG_API APingPongGameModeBase : public AGameModeBase
+class PINGPONG_API APingPongGameMode : public AGameMode
 {
 	GENERATED_BODY()
 protected:
@@ -26,7 +27,7 @@ protected:
 	UPROPERTY()
 	TArray<APlayerController*> PlayerControllers;
 public:
-	APingPongGameModeBase();
+	APingPongGameMode();
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	UFUNCTION()
