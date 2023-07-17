@@ -6,6 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDelegateScore,int,Player1,int,Player2);
 /**
  * 
  */
@@ -16,28 +17,18 @@ class PINGPONG_API APingPongGameState : public AGameState
 	
 protected:
 	UPROPERTY(EditAnywhere,Replicated)
-	int ScoreGreen;
+	int ScorePlayer1;
 	UPROPERTY(EditAnywhere,Replicated)
-	int ScoreBlue;
-	UPROPERTY(EditAnywhere,Replicated)
-	int BallHits;
+	int ScorePlayer2;
 	APingPongGameState();
+	virtual void BeginPlay() override;
 public:
 	UFUNCTION(BlueprintCallable)
-	void AddScoreToGreenPlayer(int Value);
+	void AddScoreToPlayer1(int Value);
 	UFUNCTION(BlueprintCallable)
-	void AddScoreToBluePlayer(int Value);
-	UFUNCTION(BlueprintCallable)
-	void AddValueToBallHits(int Value);
-	UFUNCTION(BlueprintCallable)
-	int GetScoreBluePlayer()  {return ScoreBlue;}
-	UFUNCTION(BlueprintCallable) 
-	int GetScoreGreenPlayer()  {return ScoreGreen;}
-	UFUNCTION(BlueprintCallable) 
-	int GetBallHits()  {return BallHits;}
-	UFUNCTION(BlueprintCallable) 
-	void ResetBallHits()  {BallHits=1;}
+	void AddScoreToPlayer2(int Value);
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
 	
-	
+public:
+	FDelegateScore DelegateScore;
 };

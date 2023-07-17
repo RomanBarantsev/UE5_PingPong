@@ -2,33 +2,40 @@
 
 
 #include "PingPongGameState.h"
+
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+
 
 APingPongGameState::APingPongGameState()
 {
 	bReplicates=true;
 }
 
-void APingPongGameState::AddScoreToGreenPlayer(int Value)
+void APingPongGameState::BeginPlay()
 {
-	ScoreGreen+=Value;
+	Super::BeginPlay();
+	//TODO Make it for multiple balls	
 }
 
-void APingPongGameState::AddScoreToBluePlayer(int Value)
+void APingPongGameState::AddScoreToPlayer1(int Value)
 {
-	ScoreBlue+=Value;
+	ScorePlayer1+=Value;
+	DelegateScore.Broadcast(ScorePlayer1,ScorePlayer2);
 }
 
-void APingPongGameState::AddValueToBallHits(int Value)
+void APingPongGameState::AddScoreToPlayer2(int Value)
 {
-	BallHits+=Value;	
+	ScorePlayer2+=Value;
+	DelegateScore.Broadcast(ScorePlayer1,ScorePlayer2);
 }
+
 
 void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME( APingPongGameState, ScoreGreen );
-	DOREPLIFETIME( APingPongGameState, ScoreBlue );
-	DOREPLIFETIME( APingPongGameState, BallHits );
+	DOREPLIFETIME( APingPongGameState, ScorePlayer1 );
+	DOREPLIFETIME( APingPongGameState, ScorePlayer2 );
 }
+
 

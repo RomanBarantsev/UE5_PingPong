@@ -72,12 +72,12 @@ void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp,
 	{
 		if(PingPongGoal->Tags[0]=="Blue" && PingPongGameState)
 		{
-			PingPongGameState->AddScoreToGreenPlayer(PingPongGameState->GetBallHits());
+			PingPongGameState->AddScoreToPlayer1(1);
 			ResetBall();
 		}
 		else
 		{
-			PingPongGameState->AddScoreToBluePlayer(PingPongGameState->GetBallHits());
+			PingPongGameState->AddScoreToPlayer2(1);
 			ResetBall();
 			
 		}
@@ -88,7 +88,7 @@ void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp,
 void APingPongBall::ResetBall()
 {	
 	SetActorLocation(StartPosition);
-	PingPongGameState->ResetBallHits();
+	BallTouchCount=1;
 	RotateBallToPlayer();
 }
 
@@ -145,7 +145,7 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
 		Vec.Normalize();
 		forwardVector=FVector(Vec.X,Vec.Y,0);
-		PingPongGameState->AddValueToBallHits(1);
+		BallTouchCount++;
 		Multicast_HitEffect(hitResult.Location);
     }
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "UI/MainMenu.h"
 #include "UI/PingPongHUD.h"
 #include "PingPongPlayerController.generated.h"
 
@@ -50,4 +51,12 @@ protected:
 
 	UPROPERTY()
 	APingPongHUD* PingPongHUD;
+
+protected:
+	UFUNCTION()
+	void OpenMenu();
+	UPROPERTY()
+	UMainMenu* MainMenu;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+	TSubclassOf<UMainMenu> MainMenuClass;
 };

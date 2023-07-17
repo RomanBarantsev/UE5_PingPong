@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "PingPong/Actors/PingPongBall.h"
 #include "MainScreenWidget.generated.h"
 
 /**
@@ -16,22 +16,29 @@ class PINGPONG_API UMainScreenWidget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
+	
 	UPROPERTY(meta=(BindWidget))
-	UTextBlock* TextScoreBlue;
+	UTextBlock* TextScorePlayer1;
 	UPROPERTY(meta=(BindWidget))
-	UTextBlock* TextScoreGreen;
-	UPROPERTY(meta=(BindWidget))
-	UProgressBar* TouchCountBar;
+	UTextBlock* TextScorePlayer2;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TimerText;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WaitingPlayersText;
+	virtual void NativeConstruct() override;
+	UPROPERTY()
+	APingPongGameState* PingPongGameState;
 	
-// public:
-// 	UFUNCTION(BlueprintCallable)
-// 	void SetScoreBlue(int Value);
-// 	UFUNCTION(BlueprintCallable)
-// 	void SetScoreGreen(int Value);
-// 	UFUNCTION(BlueprintCallable)
-// 	void SetTouchCountBar(float Value);		
+public:
+	UFUNCTION(BlueprintCallable)
+	void CountTimer();
+	
+private:
+	void ChangeText();
+	int count = 4;
+	FTimerHandle CountTimerHandle;
+	
+private:
+	UFUNCTION()
+	void SetScore(int Player1,int Player2);
 };

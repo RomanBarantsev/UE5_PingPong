@@ -26,12 +26,12 @@ protected:
 	APlayerStart* Player2Start;
 	UPROPERTY()
 	TArray<APlayerController*> PlayerControllers;
+	int PlayersCount=2;
+	int ScoreToEnd=100;
 public:
 	APingPongGameMode();
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	UFUNCTION()
-	APlayerController* GetPlayerController(int index);
-	virtual bool IsPaused() const override;
-	
+	APlayerController* GetPlayerController(int index);	
 };

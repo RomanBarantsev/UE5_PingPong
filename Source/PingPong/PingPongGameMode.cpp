@@ -61,7 +61,7 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		newPawn->SetActorLocation(startPos->GetActorLocation());
 		newPawn->SetActorRotation(startPos->GetActorRotation());
-		NewPlayer->SetPawn(newPawn);
+		NewPlayer->Possess(newPawn);
 		currPlayer->SetStartTransform(startPos->GetActorTransform());
 		currPlayer->Initialize();
 	}
@@ -71,15 +71,13 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	PlayerControllers.Add(NewPlayer);
 	Super::PostLogin(NewPlayer);
+	if(PlayerControllers.Num()==PlayersCount)
+	{
+		SetMatchState(MatchState::WaitingToStart);
+	}
 }
 
 APlayerController* APingPongGameMode::GetPlayerController(int index)
 {
 	return PlayerControllers[index];
-}
-
-bool APingPongGameMode::IsPaused() const
-{
-	UE_LOG(LogTemp, Error, TEXT("Paused"));
-	return Super::IsPaused();
 }

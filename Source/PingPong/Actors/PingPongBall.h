@@ -9,6 +9,8 @@
 class APingPongGameMode;
 class APingPongGameState;
 class USphereComponent;
+
+
 UCLASS()
 class PINGPONG_API APingPongBall : public AActor
 {
@@ -32,9 +34,8 @@ protected:
 	float MoveSpeed = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
-	UPROPERTY(Replicated)
-	bool isMoving = false;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(Replicated,BlueprintReadWrite,EditAnywhere)
+	bool isMoving = false;	
 	FVector forwardVector;
 	FVector currLoc;
 	FVector newLoc ;
@@ -71,6 +72,9 @@ UPROPERTY()
 	APingPongGameMode* PingPongGameMode;
 	UPROPERTY()
 	TArray<AActor*> Actors;
-		
+	UPROPERTY()
+	int BallTouchCount=0;
+public:
+	
 };
 

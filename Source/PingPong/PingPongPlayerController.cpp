@@ -4,6 +4,7 @@
 #include "PingPongPlayerController.h"
 
 #include "Actors/PingPongPlatform.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 void APingPongPlayerController::BeginPlay()
 {
@@ -13,6 +14,7 @@ void APingPongPlayerController::BeginPlay()
 		PingPongHUD = Cast<APingPongHUD>(HUD);
 	}
 	Super::BeginPlay();
+	
 }
 
 APingPongPlayerController::APingPongPlayerController()
@@ -54,15 +56,11 @@ void APingPongPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAxis("Move", this,&APingPongPlayerController::MoveRight);
-
+	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 }
 
 void APingPongPlayerController::MoveRight(float AxisValue)
-{
-	if(AxisValue != 0)
-	{
-		UE_LOG(LogTemp, Warning,TEXT("APingPongPlayerController::MoveRight"));
-	}
+{	
 	Server_PlatformMoveRight(AxisValue);
 }
 
@@ -74,16 +72,12 @@ bool APingPongPlayerController::Server_PlatformMoveRight_Validate(float AxisValu
 void APingPongPlayerController::Server_PlatformMoveRight_Implementation(float AxisValue)
 {
 	if(Platform)
-	{
-		if(AxisValue != 0)
-		{
-			UE_LOG(LogTemp, Warning,TEXT("APingPongPlayerController::Server_PlatformMoveRight_Implementation"));
-		}
+	{		
 		Platform->Server_MoveRight(AxisValue);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("APingPongPlayerController::Server_PlatformMoveRight_Implementation: HASNO PLATFORM!"));
+		UE_LOG(LogTemp, Error, TEXT("APingPongPlayerController::Server_PlatformMoveRight_Implementation: HAS NO PLATFORM!"));
 	}
 }
 
@@ -97,4 +91,22 @@ void APingPongPlayerController::Initialize_Implementation()
 	if(Platform)
 		Platform->Destroy();
 	SpawnPlatform();
+}
+
+void APingPongPlayerController::OpenMenu()
+{
+	if(MainMenu)
+	{
+		MainMenu->RemoveFromParent();
+		MainMenu=nullptr;
+		SetShowMouseCursor(false);
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
+	}
+	else
+	{
+		MainMenu = CreateWidget<UMainMenu>(this,MainMenuClass);
+		MainMenu->AddToViewport(1);
+		SetShowMouseCursor(true);
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
+	}
 }
