@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "PingPong/Actors/PingPongBall.h"
 #include "MainScreenWidget.generated.h"
@@ -25,20 +26,17 @@ protected:
 	UTextBlock* TimerText;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WaitingPlayersText;
+	UPROPERTY(meta=(BindWidget))
+	UButton* ReadyButton;
 	virtual void NativeConstruct() override;
-	UPROPERTY()
-	APingPongGameState* PingPongGameState;
-	
-public:
-	UFUNCTION(BlueprintCallable)
-	void CountTimer();
 	
 private:
-	void ChangeText();
-	int count = 4;
+	int count = 3;
 	FTimerHandle CountTimerHandle;
 	
 private:
 	UFUNCTION()
 	void SetScore(int Player1,int Player2);
+	UFUNCTION()
+	void SetReady();
 };

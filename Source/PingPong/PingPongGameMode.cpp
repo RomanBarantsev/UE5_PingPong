@@ -71,9 +71,10 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 	PlayerControllers.Add(NewPlayer);
 	Super::PostLogin(NewPlayer);
-	if(PlayerControllers.Num()==PlayersCount)
+	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
+	if(PingPongPlayerController)
 	{
-		SetMatchState(MatchState::WaitingToStart);
+		PingPongPlayerController->OnPlayerReady.AddUObject(this,&APingPongGameMode::PlayerReady);
 	}
 }
 
@@ -81,3 +82,13 @@ APlayerController* APingPongGameMode::GetPlayerController(int index)
 {
 	return PlayerControllers[index];
 }
+
+void APingPongGameMode::PlayerReady()
+{
+	PlayersReady++;
+	if(PlayersReady==PlayersCount)
+	{
+		OnMatchStateChanged.Broadcast(MatchState::WaitingToStart);
+	}
+}
+

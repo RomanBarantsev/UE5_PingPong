@@ -5,5 +5,5 @@
 
 void UMainMenu::NativeConstruct()
 {	
-	Super::NativeConstruct();
+	Super::NativeConstruct();	
 }

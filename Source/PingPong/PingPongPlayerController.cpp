@@ -3,8 +3,10 @@
 
 #include "PingPongPlayerController.h"
 
+#include "PingPongGameMode.h"
 #include "Actors/PingPongPlatform.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 void APingPongPlayerController::BeginPlay()
 {
@@ -14,7 +16,7 @@ void APingPongPlayerController::BeginPlay()
 		PingPongHUD = Cast<APingPongHUD>(HUD);
 	}
 	Super::BeginPlay();
-	
+	MainMenu = CreateWidget<UMainMenu>(this,MainMenuClass);		
 }
 
 APingPongPlayerController::APingPongPlayerController()
@@ -95,18 +97,29 @@ void APingPongPlayerController::Initialize_Implementation()
 
 void APingPongPlayerController::OpenMenu()
 {
-	if(MainMenu)
+	if(MainMenu->IsInViewport())
 	{
-		MainMenu->RemoveFromParent();
-		MainMenu=nullptr;
+		MainMenu->RemoveFromParent();	
 		SetShowMouseCursor(false);
 		UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
 	}
 	else
 	{
-		MainMenu = CreateWidget<UMainMenu>(this,MainMenuClass);
 		MainMenu->AddToViewport(1);
 		SetShowMouseCursor(true);
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 	}
 }
+
+void APingPongPlayerController::ToggleReadyState_Implementation()
+{
+	bIsReady=!bIsReady;
+	APingPongGameMode* PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(PingPongGameMode)
+	{
+		PingPongGameMode->PlayerReady();
+	}
+}
+

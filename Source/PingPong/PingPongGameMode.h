@@ -7,6 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "PingPongGameMode.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged,FName)
 class APlayerStart;
 /**
  * 
@@ -28,10 +29,18 @@ protected:
 	TArray<APlayerController*> PlayerControllers;
 	int PlayersCount=2;
 	int ScoreToEnd=100;
+	
 public:
 	APingPongGameMode();
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	UFUNCTION()
-	APlayerController* GetPlayerController(int index);	
+	APlayerController* GetPlayerController(int index);
+	FOnMatchStateChanged OnMatchStateChanged;
+	
+public:
+	UFUNCTION()
+	void PlayerReady();	
+private:
+	int32 PlayersReady=0;
 };

@@ -14,7 +14,7 @@ APingPongGameState::APingPongGameState()
 
 void APingPongGameState::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay();	
 	//TODO Make it for multiple balls	
 }
 
@@ -30,12 +30,12 @@ void APingPongGameState::AddScoreToPlayer2(int Value)
 	DelegateScore.Broadcast(ScorePlayer1,ScorePlayer2);
 }
 
-
 void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME( APingPongGameState, ScorePlayer1 );
 	DOREPLIFETIME( APingPongGameState, ScorePlayer2 );
 }
+
 
 

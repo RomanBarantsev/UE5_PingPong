@@ -25,4 +25,5 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UBackgroundBlur* Blur;
 	virtual void NativeConstruct() override;
+	
 };

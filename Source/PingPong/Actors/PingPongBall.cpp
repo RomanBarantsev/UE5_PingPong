@@ -34,7 +34,11 @@ void APingPongBall::BeginPlay()
 	StartPosition = GetActorLocation();	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);	
+	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);
+	if(PingPongGameMode)
+	{
+		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&APingPongBall::BallMatchState);
+	}
 	ResetBall();
 }
 
@@ -73,22 +77,27 @@ void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp,
 		if(PingPongGoal->Tags[0]=="Blue" && PingPongGameState)
 		{
 			PingPongGameState->AddScoreToPlayer1(1);
-			ResetBall();
+			//ResetBall();
 		}
 		else
 		{
 			PingPongGameState->AddScoreToPlayer2(1);
-			ResetBall();
+			//ResetBall();
 			
 		}
 	}	
 }
 
+void APingPongBall::BallMatchState(FName matchState)
+{
+	if(matchState==MatchState::InProgress)
+		isMoving=true;
+}
+
 
 void APingPongBall::ResetBall()
 {	
-	SetActorLocation(StartPosition);
-	BallTouchCount=1;
+	SetActorLocation(StartPosition);	
 	RotateBallToPlayer();
 }
 
@@ -145,7 +154,6 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
 		Vec.Normalize();
 		forwardVector=FVector(Vec.X,Vec.Y,0);
-		BallTouchCount++;
 		Multicast_HitEffect(hitResult.Location);
     }
 }

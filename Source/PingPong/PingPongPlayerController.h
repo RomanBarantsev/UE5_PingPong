@@ -8,6 +8,7 @@
 #include "UI/PingPongHUD.h"
 #include "PingPongPlayerController.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnPlayerReady);
 /**
  * 
  */
@@ -59,4 +60,14 @@ protected:
 	UMainMenu* MainMenu;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
 	TSubclassOf<UMainMenu> MainMenuClass;
+
+protected:
+	UPROPERTY()
+	bool bIsReady;
+public:
+	UFUNCTION(Server, Reliable)
+	void ToggleReadyState();
+public:
+	FOnPlayerReady OnPlayerReady;
+	
 };
