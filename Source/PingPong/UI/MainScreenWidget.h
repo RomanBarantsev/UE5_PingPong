@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/GameMode.h"
 #include "PingPong/Actors/PingPongBall.h"
 #include "MainScreenWidget.generated.h"
 
@@ -29,7 +30,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UButton* ReadyButton;
 	virtual void NativeConstruct() override;
-	
+	virtual void NativePreConstruct() override;
 private:
 	int count = 3;
 	FTimerHandle CountTimerHandle;
@@ -39,4 +40,10 @@ private:
 	void SetScore(int Player1,int Player2);
 	UFUNCTION()
 	void SetReady();
+
+private:
+	UPROPERTY()
+	APingPongGameMode* PingPongGameMode;
+	void MatchStateChanged(FName mState);
+	void ToggleReadyButton();
 };

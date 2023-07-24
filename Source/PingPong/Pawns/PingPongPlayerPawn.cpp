@@ -44,8 +44,3 @@ void APingPongPlayerPawn::SetReadyState()
 	playerState->SetReady(true);	
 }
 
-void APingPongPlayerPawn::ScoreUpdate(int value)
-{
-	//WidgetTemplate->SetScoreText(value);
-}
-

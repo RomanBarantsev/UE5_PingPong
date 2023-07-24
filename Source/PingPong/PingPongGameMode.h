@@ -26,7 +26,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	APlayerStart* Player2Start;
 	UPROPERTY()
-	TArray<APlayerController*> PlayerControllers;
+	TArray<APingPongPlayerController*> PlayerControllers;
 	int PlayersCount=2;
 	int ScoreToEnd=100;
 	
@@ -37,10 +37,14 @@ public:
 	UFUNCTION()
 	APlayerController* GetPlayerController(int index);
 	FOnMatchStateChanged OnMatchStateChanged;
+	UFUNCTION()
+	void MatchStateChanged(FName mState);
 	
 public:
 	UFUNCTION()
-	void PlayerReady();	
+	void PlayerReady();
+	
 private:
 	int32 PlayersReady=0;
+	
 };

@@ -11,7 +11,20 @@ void UMainScreenWidget::NativeConstruct()
 {
 	//TODO Make it for multiple balls
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UMainScreenWidget::SetReady);
+	//ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	Super::NativeConstruct();	
+}
+
+void UMainScreenWidget::NativePreConstruct()
+{	
+	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(PingPongGameMode)
+	{		
+		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&UMainScreenWidget::MatchStateChanged);
+		const FName EnteringMap;
+		PingPongGameMode->OnMatchStateChanged.Broadcast(MatchState::Aborted);
+	}
+	Super::NativePreConstruct();
 }
 
 
@@ -27,5 +40,24 @@ void UMainScreenWidget::SetReady()
 	if(PingPongPlayerController)
 	{
 		PingPongPlayerController->ToggleReadyState();
+		ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+void UMainScreenWidget::MatchStateChanged(FName mState)
+{	
+	if(mState==MatchState::EnteringMap)
+	{
+		ToggleReadyButton();
+	}
+	if(mState==MatchState::WaitingToStart)
+	{
+		PingPongGameMode->OnMatchStateChanged.Broadcast(MatchState::InProgress);
+	}
+}
+
+void UMainScreenWidget::ToggleReadyButton()
+{
+	ReadyButton->SetVisibility(ESlateVisibility::Visible);
+	WaitingPlayersText->SetVisibility(ESlateVisibility::Hidden);
 }

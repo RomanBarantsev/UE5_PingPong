@@ -34,5 +34,7 @@ protected:
 public:
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_MoveRight(float AxisValue);
+	UFUNCTION(Server, Reliable, WithValidation)
+    void Server_MoveForward(float AxisValue);
 
 };

@@ -46,9 +46,13 @@ public:
 protected:
 	UFUNCTION()
 	void MoveRight(float AxisValue);
+	UFUNCTION()
+	void MoveForward(float AxisValue);
 
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue);
+	UFUNCTION(Server,Reliable,WithValidation)
+	void Server_PlatformMoveForward(float AxisValue);
 
 	UPROPERTY()
 	APingPongHUD* PingPongHUD;

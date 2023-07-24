@@ -109,7 +109,7 @@ void APingPongBall::RotateBallToPlayer()
 		FVector Direction = GetActorLocation()-Actors[(UKismetMathLibrary::RandomInteger(Actors.Num()-1))]->GetActorLocation();
 		Direction.Normalize();
 		FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
-		SetActorRotation(FRotator(0,TargetRotation.Yaw-180,0));
+		SetActorRotation(FRotator(0,TargetRotation.Yaw-UKismetMathLibrary::RandomInteger(45),0));
 	}
 	FQuat ActorQuat = GetActorRotation().Quaternion();
 	forwardVector=ActorQuat.GetForwardVector();

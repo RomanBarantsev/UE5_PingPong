@@ -15,6 +15,9 @@ class PINGPONG_API APingPongPlayerState : public APlayerState
 	GENERATED_BODY()
 protected:
 	bool PlayerReady=false;
+	int PlayerScore=0;
+	FVector3d Color{0,0,0};
+	
 public:
 	UFUNCTION()
 	void SetReady(bool State);

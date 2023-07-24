@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PingPongGoal.h"
 #include "GameFramework/Actor.h"
 #include "PingPongBall.generated.h"
 
@@ -34,7 +35,7 @@ protected:
 	float MoveSpeed = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
-	UPROPERTY(Replicated,BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(Replicated)
 	bool isMoving = false;	
 	FVector forwardVector;
 	FVector currLoc;
@@ -73,6 +74,5 @@ UPROPERTY()
 	APingPongGameMode* PingPongGameMode;
 	UPROPERTY()
 	TArray<AActor*> Actors;
-		
 };
 

@@ -10,13 +10,17 @@
 
 void APingPongPlayerController::BeginPlay()
 {
-	AHUD* HUD = GetHUD();
-	if(HUD)
+	if(!GIsServer)
 	{
-		PingPongHUD = Cast<APingPongHUD>(HUD);
+		AHUD* HUD = GetHUD();
+		if(HUD)
+		{
+			PingPongHUD = Cast<APingPongHUD>(HUD);
+		}
+		
+		MainMenu = CreateWidget<UMainMenu>(this,MainMenuClass);	
 	}
-	Super::BeginPlay();
-	MainMenu = CreateWidget<UMainMenu>(this,MainMenuClass);		
+	Super::BeginPlay();	
 }
 
 APingPongPlayerController::APingPongPlayerController()
@@ -57,13 +61,36 @@ bool APingPongPlayerController::SpawnPlatform_Validate()
 void APingPongPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	InputComponent->BindAxis("Move", this,&APingPongPlayerController::MoveRight);
+	InputComponent->BindAxis("LeftRight", this,&APingPongPlayerController::MoveRight);
+	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
 	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 }
 
 void APingPongPlayerController::MoveRight(float AxisValue)
 {	
 	Server_PlatformMoveRight(AxisValue);
+}
+
+void APingPongPlayerController::MoveForward(float AxisValue)
+{
+	Server_PlatformMoveForward(AxisValue);
+}
+
+void APingPongPlayerController::Server_PlatformMoveForward_Implementation(float AxisValue)
+{
+	if(Platform)
+	{		
+		Platform->Server_MoveForward(AxisValue);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("APingPongPlayerController::Server_PlatformMoveRight_Implementation: HAS NO PLATFORM!"));
+	}
+}
+
+bool APingPongPlayerController::Server_PlatformMoveForward_Validate(float AxisValue)
+{
+	return true;
 }
 
 bool APingPongPlayerController::Server_PlatformMoveRight_Validate(float AxisValue)

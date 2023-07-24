@@ -34,20 +34,39 @@ void APingPongPlatform::Tick(float DeltaTime)
 
 }
 
+void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
+{
+	if(AxisValue != 0)
+	{
+		UE_LOG(LogTemp, Warning,TEXT("APingPongPlatform::Server_MoveRight_Implementation"));
+		FVector currLocation = GetActorLocation();
+		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * AxisValue;
+		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
+		if(!SetActorLocation(lerpNewLocation, true))
+		{
+		
+		}
+	}
+}
+
+bool APingPongPlatform::Server_MoveForward_Validate(float AxisValue)
+{
+	return true;
+}
+
 void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 {
 	if(AxisValue != 0)
     {
 	    UE_LOG(LogTemp, Warning,TEXT("APingPongPlatform::Server_MoveRight_Implementation"));
-    }
-    FVector currLocation = GetActorLocation();
-    FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * AxisValue;
-    auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
-    if(!SetActorLocation(lerpNewLocation, true))
-    {
+		FVector currLocation = GetActorLocation();
+		FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * AxisValue;
+		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
+		if(!SetActorLocation(lerpNewLocation, true))
+		{
 		
+		}
     }
-
 }
 
 bool APingPongPlatform::Server_MoveRight_Validate(float AxisValue)

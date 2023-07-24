@@ -17,6 +17,7 @@ APingPongGameMode::APingPongGameMode()
 
 void APingPongGameMode::BeginPlay()
 {
+	OnMatchStateChanged.AddUObject(this,&APingPongGameMode::MatchStateChanged);
 	Super::BeginPlay();
 }
 
@@ -69,18 +70,31 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Start position not setted in PingPongGameMode!"));
 	}
-	PlayerControllers.Add(NewPlayer);
-	Super::PostLogin(NewPlayer);
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
 	if(PingPongPlayerController)
 	{
 		PingPongPlayerController->OnPlayerReady.AddUObject(this,&APingPongGameMode::PlayerReady);
 	}
+	PlayerControllers.Add(PingPongPlayerController);
+	if(PlayerControllers.Num()==PlayersCount)
+	{
+		if(OnMatchStateChanged.IsBound())
+			OnMatchStateChanged.Broadcast(MatchState::EnteringMap);
+	}
+	Super::PostLogin(NewPlayer);    	
 }
 
 APlayerController* APingPongGameMode::GetPlayerController(int index)
 {
 	return PlayerControllers[index];
+}
+
+void APingPongGameMode::MatchStateChanged(FName mState)
+{
+	if(mState==MatchState)
+	{
+		
+	}
 }
 
 void APingPongGameMode::PlayerReady()

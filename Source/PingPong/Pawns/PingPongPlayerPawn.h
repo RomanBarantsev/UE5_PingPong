@@ -31,7 +31,4 @@ protected:
 	class UCameraComponent * Camera;
 	UFUNCTION(BlueprintCallable)
 	void SetReadyState();
-public:
-	UFUNCTION()
-	void ScoreUpdate(int value);
 };
