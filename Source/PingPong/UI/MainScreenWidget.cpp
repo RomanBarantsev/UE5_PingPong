@@ -10,53 +10,32 @@
 void UMainScreenWidget::NativeConstruct()
 {
 	//TODO Make it for multiple balls
-	ReadyButton->OnPressed.AddUniqueDynamic(this,&UMainScreenWidget::SetReady);
-	//ReadyButton->SetVisibility(ESlateVisibility::Hidden);
-	Super::NativeConstruct();	
-}
-
-void UMainScreenWidget::NativePreConstruct()
-{	
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(PingPongGameMode)
-	{		
-		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&UMainScreenWidget::MatchStateChanged);
-		const FName EnteringMap;
-		PingPongGameMode->OnMatchStateChanged.Broadcast(MatchState::Aborted);
+	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
+	ReadyButton->OnPressed.AddUniqueDynamic(this,&UMainScreenWidget::OnReadyButtonPushed);
+	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	check(PingPongGameState);	
+	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);	
+	if(PingPongGameState->GetPlayersStatus()==EPlayersStatus::AllPlayersConnected)
+	{
+		ReadyButton->SetVisibility(ESlateVisibility::Visible);
+		WaitingPlayersText->SetVisibility(ESlateVisibility::Hidden);
 	}
-	Super::NativePreConstruct();
+	
+	Super::NativeConstruct();
 }
 
-
-void UMainScreenWidget::SetScore(int Player1, int Player2)
+void UMainScreenWidget::SetScoreText(int Player1, int Player2)
 {
 	TextScorePlayer1->SetText(FText::AsNumber(Player1));
 	TextScorePlayer2->SetText(FText::AsNumber(Player2));
 }
 
-void UMainScreenWidget::SetReady()
-{	
-	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	if(PingPongPlayerController)
-	{
-//		PingPongPlayerController->ToggleReadyState();
-		ReadyButton->SetVisibility(ESlateVisibility::Hidden);
-	}
+void UMainScreenWidget::OnReadyButtonPushed()
+{
+	
 }
 
-void UMainScreenWidget::MatchStateChanged(FName mState)
-{	
-	if(mState==MatchState::EnteringMap)
-	{
-		ToggleReadyButton();
-	}
-	if(mState==MatchState::WaitingToStart)
-	{
-		PingPongGameMode->OnMatchStateChanged.Broadcast(MatchState::InProgress);
-	}
-}
-
-void UMainScreenWidget::ToggleReadyButton()
+void UMainScreenWidget::OnPlayersStateChanged(EPlayersStatus PlayersStatus)
 {
 	ReadyButton->SetVisibility(ESlateVisibility::Visible);
 	WaitingPlayersText->SetVisibility(ESlateVisibility::Hidden);

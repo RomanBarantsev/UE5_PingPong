@@ -37,7 +37,7 @@ void APingPongBall::BeginPlay()
 	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);
 	if(PingPongGameMode)
 	{
-		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&APingPongBall::BallMatchState);
+//		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&APingPongBall::BallMatchState);
 	}
 	ResetBall();
 }
