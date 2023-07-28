@@ -8,7 +8,6 @@
 #include "UI/PingPongHUD.h"
 #include "PingPongPlayerController.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnPlayerReady);
 /**
  * 
  */
@@ -54,24 +53,13 @@ protected:
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveForward(float AxisValue);
 
+protected:
 	UPROPERTY()
 	APingPongHUD* PingPongHUD;
-
-protected:
 	UFUNCTION()
 	void OpenMenu();
 	UPROPERTY()
 	UMainMenu* MainMenu;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
-	TSubclassOf<UMainMenu> MainMenuClass;
-
-protected:
-	UPROPERTY()
-	bool bIsReady;
-public:
-	UFUNCTION(Server, Reliable)
-	void ToggleReadyState();
-public:
-	FOnPlayerReady OnPlayerReady;
-	
+	TSubclassOf<UMainMenu> MainMenuClass;	
 };

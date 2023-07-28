@@ -3,10 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/GameMode.h"
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDelegateScore,int,Player1,int,Player2);
+UENUM()
+enum class EPlayersStatus
+{	
+	AllPlayersConnected UMETA(DisplayName="AllPlayerConnected"),
+	AllPlayersIsReady UMETA(DisplayName="AllPlayersIsReady"),
+	NONE UMETA(DisplayName="None")
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
+
 /**
  * 
  */
@@ -16,20 +26,18 @@ class PINGPONG_API APingPongGameState : public AGameState
 	GENERATED_BODY()
 	
 protected:
-	UPROPERTY(EditAnywhere,Replicated)
-	int ScorePlayer1;
-	UPROPERTY(EditAnywhere,Replicated)
-	int32 ScorePlayer2;
 	APingPongGameState();
 	virtual void BeginPlay() override;
 public:
 	UFUNCTION()
-	void AddScoreToPlayer1(int Value);
+	void UpdateCharacterState(EPlayersStatus NewPlayersState);
 	UFUNCTION()
-	void AddScoreToPlayer2(int Value);	
+	EPlayersStatus GetPlayersStatus() const;
+	FOnPlayersStateChanged OnPlayersStateChanged;
+private:
+	UPROPERTY(Replicated)
+	EPlayersStatus CurrentPlayersState;
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
-	
-public:
-	FDelegateScore DelegateScore;
+	int ScoreToEnd=100;
 	
 };

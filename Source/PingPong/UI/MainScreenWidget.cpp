@@ -39,7 +39,7 @@ void UMainScreenWidget::SetReady()
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
 	if(PingPongPlayerController)
 	{
-		PingPongPlayerController->ToggleReadyState();
+//		PingPongPlayerController->ToggleReadyState();
 		ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

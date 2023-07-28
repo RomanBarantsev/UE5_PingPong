@@ -73,7 +73,7 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
 	if(PingPongPlayerController)
 	{
-		PingPongPlayerController->OnPlayerReady.AddUObject(this,&APingPongGameMode::PlayerReady);
+//		PingPongPlayerController->OnPlayerReady.AddUObject(this,&APingPongGameMode::PlayerReady);
 	}
 	PlayerControllers.Add(PingPongPlayerController);
 	if(PlayerControllers.Num()==PlayersCount)

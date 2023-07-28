@@ -76,12 +76,12 @@ void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp,
 	{
 		if(PingPongGoal->Tags[0]=="Blue" && PingPongGameState)
 		{
-			PingPongGameState->AddScoreToPlayer1(1);
+			//PingPongGameState->AddScoreToPlayer1(1);
 			//ResetBall();
 		}
 		else
 		{
-			PingPongGameState->AddScoreToPlayer2(1);
+			//PingPongGameState->AddScoreToPlayer2(1);
 			//ResetBall();
 			
 		}

@@ -16,8 +16,7 @@ void APingPongPlayerController::BeginPlay()
 		if(HUD)
 		{
 			PingPongHUD = Cast<APingPongHUD>(HUD);
-		}
-		
+		}		
 		MainMenu = CreateWidget<UMainMenu>(this,MainMenuClass);	
 	}
 	Super::BeginPlay();	
@@ -140,13 +139,4 @@ void APingPongPlayerController::OpenMenu()
 	}
 }
 
-void APingPongPlayerController::ToggleReadyState_Implementation()
-{
-	bIsReady=!bIsReady;
-	APingPongGameMode* PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(PingPongGameMode)
-	{
-		PingPongGameMode->PlayerReady();
-	}
-}
 
