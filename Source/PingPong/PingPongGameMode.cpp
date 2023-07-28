@@ -4,7 +4,10 @@
 #include "PingPongGameMode.h"
 
 #include "GameplayTagContainer.h"
+#include "PingPongGameState.h"
 #include "PingPongPlayerController.h"
+#include "PingPongPlayerState.h"
+#include "Actors/PingPongGoal.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pawns/PingPongPlayerPawn.h"
@@ -13,96 +16,63 @@ APingPongGameMode::APingPongGameMode()
 {
 	DefaultPawnClass = APingPongPlayerPawn::StaticClass();
 	PlayerControllerClass = APingPongPlayerController::StaticClass();
-}
-
-void APingPongGameMode::BeginPlay()
-{
-	OnMatchStateChanged.AddUObject(this,&APingPongGameMode::MatchStateChanged);
-	Super::BeginPlay();
+	HUDClass = APingPongHUD::StaticClass();
+	GameStateClass = APingPongGameState::StaticClass();
+	PlayerStateClass = APingPongPlayerState::StaticClass();
 }
 
 void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	
 	UWorld* world = GetWorld();
-	if(world && (!Player1Start || !Player2Start))
+	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
+	PlayerControllers.Add(PingPongPlayerController);	
+	if(world)
 	{
 		TArray<AActor*> foundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(), foundActors);
-		if(foundActors.Num() > 0) Player1Start = (APlayerStart*)foundActors[0];
-		if(foundActors.Num() > 1) Player2Start = (APlayerStart*)foundActors[1];
-	}
-	APingPongPlayerController * currPlayer = NULL;
-	APlayerStart* startPos = NULL;
-	if(Player1 == NULL)
-	{
-		Player1 = (APingPongPlayerController*)NewPlayer;
-		currPlayer = Player1;
-		startPos = Player1Start;
-		UE_LOG(LogTemp, Warning, TEXT("PingPongGameMode: Init player1"));
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(), foundActors);		
+		APlayerStart* startPos=Cast<APlayerStart>(foundActors[PlayerControllers.Num()-1]);
+		APingPongPlayerPawn* newPawn = Cast<APingPongPlayerPawn>(PingPongPlayerController->GetPawn());
+		if(!newPawn)
+		{
+			newPawn = world->SpawnActor<APingPongPlayerPawn>(DefaultPawnClass);
+		}	
+		if(startPos && newPawn)
+		{
+			newPawn->SetActorLocation(startPos->GetActorLocation());
+			newPawn->SetActorRotation(startPos->GetActorRotation());
+			NewPlayer->Possess(newPawn);
+			PingPongPlayerController->SetStartTransform(startPos->GetActorTransform());
+			PingPongPlayerController->Initialize();
 		}
-	else if(Player2 == NULL)
-	{
-		Player2 = (APingPongPlayerController*)NewPlayer;
-		currPlayer = Player2;
-		startPos = Player2Start;
-		UE_LOG(LogTemp, Warning, TEXT("PingPongGameMode: Init player2"));
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Start position not setted in PingPongGameMode!"));
 		}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("PingPongGameMode: There are already two players in the game. New connections are not possible"));
-		return;
+		if(PlayerControllers.Num()==PlayersCount)
+		{
+			APingPongGameState* PingPongGameState  = GetGameState<APingPongGameState>();			
+			if(PingPongGameState)
+			{
+				PingPongGameState->UpdateCharacterState(EPlayersStatus::AllPlayersConnected);
+			}
 		}
-	APingPongPlayerPawn* newPawn = Cast<APingPongPlayerPawn>(NewPlayer->GetPawn());
-	if(!newPawn)
-	{
-		newPawn = world->SpawnActor<APingPongPlayerPawn>(DefaultPawnClass);
-	}
-	if(startPos && newPawn)
-	{
-		newPawn->SetActorLocation(startPos->GetActorLocation());
-		newPawn->SetActorRotation(startPos->GetActorRotation());
-		NewPlayer->Possess(newPawn);
-		currPlayer->SetStartTransform(startPos->GetActorTransform());
-		currPlayer->Initialize();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Start position not setted in PingPongGameMode!"));
-	}
-	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
-	if(PingPongPlayerController)
-	{
-//		PingPongPlayerController->OnPlayerReady.AddUObject(this,&APingPongGameMode::PlayerReady);
-	}
-	PlayerControllers.Add(PingPongPlayerController);
-	if(PlayerControllers.Num()==PlayersCount)
-	{
-		if(OnMatchStateChanged.IsBound())
-			OnMatchStateChanged.Broadcast(MatchState::EnteringMap);
-	}
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongGoal::StaticClass(), foundActors);
+		if(foundActors.Num()!=0)
+		{
+			float distancePrev = 20000.0f;
+			AActor* closestGoal=nullptr;
+			for (auto FoundActor : foundActors)
+			{
+				float distance = FVector::Dist2D(newPawn->GetActorLocation(),FoundActor->GetActorLocation());
+				if(distance<distancePrev)
+				{
+					closestGoal=FoundActor;
+				}
+			}
+			if(closestGoal) closestGoal->SetOwner(newPawn);
+		}
+		
+	}	
 	Super::PostLogin(NewPlayer);    	
 }
-
-APlayerController* APingPongGameMode::GetPlayerController(int index)
-{
-	return PlayerControllers[index];
-}
-
-void APingPongGameMode::MatchStateChanged(FName mState)
-{
-	if(mState==MatchState)
-	{
-		
-	}
-}
-
-void APingPongGameMode::PlayerReady()
-{
-	PlayersReady++;
-	if(PlayersReady==PlayersCount)
-	{
-		OnMatchStateChanged.Broadcast(MatchState::WaitingToStart);
-	}
-}
-
