@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
+class APingPongGameMode;
 UENUM()
 enum class EPlayersStatus
 {	
@@ -38,6 +39,12 @@ private:
 	UPROPERTY(Replicated)
 	EPlayersStatus CurrentPlayersState;
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
-	int ScoreToEnd=100;
-	
+	int ScoreToEnd;
+	UPROPERTY(Replicated)
+	int32 ReadyPlayers;
+public:
+	UFUNCTION(NetMulticast,Reliable)
+	void IncreaseReadyPlayer();
+	UPROPERTY()
+	APingPongGameMode* PingPongGameMode;
 };

@@ -7,7 +7,8 @@
 #include "PingPongPlayerController.h"
 #include "PingPongGameMode.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged,FName)
+class APingPongPlayerPawn;
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName)
 class APlayerStart;
 /**
  * 
@@ -23,10 +24,20 @@ protected:
 	TArray<APlayerStart*> PlayerStarts;
 	int PlayersCount=2;
 	
-public:
+protected:
 	APingPongGameMode();
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	
-private:
-	int32 PlayersReady=0;	
+	UFUNCTION()
+	APingPongPlayerPawn* CreatePawnForController(APingPongPlayerController* PingPongPlayerController,UWorld* World);
+	UFUNCTION()
+	void SetPawnRotationAndLocation(APingPongPlayerPawn* PingPongPlayerPawn,APingPongPlayerController* PingPongPlayerController);
+	UFUNCTION()
+	void SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerPawn);
+
+public:
+	UFUNCTION()
+	TArray<APingPongPlayerController*>& GetPlayersControllers();
+	UFUNCTION()
+	int GetPlayersCount() const;
 };

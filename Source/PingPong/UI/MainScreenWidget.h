@@ -18,7 +18,6 @@ class PINGPONG_API UMainScreenWidget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TextScorePlayer1;
 	UPROPERTY(meta=(BindWidget))
@@ -33,16 +32,25 @@ protected:
 private:
 	int count = 3;
 	FTimerHandle CountTimerHandle;
-	
+	int CountDownSeconds=3;
 private:
 	UFUNCTION()
 	void SetScoreText(int Player1,int Player2);
-
+	
 protected:
 	UPROPERTY()
 	APingPongGameState* PingPongGameState;
 	UFUNCTION()
 	void OnReadyButtonPushed();
 	UFUNCTION()
-	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);
+	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);	
+	UFUNCTION()
+	void UpdateCountdown();	
+	FTimerHandle CountDownHandle;
+	
+public:	
+	UFUNCTION()
+	void ShowWaitingForPlayers();
+	UFUNCTION()
+	void StartCountDown();
 };

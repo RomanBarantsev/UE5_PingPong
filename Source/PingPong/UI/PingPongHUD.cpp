@@ -7,12 +7,25 @@
 
 void APingPongHUD::BeginPlay()
 {
-	HUDMainWidowDraw();
+	CreateWidgets();
 	Super::BeginPlay();
+	MainScreenWidget->AddToViewport(0);
 }
 
-void APingPongHUD::HUDMainWidowDraw()
+void APingPongHUD::CreateWidgets()
 {
-	auto HUDWidget = CreateWidget(GetWorld(),MainScreenWidget);
-	if(HUDWidget) HUDWidget->AddToViewport(0);
+	MainScreenWidget = Cast<UMainScreenWidget>(CreateWidget(GetWorld(),MainScreenWidgetSubClass));
+	MainMenuWidget = Cast<UMainMenu>(CreateWidget(GetWorld(),MainMenuWidgetSubClass));
+	check(MainScreenWidget);
+	check(MainMenuWidget);
+}
+
+UMainScreenWidget* APingPongHUD::GetMainScreenWidget()
+{
+	return MainScreenWidget;
+}
+
+UMainMenu* APingPongHUD::GetMainMenuWidget()
+{
+	return MainMenuWidget;
 }

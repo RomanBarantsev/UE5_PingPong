@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MainMenu.h"
+#include "MainScreenWidget.h"
 #include "GameFramework/HUD.h"
 #include "PingPongHUD.generated.h"
 
@@ -13,10 +15,21 @@ UCLASS()
 class PINGPONG_API APingPongHUD : public AHUD
 {
 	GENERATED_BODY()
-public:
+protected:
 	virtual void BeginPlay() override;
 	UFUNCTION()
-	void HUDMainWidowDraw();
+	void CreateWidgets();
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
-	TSubclassOf<UUserWidget> MainScreenWidget;	
+	TSubclassOf<UUserWidget> MainScreenWidgetSubClass;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
+	TSubclassOf<UUserWidget> MainMenuWidgetSubClass;
+	UPROPERTY()
+	UMainScreenWidget* MainScreenWidget;
+	UPROPERTY()
+	UMainMenu* MainMenuWidget;
+public:
+	UFUNCTION()
+	UMainScreenWidget* GetMainScreenWidget();
+	UFUNCTION()
+	UMainMenu* GetMainMenuWidget();
 };

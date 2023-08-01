@@ -8,6 +8,8 @@
 #include "UI/PingPongHUD.h"
 #include "PingPongPlayerController.generated.h"
 
+enum class EPlayersStatus;
+class APingPongGameState;
 /**
  * 
  */
@@ -16,11 +18,13 @@ class PINGPONG_API APingPongPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 protected:
-	virtual void BeginPlay() override;
-	
+	virtual void BeginPlay() override;	
 	UPROPERTY()
 	FTransform StartTransform;
-
+	UPROPERTY()
+	APingPongGameState* PingPongGameState;
+	UFUNCTION(NetMulticast,Reliable)
+	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
 	TSubclassOf<class APingPongPlatform> PlatformClass;
 
@@ -58,8 +62,8 @@ protected:
 	APingPongHUD* PingPongHUD;
 	UFUNCTION()
 	void OpenMenu();
-	UPROPERTY()
-	UMainMenu* MainMenu;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
-	TSubclassOf<UMainMenu> MainMenuClass;	
+
+public:
+	UFUNCTION()
+	void StartWidgetCountDown();
 };
