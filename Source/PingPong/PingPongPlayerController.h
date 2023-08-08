@@ -4,10 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "UI/MainMenu.h"
-#include "UI/PingPongHUD.h"
 #include "PingPongPlayerController.generated.h"
-
+class APingPongHUD;
+UENUM()
+enum class EUIStatus : uint8
+{
+	NONE,
+	UILoaded,
+	ReadyButtonPressed,
+	UIPaused
+};
 enum class EPlayersStatus;
 class APingPongGameState;
 /**
@@ -23,7 +29,7 @@ protected:
 	FTransform StartTransform;
 	UPROPERTY()
 	APingPongGameState* PingPongGameState;
-	UFUNCTION(NetMulticast,Reliable)
+	UFUNCTION(Server,Reliable)
 	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
 	TSubclassOf<class APingPongPlatform> PlatformClass;
@@ -62,8 +68,12 @@ protected:
 	APingPongHUD* PingPongHUD;
 	UFUNCTION()
 	void OpenMenu();
-
+	EUIStatus UIStatus;
 public:
-	UFUNCTION()
-	void StartWidgetCountDown();
+	UFUNCTION(Server,Reliable)
+	void SetUIStatus(EUIStatus status);
+	UFUNCTION(Client,Reliable)
+	void AllPlayersConnected();
+	UFUNCTION(Client,Reliable)
+	void AllPlayersReady();
 };

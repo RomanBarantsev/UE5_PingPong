@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "PingPongPlayerController.h"
 #include "PingPongGameMode.generated.h"
 
+class APingPongGameState;
+class APingPongPlayerController;
 class APingPongPlayerPawn;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName)
 class APlayerStart;
@@ -18,8 +19,7 @@ class PINGPONG_API APingPongGameMode : public AGameMode
 {
 	GENERATED_BODY()
 protected:	
-	UPROPERTY()
-	TArray<APingPongPlayerController*> PlayerControllers;
+	
 	UPROPERTY()
 	TArray<APlayerStart*> PlayerStarts;
 	int PlayersCount=2;
@@ -27,17 +27,16 @@ protected:
 protected:
 	APingPongGameMode();
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-	
 	UFUNCTION()
 	APingPongPlayerPawn* CreatePawnForController(APingPongPlayerController* PingPongPlayerController,UWorld* World);
 	UFUNCTION()
 	void SetPawnRotationAndLocation(APingPongPlayerPawn* PingPongPlayerPawn,APingPongPlayerController* PingPongPlayerController);
 	UFUNCTION()
 	void SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerPawn);
-
+	UPROPERTY()
+	APingPongGameState* PingPongGameState;
 public:
-	UFUNCTION()
-	TArray<APingPongPlayerController*>& GetPlayersControllers();
+	
 	UFUNCTION()
 	int GetPlayersCount() const;
 };

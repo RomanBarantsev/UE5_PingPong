@@ -7,14 +7,13 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "PingPong/PingPongGameState.h"
-#include "PingPong/PingPongPlayerState.h"
-#include "MainScreenWidget.generated.h"
+#include "OverlayWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PINGPONG_API UMainScreenWidget : public UUserWidget
+class PINGPONG_API UOverlayWidget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
@@ -38,19 +37,18 @@ private:
 	void SetScoreText(int Player1,int Player2);
 	
 protected:
-	UPROPERTY()
-	APingPongGameState* PingPongGameState;
 	UFUNCTION()
-	void OnReadyButtonPushed();
+	void OnReadyButtonPushed();	
 	UFUNCTION()
-	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);	
-	UFUNCTION()
-	void UpdateCountdown();	
+	void UpdateCountdown();
 	FTimerHandle CountDownHandle;
-	
+	UPROPERTY()
+	APingPongPlayerController* PingPongPlayerController;
 public:	
 	UFUNCTION()
 	void ShowWaitingForPlayers();
 	UFUNCTION()
 	void StartCountDown();
+	UFUNCTION()
+	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);	
 };

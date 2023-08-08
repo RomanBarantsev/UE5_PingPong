@@ -10,8 +10,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
-#include "PingPong/PingPongGameMode.h"
 #include "PingPong/PingPongGameState.h"
+#include "PingPong/GameModes/PingPongGameMode.h"
 
 // Sets default values
 APingPongBall::APingPongBall()

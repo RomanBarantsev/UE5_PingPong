@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
+class APingPongPlayerController;
 class APingPongGameMode;
 UENUM()
 enum class EPlayersStatus
@@ -34,6 +35,9 @@ public:
 	void UpdateCharacterState(EPlayersStatus NewPlayersState);
 	UFUNCTION()
 	EPlayersStatus GetPlayersStatus() const;
+	UPROPERTY(Replicated,BlueprintReadWrite)
+    TArray<APingPongPlayerController*> PlayerControllers;
+	
 	FOnPlayersStateChanged OnPlayersStateChanged;
 private:
 	UPROPERTY(Replicated)
@@ -42,9 +46,15 @@ private:
 	int ScoreToEnd;
 	UPROPERTY(Replicated)
 	int32 ReadyPlayers;
-public:
-	UFUNCTION(NetMulticast,Reliable)
-	void IncreaseReadyPlayer();
+	UPROPERTY(Replicated)
+	int32 LoadedPlayers;
 	UPROPERTY()
-	APingPongGameMode* PingPongGameMode;
+	const APingPongGameMode* GameMode;
+public:
+	UFUNCTION(Server,Reliable)
+	void IncreaseReadyPlayer();
+	UFUNCTION(Server,Reliable)
+	void IncreaseLoadedPlayer();
+	UFUNCTION()
+	TArray<APingPongPlayerController*>& GetPlayersControllers();
 };

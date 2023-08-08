@@ -1,37 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MainScreenWidget.h"
+#include "OverlayWidget.h"
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/PingPongGameState.h"
 #include "PingPong/PingPongPlayerController.h"
 
-void UMainScreenWidget::NativeConstruct()
+void UOverlayWidget::NativeConstruct()
 {
 	//TODO Make it for multiple balls
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
-	ReadyButton->OnPressed.AddUniqueDynamic(this,&UMainScreenWidget::OnReadyButtonPushed);
-	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	check(PingPongGameState);	
-	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);	
-	if(PingPongGameState->GetPlayersStatus()==EPlayersStatus::AllPlayersConnected)
-	{
-		ReadyButton->SetVisibility(ESlateVisibility::Visible);
-		WaitingPlayersText->SetVisibility(ESlateVisibility::Hidden);
-	}
+	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
+	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
+	check(PingPongPlayerController);
+	PingPongPlayerController->SetUIStatus(EUIStatus::UILoaded);
 	Super::NativeConstruct();
 }
 
-void UMainScreenWidget::SetScoreText(int Player1, int Player2)
+void UOverlayWidget::SetScoreText(int Player1, int Player2)
 {
 	TextScorePlayer1->SetText(FText::AsNumber(Player1));
 	TextScorePlayer2->SetText(FText::AsNumber(Player2));
 }
 
-void UMainScreenWidget::ShowWaitingForPlayers()
+void UOverlayWidget::ShowWaitingForPlayers()
 {
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
@@ -39,13 +34,13 @@ void UMainScreenWidget::ShowWaitingForPlayers()
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
 }
 
-void UMainScreenWidget::OnReadyButtonPushed()
+void UOverlayWidget::OnReadyButtonPushed()
 {
-	PingPongGameState->IncreaseReadyPlayer();
+	PingPongPlayerController->SetUIStatus(EUIStatus::ReadyButtonPressed);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UMainScreenWidget::OnPlayersStateChanged(EPlayersStatus PlayersStatus)
+void UOverlayWidget::OnPlayersStateChanged(EPlayersStatus PlayersStatus)
 {
 	if(PlayersStatus==EPlayersStatus::AllPlayersConnected)
 	{
@@ -58,13 +53,13 @@ void UMainScreenWidget::OnPlayersStateChanged(EPlayersStatus PlayersStatus)
 	}
 }
 
-void UMainScreenWidget::StartCountDown()
+void UOverlayWidget::StartCountDown()
 {
-	GetWorld()->GetTimerManager().SetTimer(CountDownHandle, this, &UMainScreenWidget::UpdateCountdown, 1.0f, true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(CountDownHandle, this, &UOverlayWidget::UpdateCountdown, 1.0f, true, 0.0f);
 	TimerText->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UMainScreenWidget::UpdateCountdown()
+void UOverlayWidget::UpdateCountdown()
 {
 	if(CountDownSeconds==0)
 	{

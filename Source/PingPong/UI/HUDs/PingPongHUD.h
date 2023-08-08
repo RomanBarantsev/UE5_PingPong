@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MainMenu.h"
-#include "MainScreenWidget.h"
 #include "GameFramework/HUD.h"
 #include "PingPongHUD.generated.h"
 
+class UMainMenu;
+class UOverlayWidget;
 /**
  * 
  */
@@ -20,16 +20,16 @@ protected:
 	UFUNCTION()
 	void CreateWidgets();
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
-	TSubclassOf<UUserWidget> MainScreenWidgetSubClass;
+	TSubclassOf<UUserWidget> OverlayWidgetSubClass;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> MainMenuWidgetSubClass;
 	UPROPERTY()
-	UMainScreenWidget* MainScreenWidget;
+	UOverlayWidget* OverlayWidget;
 	UPROPERTY()
 	UMainMenu* MainMenuWidget;
 public:
 	UFUNCTION()
-	UMainScreenWidget* GetMainScreenWidget();
+	UOverlayWidget* GetOverlayWidget();
 	UFUNCTION()
 	UMainMenu* GetMainMenuWidget();
 };

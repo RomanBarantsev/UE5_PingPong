@@ -3,26 +3,28 @@
 
 #include "PingPongHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "PingPong/UI/MainMenu.h"
+#include "PingPong/UI/OverlayWidget.h"
 
 
 void APingPongHUD::BeginPlay()
 {
 	CreateWidgets();
 	Super::BeginPlay();
-	MainScreenWidget->AddToViewport(0);
+	OverlayWidget->AddToViewport(0);
 }
 
 void APingPongHUD::CreateWidgets()
 {
-	MainScreenWidget = Cast<UMainScreenWidget>(CreateWidget(GetWorld(),MainScreenWidgetSubClass));
+	OverlayWidget = Cast<UOverlayWidget>(CreateWidget(GetWorld(),OverlayWidgetSubClass));
 	MainMenuWidget = Cast<UMainMenu>(CreateWidget(GetWorld(),MainMenuWidgetSubClass));
-	check(MainScreenWidget);
+	check(OverlayWidget);
 	check(MainMenuWidget);
 }
 
-UMainScreenWidget* APingPongHUD::GetMainScreenWidget()
+UOverlayWidget* APingPongHUD::GetOverlayWidget()
 {
-	return MainScreenWidget;
+	return OverlayWidget;
 }
 
 UMainMenu* APingPongHUD::GetMainMenuWidget()

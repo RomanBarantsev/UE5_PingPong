@@ -2,7 +2,9 @@
 
 
 #include "PingPongGameState.h"
-#include "PingPongGameMode.h"
+
+#include "PingPongPlayerController.h"
+#include "GameModes/PingPongGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -17,11 +19,12 @@ APingPongGameState::APingPongGameState()
 
 void APingPongGameState::BeginPlay()
 {
+	if(HasAuthority())
+	{
+		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
+		check(GameMode);
+	}	
 	Super::BeginPlay();
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	
-	check(PingPongGameMode);
-	//TODO Make it for multiple balls	
 }
 
 void APingPongGameState::UpdateCharacterState(EPlayersStatus NewPlayersState)
@@ -41,21 +44,36 @@ void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME( APingPongGameState, CurrentPlayersState );
 	DOREPLIFETIME( APingPongGameState, ReadyPlayers );
-		
+	DOREPLIFETIME( APingPongGameState, PlayerControllers );		
+	DOREPLIFETIME( APingPongGameState, LoadedPlayers );		
+}
+
+void APingPongGameState::IncreaseLoadedPlayer_Implementation()
+{
+	LoadedPlayers++;
+	if(LoadedPlayers==GameMode->GetPlayersCount())
+	{
+		for (auto PlayerController : PlayerControllers)
+		{
+			PlayerController->AllPlayersConnected();
+		}
+	}
+}
+
+TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
+{
+	return PlayerControllers;
 }
 
 void APingPongGameState::IncreaseReadyPlayer_Implementation()
 {
-	ReadyPlayers++;
-	const APingPongGameMode* GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
-	check(GameMode);
+	ReadyPlayers++;	
 	if(ReadyPlayers==GameMode->GetPlayersCount())
 	{
-		CurrentPlayersState=EPlayersStatus::AllPlayersIsReady;
-		TArray<APingPongPlayerController*> PlayerControllers = PingPongGameMode->GetPlayersControllers();
-		
-		// if(OnPlayersStateChanged.IsBound())
-		// 	OnPlayersStateChanged.Broadcast(CurrentPlayersState);
+		for (auto PlayerController : PlayerControllers)
+		{
+			PlayerController->AllPlayersReady();
+		}
 	}
 }
 

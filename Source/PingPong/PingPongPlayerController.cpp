@@ -2,12 +2,13 @@
 
 
 #include "PingPongPlayerController.h"
-
-#include "PingPongGameMode.h"
 #include "PingPongGameState.h"
 #include "Actors/PingPongPlatform.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/MainMenu.h"
+#include "UI/OverlayWidget.h"
+#include "UI/HUDs/PingPongHUD.h"
 
 void APingPongPlayerController::BeginPlay()
 {	
@@ -34,7 +35,7 @@ void APingPongPlayerController::OnPlayersStateChanged_Implementation(EPlayersSta
 
 APingPongPlayerController::APingPongPlayerController()
 {
-	
+	bReplicates=true;
 }
 
 void APingPongPlayerController::SetStartTransform(FTransform NewStartTransform)
@@ -149,9 +150,39 @@ void APingPongPlayerController::OpenMenu()
 	}
 }
 
-void APingPongPlayerController::StartWidgetCountDown()
+void APingPongPlayerController::AllPlayersReady_Implementation()
 {
-	PingPongHUD->GetMainScreenWidget()->StartCountDown();
+	PingPongHUD->GetOverlayWidget()->StartCountDown();
 }
 
+void APingPongPlayerController::AllPlayersConnected_Implementation()
+{
+	PingPongHUD->GetOverlayWidget()->OnPlayersStateChanged(EPlayersStatus::AllPlayersConnected);
+}
 
+void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
+{
+	UIStatus=status;
+	switch (UIStatus)
+	{
+	case 1: //UILoaded
+		{
+			PingPongGameState->IncreaseLoadedPlayer();
+			break;
+		}
+	case 2: //ReadyButtonPressed
+		{
+			PingPongGameState->IncreaseReadyPlayer();
+			break;
+		}
+	case 3: //UIPaused
+		{
+				
+			break;
+		}
+	default:
+		{
+				
+		}
+	}
+}
