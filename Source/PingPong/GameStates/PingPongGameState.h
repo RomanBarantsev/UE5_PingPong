@@ -43,11 +43,16 @@ private:
 	UPROPERTY(Replicated)
 	EPlayersStatus CurrentPlayersState;
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
-	int ScoreToEnd;
+	int ScoreToEnd=100;
 	UPROPERTY(Replicated)
-	int32 ReadyPlayers;
+	int32 ReadyPlayers=0;
 	UPROPERTY(Replicated)
-	int32 LoadedPlayers;
+	int32 LoadedPlayers;	
+	UPROPERTY()
+	int32 CountDown = 5;	
+	FTimerHandle CountDownHandle;
+	UFUNCTION(Server,Reliable)
+	void UpdateCountdown();
 	UPROPERTY()
 	const APingPongGameMode* GameMode;
 public:
@@ -56,5 +61,6 @@ public:
 	UFUNCTION(Server,Reliable)
 	void IncreaseLoadedPlayer();
 	UFUNCTION()
+	int32 GetCountDownValue() const {return CountDown;}
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
 };

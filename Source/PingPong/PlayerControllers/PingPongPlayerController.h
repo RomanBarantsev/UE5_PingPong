@@ -75,5 +75,5 @@ public:
 	UFUNCTION(Client,Reliable)
 	void AllPlayersConnected();
 	UFUNCTION(Client,Reliable)
-	void AllPlayersReady();
+	void AllPlayersReady(int32 CountDownValue);
 };

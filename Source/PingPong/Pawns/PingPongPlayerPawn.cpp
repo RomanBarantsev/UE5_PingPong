@@ -6,7 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/PingPongPlayerState.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 
 // Sets default values
 APingPongPlayerPawn::APingPongPlayerPawn()

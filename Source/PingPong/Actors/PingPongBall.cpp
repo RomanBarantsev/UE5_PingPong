@@ -10,8 +10,9 @@
 #include "Net/UnrealNetwork.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
-#include "PingPong/PingPongGameState.h"
 #include "PingPong/GameModes/PingPongGameMode.h"
+#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 
 // Sets default values
 APingPongBall::APingPongBall()
@@ -21,8 +22,7 @@ APingPongBall::APingPongBall()
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Body	Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetIsReplicated(true);
-	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
-	SetReplicateMovement(true);
+	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));	
 	bReplicates=true;	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
 }
@@ -30,7 +30,7 @@ APingPongBall::APingPongBall()
 // Called when the game starts or when spawned
 void APingPongBall::BeginPlay()
 {
-	Super::BeginPlay();
+	SetReplicateMovement(true);	
 	StartPosition = GetActorLocation();	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -40,6 +40,7 @@ void APingPongBall::BeginPlay()
 //		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&APingPongBall::BallMatchState);
 	}
 	ResetBall();
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -69,22 +70,23 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(APingPongBall,isMoving);
 }
 
+void APingPongBall::OnBallHitAnything(FHitResult hitResult)
+{
+	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(hitResult.GetActor()))
+	{
+		AActor* owner = PingPongGoal->GetOwner();
+		APingPongPlayerState* PingPongPlayerState =  owner->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
+		check(PingPongPlayerState);
+		PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+1);
+	}
+}
+
 void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
 	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(OtherActor))
 	{
-		if(PingPongGoal->Tags[0]=="Blue" && PingPongGameState)
-		{
-			//PingPongGameState->AddScoreToPlayer1(1);
-			//ResetBall();
-		}
-		else
-		{
-			//PingPongGameState->AddScoreToPlayer2(1);
-			//ResetBall();
-			
-		}
+		
 	}	
 }
 
@@ -113,6 +115,11 @@ void APingPongBall::RotateBallToPlayer()
 	}
 	FQuat ActorQuat = GetActorRotation().Quaternion();
 	forwardVector=ActorQuat.GetForwardVector();
+}
+
+void APingPongBall::SetIsMoving(bool value)
+{
+	isMoving=value;
 }
 
 void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
@@ -155,6 +162,7 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 		Vec.Normalize();
 		forwardVector=FVector(Vec.X,Vec.Y,0);
 		Multicast_HitEffect(hitResult.Location);
+		OnBallHitAnything(hitResult);
     }
 }
 

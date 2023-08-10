@@ -6,9 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-#include "PingPong/PingPongGameState.h"
 #include "OverlayWidget.generated.h"
 
+enum class EPlayersStatus;
+class APingPongPlayerController;
 /**
  * 
  */
@@ -29,26 +30,20 @@ protected:
 	UButton* ReadyButton;
 	virtual void NativeConstruct() override;
 private:
-	int count = 3;
-	FTimerHandle CountTimerHandle;
-	int CountDownSeconds=3;
-private:
 	UFUNCTION()
 	void SetScoreText(int Player1,int Player2);
 	
 protected:
 	UFUNCTION()
 	void OnReadyButtonPushed();	
-	UFUNCTION()
-	void UpdateCountdown();
-	FTimerHandle CountDownHandle;
 	UPROPERTY()
 	APingPongPlayerController* PingPongPlayerController;
+	
 public:	
 	UFUNCTION()
 	void ShowWaitingForPlayers();
 	UFUNCTION()
-	void StartCountDown();
-	UFUNCTION()
 	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);	
+	UFUNCTION()
+	void UpdateCountdown(int32 value);
 };

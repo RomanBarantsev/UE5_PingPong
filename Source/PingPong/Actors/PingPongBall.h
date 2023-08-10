@@ -50,7 +50,8 @@ protected:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect(FVector location);
 	virtual void GetLifetimeReplicatedProps(TArray < class FLifetimeProperty >& OutLifetimeProps) const override;
-	
+	UFUNCTION()
+	void OnBallHitAnything(FHitResult hitResult);
 public:
 	UFUNCTION(BlueprintCallable)
 	void StartMove();
@@ -64,6 +65,7 @@ public:
 	void BallMatchState(FName matchState);
 	void ResetBall();
 	void RotateBallToPlayer();
+	
 protected:
 	FVector StartPosition;
 	
@@ -74,5 +76,8 @@ UPROPERTY()
 	APingPongGameMode* PingPongGameMode;
 	UPROPERTY()
 	TArray<AActor*> Actors;
+
+public:
+	void SetIsMoving(bool value);
 };
 

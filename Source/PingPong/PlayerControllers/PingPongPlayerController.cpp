@@ -2,13 +2,13 @@
 
 
 #include "PingPongPlayerController.h"
-#include "PingPongGameState.h"
-#include "Actors/PingPongPlatform.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/MainMenu.h"
-#include "UI/OverlayWidget.h"
-#include "UI/HUDs/PingPongHUD.h"
+#include "PingPong/Actors/PingPongPlatform.h"
+#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/UI/MainMenu.h"
+#include "PingPong/UI/OverlayWidget.h"
+#include "PingPong/UI/HUDs/PingPongHUD.h"
 
 void APingPongPlayerController::BeginPlay()
 {	
@@ -150,9 +150,10 @@ void APingPongPlayerController::OpenMenu()
 	}
 }
 
-void APingPongPlayerController::AllPlayersReady_Implementation()
+void APingPongPlayerController::AllPlayersReady_Implementation(int32 CountDownValue)
 {
-	PingPongHUD->GetOverlayWidget()->StartCountDown();
+	PingPongHUD->GetOverlayWidget()->OnPlayersStateChanged(EPlayersStatus::AllPlayersIsReady);
+	PingPongHUD->GetOverlayWidget()->UpdateCountdown(CountDownValue);
 }
 
 void APingPongPlayerController::AllPlayersConnected_Implementation()

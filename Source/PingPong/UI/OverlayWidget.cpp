@@ -5,8 +5,8 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/PingPongGameState.h"
-#include "PingPong/PingPongPlayerController.h"
+#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 void UOverlayWidget::NativeConstruct()
 {
@@ -49,31 +49,23 @@ void UOverlayWidget::OnPlayersStateChanged(EPlayersStatus PlayersStatus)
 	}
 	if(PlayersStatus==EPlayersStatus::AllPlayersIsReady)
 	{
-		StartCountDown();
+		TimerText->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
-void UOverlayWidget::StartCountDown()
-{
-	GetWorld()->GetTimerManager().SetTimer(CountDownHandle, this, &UOverlayWidget::UpdateCountdown, 1.0f, true, 0.0f);
-	TimerText->SetVisibility(ESlateVisibility::Visible);
-}
 
-void UOverlayWidget::UpdateCountdown()
-{
-	if(CountDownSeconds==0)
+void UOverlayWidget::UpdateCountdown(int32 value)
+{	
+	if(value==0)
 	{
 		TimerText->SetText(FText::FromString("GO!"));		
 	}
-	if(CountDownSeconds<=-1)
+	if(value<=-1)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(CountTimerHandle);
 		TimerText->SetVisibility(ESlateVisibility::Hidden);
 	}
-	if(CountDownSeconds>0)
+	if(value>0)
 	{
-		TimerText->SetText(FText::AsNumber(CountDownSeconds));
-		
+		TimerText->SetText(FText::AsNumber(value));		
 	}
-	CountDownSeconds--;	
 }

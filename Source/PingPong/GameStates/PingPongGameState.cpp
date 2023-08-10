@@ -2,18 +2,16 @@
 
 
 #include "PingPongGameState.h"
-
-#include "PingPongPlayerController.h"
-#include "GameModes/PingPongGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "PingPong/Actors/PingPongBall.h"
+#include "PingPong/GameModes/PingPongGameMode.h"
+#include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 
 APingPongGameState::APingPongGameState()
 {
 	CurrentPlayersState=EPlayersStatus::NONE;
-	ReadyPlayers=0;
-	ScoreToEnd=100;
 	bReplicates=true;
 }
 
@@ -45,7 +43,7 @@ void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME( APingPongGameState, CurrentPlayersState );
 	DOREPLIFETIME( APingPongGameState, ReadyPlayers );
 	DOREPLIFETIME( APingPongGameState, PlayerControllers );		
-	DOREPLIFETIME( APingPongGameState, LoadedPlayers );		
+	DOREPLIFETIME( APingPongGameState, LoadedPlayers );	
 }
 
 void APingPongGameState::IncreaseLoadedPlayer_Implementation()
@@ -60,6 +58,33 @@ void APingPongGameState::IncreaseLoadedPlayer_Implementation()
 	}
 }
 
+void APingPongGameState::UpdateCountdown_Implementation()
+{
+	for (auto PlayerController : PlayerControllers)
+	{
+		PlayerController->AllPlayersReady(CountDown);		
+	}
+	if(CountDown==0)
+	{
+		TArray<AActor*> Actors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongBall::StaticClass(),Actors);
+		for (auto Actor : Actors)
+		{
+			if(Actor->GetOwner()==nullptr)
+			{
+				APingPongBall* PingPongBall = Cast<APingPongBall>(Actor);
+				check(PingPongBall);
+				PingPongBall->SetIsMoving(true);
+			}
+		}
+	}
+	if(CountDown<-1)
+	{		
+		GetWorld()->GetTimerManager().ClearTimer(CountDownHandle);		
+	}
+	CountDown--;
+}
+
 TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 {
 	return PlayerControllers;
@@ -69,11 +94,8 @@ void APingPongGameState::IncreaseReadyPlayer_Implementation()
 {
 	ReadyPlayers++;	
 	if(ReadyPlayers==GameMode->GetPlayersCount())
-	{
-		for (auto PlayerController : PlayerControllers)
-		{
-			PlayerController->AllPlayersReady();
-		}
+	{					
+		GetWorld()->GetTimerManager().SetTimer(CountDownHandle, this, &APingPongGameState::UpdateCountdown, 1.0f, true, 0.0f);
 	}
 }
 

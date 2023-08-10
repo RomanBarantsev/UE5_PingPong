@@ -5,11 +5,11 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/PingPongGameState.h"
-#include "PingPong/PingPongPlayerController.h"
-#include "PingPong/PingPongPlayerState.h"
 #include "PingPong/Actors/PingPongGoal.h"
+#include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
+#include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 #include "PingPong/UI/HUDs/PingPongHUD.h"
 
 APingPongGameMode::APingPongGameMode()
