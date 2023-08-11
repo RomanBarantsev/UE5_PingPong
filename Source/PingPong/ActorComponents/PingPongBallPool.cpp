@@ -3,6 +3,8 @@
 
 #include "PingPongBallPool.h"
 
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values for this component's properties
 UPingPongBallPool::UPingPongBallPool()
@@ -10,7 +12,6 @@ UPingPongBallPool::UPingPongBallPool()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -19,9 +20,8 @@ UPingPongBallPool::UPingPongBallPool()
 void UPingPongBallPool::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
+	SetIsReplicated(true);
+	FillPool();	
 }
 
 
@@ -32,5 +32,40 @@ void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UPingPongBallPool::FillPool_Implementation()
+{
+	for(int i=0;i<PoolSize;i++)
+	{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Owner=GetOwner()->GetOwner();
+		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(spawnParams);
+		PingPongBall->SetHidden(true);
+		PingPongBall->SetActorRotation(FRotator::ZeroRotator);
+		PingPongBall->SetActorLocation(FVector::Zero());
+		BallsPool.Add(PingPongBall);
+		
+	}
+}
+
+void UPingPongBallPool::ReleaseBall(APingPongBall* PingPongBall)
+{
+	PingPongBall->SetHidden(true);
+	PingPongBall->SetActorRotation(FRotator::ZeroRotator);
+	PingPongBall->SetActorLocation(FVector::Zero());
+	
+}
+
+APingPongBall* UPingPongBallPool::GetBall()
+{
+	for (auto Ball : BallsPool)
+	{
+		if(Ball->IsHidden())
+		{
+			return Ball;
+		}
+	}	
+	return nullptr;
 }
 

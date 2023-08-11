@@ -64,7 +64,8 @@ public:
 public:
 	void BallMatchState(FName matchState);
 	void ResetBall();
-	void RotateBallToPlayer();
+	UFUNCTION(Server, Reliable)
+	void RotateBallToRotator(FRotator Rotator=FRotator::ZeroRotator);
 	
 protected:
 	FVector StartPosition;
@@ -78,6 +79,7 @@ UPROPERTY()
 	TArray<AActor*> Actors;
 
 public:
-	void SetIsMoving(bool value);
+	UFUNCTION()
+	void SetIsMoving(bool value,FRotator Rotator=FRotator::ZeroRotator);
 };
 

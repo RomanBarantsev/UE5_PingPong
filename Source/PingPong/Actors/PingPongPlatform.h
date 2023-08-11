@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PingPong/ActorComponents/PingPongBallPool.h"
 #include "PingPongPlatform.generated.h"
 
 class UBoxComponent;
@@ -28,6 +29,8 @@ public:
 protected:	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* BodyMesh;
+	UPROPERTY()
+	UPingPongBallPool* BallPool;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 50;
 

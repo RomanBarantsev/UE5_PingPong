@@ -49,7 +49,7 @@ private:
 	UPROPERTY(Replicated)
 	int32 LoadedPlayers;	
 	UPROPERTY()
-	int32 CountDown = 5;	
+	int32 CountDown = 1;	
 	FTimerHandle CountDownHandle;
 	UFUNCTION(Server,Reliable)
 	void UpdateCountdown();

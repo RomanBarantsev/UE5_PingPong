@@ -96,30 +96,34 @@ void APingPongBall::BallMatchState(FName matchState)
 		isMoving=true;
 }
 
-
 void APingPongBall::ResetBall()
 {	
 	SetActorLocation(StartPosition);	
-	RotateBallToPlayer();
+	RotateBallToRotator();
 }
 
-void APingPongBall::RotateBallToPlayer()
+void APingPongBall::RotateBallToRotator_Implementation(FRotator Rotator)
 {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlatform::StaticClass(),Actors);	
-	if(!Actors.IsEmpty())
+	if(!Actors.IsEmpty() && Rotator==FRotator::ZeroRotator)
 	{		
 		FVector Direction = GetActorLocation()-Actors[(UKismetMathLibrary::RandomInteger(Actors.Num()-1))]->GetActorLocation();
 		Direction.Normalize();
 		FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
 		SetActorRotation(FRotator(0,TargetRotation.Yaw-UKismetMathLibrary::RandomInteger(45),0));
 	}
+	else
+	{
+		SetActorRotation(Rotator);
+	}
 	FQuat ActorQuat = GetActorRotation().Quaternion();
 	forwardVector=ActorQuat.GetForwardVector();
 }
 
-void APingPongBall::SetIsMoving(bool value)
+void APingPongBall::SetIsMoving(bool value,FRotator Rotator)
 {
 	isMoving=value;
+	RotateBallToRotator();
 }
 
 void APingPongBall::Multicast_HitEffect_Implementation(FVector location)

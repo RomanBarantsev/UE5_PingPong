@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "PingPong/Actors/PingPongBall.h"
 #include "PingPongBallPool.generated.h"
 
 
@@ -24,4 +25,16 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+private:
+	UFUNCTION(Server,Reliable)	
+	void FillPool();
+	int32 PoolSize = 20;
+public:
+	UPROPERTY()
+	TArray<APingPongBall*> BallsPool;
+	UFUNCTION()
+	void ReleaseBall(APingPongBall* PingPongBall);
+	UFUNCTION()
+	APingPongBall* GetBall();
 };
+

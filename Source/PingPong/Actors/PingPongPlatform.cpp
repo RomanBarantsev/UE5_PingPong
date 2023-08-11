@@ -13,17 +13,17 @@ APingPongPlatform::APingPongPlatform()
 	PrimaryActorTick.bCanEverTick = true;
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetIsReplicated(true);	
+	BodyMesh->SetIsReplicated(true);
+	BallPool = CreateDefaultSubobject<UPingPongBallPool>("BallsPool");
 	SetRootComponent(BodyMesh);
-	bReplicates=true;
-	SetReplicateMovement(true);
+	bReplicates=true;	
 }
 
 // Called when the game starts or when spawned
 void APingPongPlatform::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetReplicateMovement(true);
 }
 
 
