@@ -2,8 +2,3 @@
 
 
 #include "PingPongPlayerState.h"
-
-void APingPongPlayerState::SetReady(bool State)
-{
-	PlayerReady=State;
-}

@@ -17,7 +17,4 @@ protected:
 	bool PlayerReady=false;
 	int ShootBalls = 0;
 	
-public:
-	UFUNCTION()
-	void SetReady(bool State);
 };

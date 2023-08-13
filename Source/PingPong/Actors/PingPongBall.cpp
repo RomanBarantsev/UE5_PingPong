@@ -68,7 +68,7 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
 void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 {
-	if(!LastTouchedPlatform && Cast<APingPongPlatform>(hitResult.GetActor()))
+	if(Cast<APingPongPlatform>(hitResult.GetActor()))
 	{
 		LastTouchedPlatform=Cast<APingPongPlatform>(hitResult.GetActor());
 	}
