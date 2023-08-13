@@ -29,7 +29,7 @@ protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	UFUNCTION()
 	APingPongPlayerPawn* CreatePawnForController(APingPongPlayerController* PingPongPlayerController,UWorld* World);
-	UFUNCTION()
+	UFUNCTION(Server,Reliable)
 	void SetPawnRotationAndLocation(APingPongPlayerPawn* PingPongPlayerPawn,APingPongPlayerController* PingPongPlayerController);
 	UFUNCTION()
 	void SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerPawn);

@@ -4,7 +4,6 @@
 #include "PingPongBall.h"
 #include "PingPongGoal.h"
 #include "PingPongPlatform.h"
-#include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -31,15 +30,12 @@ APingPongBall::APingPongBall()
 void APingPongBall::BeginPlay()
 {
 	SetReplicateMovement(true);	
-	StartPosition = GetActorLocation();	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	BodyMesh->OnComponentBeginOverlap.AddDynamic(this,&APingPongBall::OnCollisionBeginOverlap);
 	if(PingPongGameMode)
 	{
 //		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&APingPongBall::BallMatchState);
 	}
-	ResetBall();
 	Super::BeginPlay();
 }
 
@@ -70,39 +66,29 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(APingPongBall,isMoving);
 }
 
-void APingPongBall::OnBallHitAnything(FHitResult hitResult)
+void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 {
+	if(!LastTouchedPlatform && Cast<APingPongPlatform>(hitResult.GetActor()))
+	{
+		LastTouchedPlatform=Cast<APingPongPlatform>(hitResult.GetActor());
+	}
+	if (!LastTouchedPlatform) return;
 	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(hitResult.GetActor()))
 	{
 		AActor* owner = PingPongGoal->GetOwner();
-		APingPongPlayerState* PingPongPlayerState =  owner->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
-		check(PingPongPlayerState);
-		PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+1);
+		check(owner);
+		AActor* PlatfromOwner = LastTouchedPlatform->GetOwner();
+		check(PlatfromOwner);
+		if(owner->GetInstigatorController()!=PlatfromOwner->GetInstigator()->GetController())
+		{
+			APingPongPlayerState* PingPongPlayerState =LastTouchedPlatform->GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
+			check(PingPongPlayerState);			
+			PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+1);
+		}		
 	}
 }
 
-void APingPongBall::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
-	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(OtherActor))
-	{
-		
-	}	
-}
-
-void APingPongBall::BallMatchState(FName matchState)
-{
-	if(matchState==MatchState::InProgress)
-		isMoving=true;
-}
-
-void APingPongBall::ResetBall()
-{	
-	SetActorLocation(StartPosition);	
-	RotateBallToRotator();
-}
-
-void APingPongBall::RotateBallToRotator_Implementation(FRotator Rotator)
+void APingPongBall::RotateBallTo_Implementation(FRotator Rotator)
 {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlatform::StaticClass(),Actors);	
 	if(!Actors.IsEmpty() && Rotator==FRotator::ZeroRotator)
@@ -118,12 +104,6 @@ void APingPongBall::RotateBallToRotator_Implementation(FRotator Rotator)
 	}
 	FQuat ActorQuat = GetActorRotation().Quaternion();
 	forwardVector=ActorQuat.GetForwardVector();
-}
-
-void APingPongBall::SetIsMoving(bool value,FRotator Rotator)
-{
-	isMoving=value;
-	RotateBallToRotator();
 }
 
 void APingPongBall::Multicast_HitEffect_Implementation(FVector location)

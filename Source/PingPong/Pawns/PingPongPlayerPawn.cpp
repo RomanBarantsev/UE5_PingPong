@@ -35,12 +35,3 @@ void APingPongPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
 }
-
-
-void APingPongPlayerPawn::SetReadyState()
-{
-	auto playerState = Cast<APingPongPlayerState>(GetPlayerState());
-	checkfSlow(playerState,TEXT("PlayerPawn: PlayerState failed to Get"));	
-	playerState->SetReady(true);	
-}
-

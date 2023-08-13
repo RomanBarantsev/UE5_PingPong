@@ -3,6 +3,7 @@
 
 #include "PingPongGoal.h"
 #include "Kismet/GameplayStatics.h"
+#include "PingPong/Pawns/PingPongPlayerPawn.h"
 
 // Sets default values
 APingPongGoal::APingPongGoal()
@@ -13,13 +14,13 @@ APingPongGoal::APingPongGoal()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	BoxCollision->SetupAttachment(RootComponent);	
 	bReplicates=true;
+	
 }
 
 // Called when the game starts or when spawned
 void APingPongGoal::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -27,3 +28,5 @@ void APingPongGoal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+

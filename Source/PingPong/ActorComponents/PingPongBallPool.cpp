@@ -39,7 +39,7 @@ void UPingPongBallPool::FillPool_Implementation()
 	for(int i=0;i<PoolSize;i++)
 	{
 		FActorSpawnParameters spawnParams;
-		spawnParams.Owner=GetOwner()->GetOwner();
+		spawnParams.Owner=GetOwner();
 		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(spawnParams);
 		PingPongBall->SetHidden(true);
 		PingPongBall->SetActorRotation(FRotator::ZeroRotator);

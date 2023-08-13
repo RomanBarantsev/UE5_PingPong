@@ -2,10 +2,10 @@
 
 
 #include "PingPongGameMode.h"
-#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongGoal.h"
+#include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
@@ -31,23 +31,20 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	if(!world) return;
 	APingPongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
+	SetClosestGoalOwner(Pawn);
 	if(PingPongGameState->GetPlayersControllers().Num()==PlayersCount)
 	{					
 		if(PingPongGameState)
 		{
 			PingPongGameState->UpdateCharacterState(EPlayersStatus::AllPlayersConnected);
 		}
-	}
-	SetClosestGoalOwner(Pawn);	
-	Super::PostLogin(NewPlayer);    	
+	}	
+	Super::PostLogin(NewPlayer);
+	
 }
 
-int APingPongGameMode::GetPlayersCount() const
-{
-	return PlayersCount;
-}
-
-APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerController* PingPongPlayerController,UWorld* World) 
+APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerController* PingPongPlayerController,
+	UWorld* World)
 {
 	APingPongPlayerPawn* newPawn = Cast<APingPongPlayerPawn>(PingPongPlayerController->GetPawn());
 	if(!newPawn)
@@ -58,7 +55,34 @@ APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerC
 	return nullptr;	
 }
 
-void APingPongGameMode::SetPawnRotationAndLocation(APingPongPlayerPawn* PingPongPlayerPawn,APingPongPlayerController* PingPongPlayerController)
+void APingPongGameMode::SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerPawn)
+{
+	if(!HasAuthority()) return;
+	TArray<AActor*> foundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongGoal::StaticClass(),foundActors);
+	float lastDistance=20000.0f;
+	APingPongGoal* ClosestGoal=nullptr;
+	for (auto FoundActor : foundActors)
+	{
+		APingPongGoal* PongGoal = Cast<APingPongGoal>(FoundActor);
+		if(!PongGoal) continue;
+		float distance = FVector::Dist2D(PingPongPlayerPawn->GetActorLocation(),PongGoal->GetActorLocation());
+		if(distance<lastDistance)
+		{
+			ClosestGoal=PongGoal;
+			lastDistance=distance;
+		}		
+	}
+	ClosestGoal->SetOwner(PingPongPlayerPawn);
+}
+
+int APingPongGameMode::GetPlayersCount() const
+{
+	return PlayersCount;
+}
+
+void APingPongGameMode::SetPawnRotationAndLocation_Implementation(APingPongPlayerPawn* PingPongPlayerPawn,
+	APingPongPlayerController* PingPongPlayerController)
 {
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(), foundActors);
@@ -74,27 +98,6 @@ void APingPongGameMode::SetPawnRotationAndLocation(APingPongPlayerPawn* PingPong
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Start position not setted in PingPongGameMode!"));
-	}
-}
-
-void APingPongGameMode::SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerPawn)
-{
-	TArray<AActor*> foundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongGoal::StaticClass(), foundActors);
-	if(foundActors.Num()!=0)
-	{
-		float distancePrev = 20000.0f;
-		AActor* closestGoal=nullptr;
-		for (auto FoundActor : foundActors)
-		{
-			float distance = FVector::Dist2D(PingPongPlayerPawn->GetActorLocation(),FoundActor->GetActorLocation());
-			if(distance<distancePrev)
-			{
-				closestGoal=FoundActor;
-				distancePrev=distance;
-			}
-		}
-		if(closestGoal) closestGoal->SetOwner(PingPongPlayerPawn);
 	}
 }
 

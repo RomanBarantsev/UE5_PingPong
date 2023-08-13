@@ -5,7 +5,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "PingPong/Actors/PingPongBall.h"
+#include "PingPong/Actors/PingPongGoal.h"
 #include "PingPong/GameModes/PingPongGameMode.h"
+#include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 
@@ -66,15 +68,16 @@ void APingPongGameState::UpdateCountdown_Implementation()
 	}
 	if(CountDown==0)
 	{
-		TArray<AActor*> Actors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongBall::StaticClass(),Actors);
-		for (auto Actor : Actors)
+		TArray<AActor*> findActors;		
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongBall::StaticClass(),findActors);
+		for (auto findActor : findActors)
 		{
-			if(Actor->GetOwner()==nullptr)
+			if(findActor->GetOwner()==nullptr)
 			{
-				APingPongBall* PingPongBall = Cast<APingPongBall>(Actor);
+				APingPongBall* PingPongBall = Cast<APingPongBall>(findActor);
 				check(PingPongBall);
-				PingPongBall->SetIsMoving(true);
+				PingPongBall->StartMove();
+				PingPongBall->RotateBallTo();
 			}
 		}
 	}

@@ -57,6 +57,7 @@ void APingPongPlayerController::SpawnPlatform_Implementation()
     {
 		Platform->SetActorLocation(StartTransform.GetLocation());
 		Platform->SetActorRotation(StartTransform.GetRotation());
+    	Platform->SetOwner(GetPawn());
     }
 
 }

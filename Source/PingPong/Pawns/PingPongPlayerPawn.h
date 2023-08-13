@@ -29,6 +29,4 @@ protected:
 	class USpringArmComponent * SpringArm;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category ="Components")
 	class UCameraComponent * Camera;
-	UFUNCTION(BlueprintCallable)
-	void SetReadyState();
 };

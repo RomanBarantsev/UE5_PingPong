@@ -3,14 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PingPongGoal.h"
 #include "GameFramework/Actor.h"
 #include "PingPongBall.generated.h"
 
+class APingPongPlatform;
 class APingPongGameMode;
 class APingPongGameState;
 class USphereComponent;
-
+UENUM()
+enum Modificators
+{
+	FAST,
+	SHRINK,
+	REVERSE_CONTROL,
+	LIGHTS_OFF,
+	NONE
+};
 
 UCLASS()
 class PINGPONG_API APingPongBall : public AActor
@@ -50,26 +58,20 @@ protected:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect(FVector location);
 	virtual void GetLifetimeReplicatedProps(TArray < class FLifetimeProperty >& OutLifetimeProps) const override;
-	UFUNCTION()
+	UFUNCTION(Server,Reliable)
 	void OnBallHitAnything(FHitResult hitResult);
+	UPROPERTY()
+	APingPongPlatform* LastTouchedPlatform;
 public:
 	UFUNCTION(BlueprintCallable)
 	void StartMove();
 	UFUNCTION(BlueprintCallable)
 	void StopMove();
 	
-	UFUNCTION()
-		void OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
 public:
-	void BallMatchState(FName matchState);
-	void ResetBall();
 	UFUNCTION(Server, Reliable)
-	void RotateBallToRotator(FRotator Rotator=FRotator::ZeroRotator);
-	
-protected:
-	FVector StartPosition;
-	
+	void RotateBallTo(FRotator Rotator=FRotator::ZeroRotator);
+		
 protected:
 	UPROPERTY()
 	APingPongGameState* PingPongGameState;
@@ -78,8 +80,5 @@ UPROPERTY()
 	UPROPERTY()
 	TArray<AActor*> Actors;
 
-public:
-	UFUNCTION()
-	void SetIsMoving(bool value,FRotator Rotator=FRotator::ZeroRotator);
 };
 
