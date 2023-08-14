@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "PingPongPlayerState.generated.h"
 
+class APingPongGameState;
 /**
  * 
  */
@@ -14,7 +15,9 @@ class PINGPONG_API APingPongPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 protected:
+	virtual void BeginPlay() override;
 	bool PlayerReady=false;
 	int ShootBalls = 0;
-	
+	UPROPERTY()
+	APingPongGameState* GameState;
 };

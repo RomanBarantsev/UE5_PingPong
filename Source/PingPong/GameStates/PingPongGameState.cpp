@@ -5,10 +5,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "PingPong/Actors/PingPongBall.h"
-#include "PingPong/Actors/PingPongGoal.h"
 #include "PingPong/GameModes/PingPongGameMode.h"
-#include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 
 
 APingPongGameState::APingPongGameState()
@@ -64,7 +63,7 @@ void APingPongGameState::UpdateCountdown_Implementation()
 {
 	for (auto PlayerController : PlayerControllers)
 	{
-		PlayerController->AllPlayersReady(CountDown);		
+		PlayerController->AllPlayersReady(CountDown);
 	}
 	if(CountDown==0)
 	{
@@ -93,11 +92,28 @@ TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 	return PlayerControllers;
 }
 
+void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
+{
+	for (auto PlayerController : PlayerControllers)
+	{
+		PlayerController->SetNewScore(playerId,Score);
+	}
+}
+
 void APingPongGameState::IncreaseReadyPlayer_Implementation()
 {
 	ReadyPlayers++;	
 	if(ReadyPlayers==GameMode->GetPlayersCount())
-	{					
+	{
+		for (auto PlayerController : PlayerControllers)
+		{
+			for (auto PlayerControllerState : PlayerControllers)
+			{
+				APingPongPlayerState* PlayerState = PlayerControllerState->GetPlayerState<APingPongPlayerState>();
+				PlayerController->SetScoreText(PlayerState->GetPlayerId());	
+			}
+			
+		}		
 		GetWorld()->GetTimerManager().SetTimer(CountDownHandle, this, &APingPongGameState::UpdateCountdown, 1.0f, true, 0.0f);
 	}
 }

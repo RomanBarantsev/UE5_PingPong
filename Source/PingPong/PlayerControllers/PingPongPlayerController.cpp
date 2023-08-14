@@ -151,6 +151,17 @@ void APingPongPlayerController::OpenMenu()
 	}
 }
 
+void APingPongPlayerController::SetNewScore_Implementation(int32 playerId, float Score)
+{
+	PingPongHUD->GetOverlayWidget()->UpdateScore(playerId,Score);
+}
+
+void APingPongPlayerController::SetScoreText_Implementation(int32 playerId)
+{
+	
+	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(playerId);
+}
+
 void APingPongPlayerController::AllPlayersReady_Implementation(int32 CountDownValue)
 {
 	PingPongHUD->GetOverlayWidget()->OnPlayersStateChanged(EPlayersStatus::AllPlayersIsReady);

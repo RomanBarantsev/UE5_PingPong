@@ -76,4 +76,8 @@ public:
 	void AllPlayersConnected();
 	UFUNCTION(Client,Reliable)
 	void AllPlayersReady(int32 CountDownValue);
+	UFUNCTION(Client,Reliable)
+	void SetNewScore(int32 playerId, float Score);
+	UFUNCTION(Client,Reliable)
+	void SetScoreText(int32 playerId);	
 };

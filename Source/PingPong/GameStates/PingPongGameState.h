@@ -34,12 +34,11 @@ public:
 	UFUNCTION()
 	void UpdateCharacterState(EPlayersStatus NewPlayersState);
 	UFUNCTION()
-	EPlayersStatus GetPlayersStatus() const;
-	UPROPERTY(Replicated,BlueprintReadWrite)
-    TArray<APingPongPlayerController*> PlayerControllers;
-	
+	EPlayersStatus GetPlayersStatus() const;	
 	FOnPlayersStateChanged OnPlayersStateChanged;
-private:
+private:	
+	UPROPERTY(Replicated)
+	TArray<APingPongPlayerController*> PlayerControllers;
 	UPROPERTY(Replicated)
 	EPlayersStatus CurrentPlayersState;
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
@@ -60,7 +59,7 @@ public:
 	void IncreaseReadyPlayer();
 	UFUNCTION(Server,Reliable)
 	void IncreaseLoadedPlayer();
-	UFUNCTION()
-	int32 GetCountDownValue() const {return CountDown;}
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
+	UFUNCTION(Client,Reliable)
+	void UpdatePlayersScore(int32 playerId, int32 Score);
 };

@@ -17,13 +17,19 @@ void UOverlayWidget::NativeConstruct()
 	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
 	check(PingPongPlayerController);
 	PingPongPlayerController->SetUIStatus(EUIStatus::UILoaded);
-	Super::NativeConstruct();
+	TextScorePlayer1->SetVisibility(ESlateVisibility::Hidden);
+	TextScorePlayer2->SetVisibility(ESlateVisibility::Hidden);
+	TextNamePlayer1->SetVisibility(ESlateVisibility::Hidden);
+	TextNamePlayer2->SetVisibility(ESlateVisibility::Hidden);
+	Super::NativeConstruct();	
 }
 
-void UOverlayWidget::SetScoreText(int Player1, int Player2)
+void UOverlayWidget::SetScoreTextVisible()
 {
-	TextScorePlayer1->SetText(FText::AsNumber(Player1));
-	TextScorePlayer2->SetText(FText::AsNumber(Player2));
+	TextScorePlayer1->SetVisibility(ESlateVisibility::Visible);
+	TextScorePlayer2->SetVisibility(ESlateVisibility::Visible);
+	TextNamePlayer1->SetVisibility(ESlateVisibility::Visible);
+	TextNamePlayer2->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UOverlayWidget::ShowWaitingForPlayers()
@@ -67,5 +73,34 @@ void UOverlayWidget::UpdateCountdown(int32 value)
 	if(value>0)
 	{
 		TimerText->SetText(FText::AsNumber(value));		
+	}
+}
+
+void UOverlayWidget::UpdateScore(int32 playerId, float Score)
+{
+	auto Result = PlayersScoreMap.FindRef(playerId);
+	if(Result==TextScorePlayer1)
+	{
+		Result->SetText(FText::AsNumber(Score));
+	}
+	if(Result==TextScorePlayer2)
+	{
+		Result->SetText(FText::AsNumber(Score));
+	}
+	
+}
+
+void UOverlayWidget::SetPlayerScoreVisible(int32 PlayerId)
+{
+	SetScoreTextVisible();
+	if(PlayersScoreMap.Num()==0)
+	{
+		PlayersScoreMap.FindOrAdd(PlayerId,TextScorePlayer1);
+		TextNamePlayer1->SetText(FText::AsNumber(PlayerId));
+	}
+	else
+	{
+		PlayersScoreMap.FindOrAdd(PlayerId,TextScorePlayer2);
+		TextNamePlayer2->SetText(FText::AsNumber(PlayerId));
 	}
 }

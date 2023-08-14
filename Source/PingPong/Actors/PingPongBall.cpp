@@ -84,6 +84,7 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 			APingPongPlayerState* PingPongPlayerState =LastTouchedPlatform->GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
 			check(PingPongPlayerState);			
 			PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+1);
+			PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 		}		
 	}
 }

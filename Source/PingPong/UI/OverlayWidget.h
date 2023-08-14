@@ -23,6 +23,10 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TextScorePlayer2;
 	UPROPERTY(meta=(BindWidget))
+	UTextBlock* TextNamePlayer1;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* TextNamePlayer2;
+	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TimerText;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WaitingPlayersText;
@@ -31,14 +35,15 @@ protected:
 	virtual void NativeConstruct() override;
 private:
 	UFUNCTION()
-	void SetScoreText(int Player1,int Player2);
+	void SetScoreTextVisible();
 	
 protected:
 	UFUNCTION()
 	void OnReadyButtonPushed();	
 	UPROPERTY()
 	APingPongPlayerController* PingPongPlayerController;
-	
+	UPROPERTY()
+	TMap<int32,UTextBlock*> PlayersScoreMap;
 public:	
 	UFUNCTION()
 	void ShowWaitingForPlayers();
@@ -46,4 +51,8 @@ public:
 	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);	
 	UFUNCTION()
 	void UpdateCountdown(int32 value);
+	UFUNCTION()
+	void UpdateScore(int32 playerId, float Score);
+	UFUNCTION()
+	void SetPlayerScoreVisible(int32 PlayerId);
 };
