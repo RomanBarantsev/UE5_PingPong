@@ -24,7 +24,8 @@ class PINGPONG_API APingPongPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 protected:
-	virtual void BeginPlay() override;	
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY()
 	FTransform StartTransform;
 	UPROPERTY()
@@ -33,23 +34,18 @@ protected:
 	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
 	TSubclassOf<class APingPongPlatform> PlatformClass;
-
 	UPROPERTY()
 	class APingPongPlatform* Platform;
 
 public:
 	APingPongPlayerController();
-
 	UFUNCTION()
 	void SetStartTransform(FTransform NewStartTransform);
-
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Initialize();
-	virtual void PreInitializeComponents() override;
-	
+	virtual void PreInitializeComponents() override;	
 	UFUNCTION(Server,Reliable,WithValidation)
 	void SpawnPlatform();
-
 	virtual void SetupInputComponent() override;
 
 protected:
@@ -57,7 +53,8 @@ protected:
 	void MoveRight(float AxisValue);
 	UFUNCTION()
 	void MoveForward(float AxisValue);
-
+	UFUNCTION()
+	void Fire();
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue);
 	UFUNCTION(Server,Reliable,WithValidation)
@@ -69,6 +66,7 @@ protected:
 	UFUNCTION()
 	void OpenMenu();
 	EUIStatus UIStatus;
+	
 public:
 	UFUNCTION(Server,Reliable)
 	void SetUIStatus(EUIStatus status);
@@ -79,5 +77,6 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 playerId, float Score);
 	UFUNCTION(Client,Reliable)
-	void SetScoreText(int32 playerId);	
+	void SetScoreText(int32 playerId);
+
 };

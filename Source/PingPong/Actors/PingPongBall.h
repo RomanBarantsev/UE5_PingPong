@@ -10,8 +10,9 @@ class APingPongPlatform;
 class APingPongGameMode;
 class APingPongGameState;
 class USphereComponent;
+
 UENUM()
-enum Modificators
+enum EModificators
 {
 	FAST,
 	SHRINK,
@@ -80,5 +81,10 @@ UPROPERTY()
 	UPROPERTY()
 	TArray<AActor*> Actors;
 
+private:
+	EModificators Modificator= EModificators::NONE;
+public:
+	UFUNCTION()
+	EModificators GetModificator();
 };
 

@@ -10,7 +10,7 @@
 
 void UOverlayWidget::NativeConstruct()
 {
-	//TODO Make it for multiple balls
+	//TODO Make text blocks for dynamic creating with Slate
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);

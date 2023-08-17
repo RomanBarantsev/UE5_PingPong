@@ -3,7 +3,10 @@
 
 #include "PingPongBallPool.h"
 
-#include "Kismet/GameplayStatics.h"
+#include <Engine/World.h>
+#include <Net/UnrealNetwork.h>
+
+#include "../Actors/PingPongBall.h"
 
 
 // Sets default values for this component's properties
@@ -21,7 +24,7 @@ void UPingPongBallPool::BeginPlay()
 {
 	Super::BeginPlay();
 	SetIsReplicated(true);
-	FillPool();	
+	FillPool();
 }
 
 
@@ -40,10 +43,11 @@ void UPingPongBallPool::FillPool_Implementation()
 	{
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner=GetOwner();
-		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(spawnParams);
-		PingPongBall->SetHidden(true);
+		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+		PingPongBall->SetActorHiddenInGame(true);
 		PingPongBall->SetActorRotation(FRotator::ZeroRotator);
 		PingPongBall->SetActorLocation(FVector::Zero());
+		PingPongBall->SetActorEnableCollision(false);
 		BallsPool.Add(PingPongBall);
 		
 	}

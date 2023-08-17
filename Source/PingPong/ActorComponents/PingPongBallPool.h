@@ -26,12 +26,16 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 private:
-	UFUNCTION(Server,Reliable)	
+	UFUNCTION(Client,Reliable)	
 	void FillPool();
-	int32 PoolSize = 20;
-public:
+	UPROPERTY(EditAnywhere)
+	int32 PoolSize = 1;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APingPongBall> BallClass;
 	UPROPERTY()
 	TArray<APingPongBall*> BallsPool;
+	
+public:
 	UFUNCTION()
 	void ReleaseBall(APingPongBall* PingPongBall);
 	UFUNCTION()

@@ -60,6 +60,11 @@ void APingPongBall::StopMove()
 	Server_StopMove();
 }
 
+EModificators APingPongBall::GetModificator()
+{
+	return Modificator;
+}
+
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

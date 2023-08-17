@@ -2,6 +2,9 @@
 
 
 #include "PingPongPlayerController.h"
+
+#include <Net/UnrealNetwork.h>
+
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
@@ -20,12 +23,18 @@ void APingPongPlayerController::BeginPlay()
 			PingPongHUD = Cast<APingPongHUD>(HUD);
 		}
 		check(PingPongHUD);		
-	}
-	
+	}	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(PingPongGameState);	
-	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);	
+	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);
+	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
+	bShowMouseCursor=true;
 	Super::BeginPlay();	
+}
+
+void APingPongPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);	
 }
 
 void APingPongPlayerController::OnPlayersStateChanged_Implementation(EPlayersStatus PlayersStatus)
@@ -75,6 +84,7 @@ void APingPongPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LeftRight", this,&APingPongPlayerController::MoveRight);
 	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
 	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
+	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
 }
 
 void APingPongPlayerController::MoveRight(float AxisValue)
@@ -85,6 +95,14 @@ void APingPongPlayerController::MoveRight(float AxisValue)
 void APingPongPlayerController::MoveForward(float AxisValue)
 {
 	Server_PlatformMoveForward(AxisValue);
+}
+
+void APingPongPlayerController::Fire()
+{
+	if(Platform)
+	{		
+		Platform->Server_Fire();
+	}
 }
 
 void APingPongPlayerController::Server_PlatformMoveForward_Implementation(float AxisValue)
