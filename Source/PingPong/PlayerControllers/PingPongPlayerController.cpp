@@ -83,6 +83,7 @@ void APingPongPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	InputComponent->BindAxis("LeftRight", this,&APingPongPlayerController::MoveRight);
 	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
+	InputComponent->BindAxis("MouseX", this,&APingPongPlayerController::RotatePlatform);
 	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
 }
@@ -95,6 +96,11 @@ void APingPongPlayerController::MoveRight(float AxisValue)
 void APingPongPlayerController::MoveForward(float AxisValue)
 {
 	Server_PlatformMoveForward(AxisValue);
+}
+
+void APingPongPlayerController::RotatePlatform(float AxisValue)
+{
+	Server_PlatformRotate(AxisValue);
 }
 
 void APingPongPlayerController::Fire()
@@ -151,6 +157,19 @@ void APingPongPlayerController::Initialize_Implementation()
 	SpawnPlatform();
 }
 
+void APingPongPlayerController::Server_PlatformRotate_Implementation(float AxisValue)
+{
+	if(Platform)
+	{		
+		Platform->Server_Rotate(AxisValue);
+	}
+}
+
+bool APingPongPlayerController::Server_PlatformRotate_Validate(float AxisValue)
+{
+	return true;
+}
+
 void APingPongPlayerController::OpenMenu()
 {
 	if(PingPongHUD->GetMainMenuWidget()->IsInViewport())
@@ -169,15 +188,20 @@ void APingPongPlayerController::OpenMenu()
 	}
 }
 
-void APingPongPlayerController::SetNewScore_Implementation(int32 playerId, float Score)
-{
-	PingPongHUD->GetOverlayWidget()->UpdateScore(playerId,Score);
-}
-
-void APingPongPlayerController::SetScoreText_Implementation(int32 playerId)
+void APingPongPlayerController::PlatformRotate(float AxisValue)
 {
 	
-	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(playerId);
+}
+
+void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float Score)
+{
+	PingPongHUD->GetOverlayWidget()->UpdateScore(PlayerId,Score);
+}
+
+void APingPongPlayerController::SetScoreText_Implementation(int32 PlayerId)
+{
+	
+	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(PlayerId);
 }
 
 void APingPongPlayerController::AllPlayersReady_Implementation(int32 CountDownValue)

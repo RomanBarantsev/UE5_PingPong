@@ -30,13 +30,15 @@ public:
 	
 protected:	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
+	USceneComponent* SceneComponent;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	UPingPongBallPool* BallPool;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UArrowComponent* ShootDirectionArrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 50;
+	float MoveSpeed = 15;
 	float RotationInterpolationKey=0.1f;
 	
 public:
@@ -44,16 +46,9 @@ public:
     void Server_MoveRight(float AxisValue);
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_MoveForward(float AxisValue);
+	UFUNCTION(Server, Reliable, WithValidation)
+    void Server_Rotate(float AxisValue);
 	UFUNCTION(Server,Reliable)
 	void Server_Fire();
 	
-public:
-	FVector DirectionFaced;
-	UPROPERTY(Replicated, ReplicatedUsing=OnRep_SetServerRotation)
-	FRotator R_ServerRotation;
-	UFUNCTION()
-	void OnRep_SetServerRotation();
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_CalculateRotation(FVector WorldLocation, FVector WorldDirection, FVector ActorLocation);
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

@@ -54,11 +54,15 @@ protected:
 	UFUNCTION()
 	void MoveForward(float AxisValue);
 	UFUNCTION()
+    void RotatePlatform(float AxisValue);    	
+	UFUNCTION()
 	void Fire();
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue);
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveForward(float AxisValue);
+	UFUNCTION(Server,Reliable,WithValidation)
+	void Server_PlatformRotate(float AxisValue);
 
 protected:
 	UPROPERTY()
@@ -75,8 +79,10 @@ public:
 	UFUNCTION(Client,Reliable)
 	void AllPlayersReady(int32 CountDownValue);
 	UFUNCTION(Client,Reliable)
-	void SetNewScore(int32 playerId, float Score);
+	void SetNewScore(int32 PlayerId, float Score);
 	UFUNCTION(Client,Reliable)
-	void SetScoreText(int32 playerId);
+	void SetScoreText(int32 PlayerId);
 
+public:
+	void PlatformRotate(float AxisValue);
 };
