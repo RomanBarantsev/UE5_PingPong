@@ -15,7 +15,7 @@ APingPongPlatform::APingPongPlatform()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
-	SceneComponent->SetupAttachment(RootComponent);	
+	SetRootComponent(SceneComponent);
 	SceneComponent->SetIsReplicated(true);
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody Mesh"));
 	BodyMesh->SetupAttachment(SceneComponent);	
@@ -32,7 +32,8 @@ APingPongPlatform::APingPongPlatform()
 void APingPongPlatform::BeginPlay()
 {
 	Super::BeginPlay();
-	SetReplicateMovement(true);		
+	SetReplicateMovement(true);
+	DefaultRotation = BodyMesh->GetRelativeRotation();
 }
 
 
@@ -42,11 +43,21 @@ void APingPongPlatform::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 }
 
+bool APingPongPlatform::Server_Fire_Validate()
+{
+	return true;
+}
+
 void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
 {
-	FRotator Rotator;
-	Rotator.Yaw = BodyMesh->GetComponentRotation().Yaw + AxisValue;
-	BodyMesh->SetWorldRotation(Rotator); 
+	if(AxisValue!=0)
+	{
+		FRotator Rotator;
+		//if(BodyMesh->GetComponentRotation().Yaw>DefaultRotation.Yaw+90 || BodyMesh->GetComponentRotation().Yaw<DefaultRotation.Yaw-90) return;
+		Rotator.Yaw = BodyMesh->GetComponentRotation().Yaw + AxisValue;
+		BodyMesh->SetWorldRotation(Rotator);
+		//TODO Clamp to angle, and return rotation back on some time.
+	}
 }
 
 bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
@@ -59,9 +70,8 @@ void APingPongPlatform::Server_Fire_Implementation()
 	APingPongBall* Ball = BallPool->GetBall();
 	Ball->SetActorHiddenInGame(false);
 	Ball->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
-	Ball->SetActorRotation(ShootDirectionArrow->GetComponentRotation());
+	Ball->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
 	Ball->SetActorEnableCollision(true);
-	Ball->RotateBallTo(FRotator(0,90,0));
 	Ball->StartMove();
 }
 

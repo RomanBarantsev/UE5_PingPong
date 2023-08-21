@@ -55,7 +55,7 @@ protected:
 	void MoveForward(float AxisValue);
 	UFUNCTION()
     void RotatePlatform(float AxisValue);    	
-	UFUNCTION()
+	UFUNCTION(Server,Reliable,WithValidation)
 	void Fire();
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue);
@@ -83,6 +83,4 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetScoreText(int32 PlayerId);
 
-public:
-	void PlatformRotate(float AxisValue);
 };

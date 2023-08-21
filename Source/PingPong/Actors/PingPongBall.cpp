@@ -19,7 +19,7 @@ APingPongBall::APingPongBall()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Body	Mesh"));
-	BodyMesh->SetupAttachment(RootComponent);
+	SetRootComponent(BodyMesh);
 	BodyMesh->SetIsReplicated(true);
 	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));	
 	bReplicates=true;	

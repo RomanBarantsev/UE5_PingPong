@@ -34,7 +34,11 @@ void APingPongPlayerController::BeginPlay()
 
 void APingPongPlayerController::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaSeconds);	
+	Super::Tick(DeltaSeconds);
+	if(Platform)
+	{		
+		Platform->Server_Rotate(0);
+	}
 }
 
 void APingPongPlayerController::OnPlayersStateChanged_Implementation(EPlayersStatus PlayersStatus)
@@ -103,13 +107,19 @@ void APingPongPlayerController::RotatePlatform(float AxisValue)
 	Server_PlatformRotate(AxisValue);
 }
 
-void APingPongPlayerController::Fire()
+void APingPongPlayerController::Fire_Implementation()
 {
 	if(Platform)
 	{		
 		Platform->Server_Fire();
 	}
 }
+
+bool APingPongPlayerController::Fire_Validate()
+{
+	return true;
+}
+
 
 void APingPongPlayerController::Server_PlatformMoveForward_Implementation(float AxisValue)
 {
@@ -186,11 +196,6 @@ void APingPongPlayerController::OpenMenu()
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 	}
-}
-
-void APingPongPlayerController::PlatformRotate(float AxisValue)
-{
-	
 }
 
 void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float Score)

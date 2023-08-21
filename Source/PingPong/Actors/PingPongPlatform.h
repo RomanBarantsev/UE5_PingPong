@@ -48,7 +48,10 @@ public:
     void Server_MoveForward(float AxisValue);
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_Rotate(float AxisValue);
-	UFUNCTION(Server,Reliable)
+	UFUNCTION(Server,Reliable, WithValidation)
 	void Server_Fire();
-	
+
+protected:
+	UPROPERTY()
+	FRotator DefaultRotation;
 };
