@@ -37,28 +37,10 @@ void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-void UPingPongBallPool::FillPool_Implementation()
+void UPingPongBallPool::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	for(int i=0;i<PoolSize;i++)
-	{
-		FActorSpawnParameters spawnParams;
-		spawnParams.Owner=GetOwner();
-		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
-		PingPongBall->SetActorHiddenInGame(true);
-		PingPongBall->SetActorRotation(FRotator::ZeroRotator);
-		PingPongBall->SetActorLocation(FVector::Zero());
-		PingPongBall->SetActorEnableCollision(false);
-		BallsPool.Add(PingPongBall);
-		
-	}
-}
-
-void UPingPongBallPool::ReleaseBall(APingPongBall* PingPongBall)
-{
-	PingPongBall->SetHidden(true);
-	PingPongBall->SetActorRotation(FRotator::ZeroRotator);
-	PingPongBall->SetActorLocation(FVector::Zero());
-	
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//DOREPLIFETIME(UPingPongBallPool,BallsPool);
 }
 
 APingPongBall* UPingPongBallPool::GetBall()
@@ -73,3 +55,25 @@ APingPongBall* UPingPongBallPool::GetBall()
 	return nullptr;
 }
 
+void UPingPongBallPool::ReleaseBall_Implementation(APingPongBall* PingPongBall)
+{
+	PingPongBall->SetActorEnableCollision(false);
+	PingPongBall->SetHidden(true);
+	PingPongBall->SetActorRotation(FRotator::ZeroRotator);
+	PingPongBall->SetActorLocation(FVector::Zero());
+}
+
+void UPingPongBallPool::FillPool_Implementation()
+{
+	for(int i=0;i<PoolSize;i++)
+	{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Owner=GetOwner();
+		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+		PingPongBall->SetActorHiddenInGame(true);
+		PingPongBall->SetActorRotation(FRotator::ZeroRotator);
+		PingPongBall->SetActorLocation(FVector::Zero());
+		PingPongBall->SetActorEnableCollision(false);
+		BallsPool.Add(PingPongBall);		
+	}
+}

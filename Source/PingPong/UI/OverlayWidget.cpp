@@ -21,7 +21,7 @@ void UOverlayWidget::NativeConstruct()
 	TextScorePlayer2->SetVisibility(ESlateVisibility::Hidden);
 	TextNamePlayer1->SetVisibility(ESlateVisibility::Hidden);
 	TextNamePlayer2->SetVisibility(ESlateVisibility::Hidden);
-	Super::NativeConstruct();	
+	Super::NativeConstruct();
 }
 
 void UOverlayWidget::SetScoreTextVisible()
@@ -104,3 +104,9 @@ void UOverlayWidget::SetPlayerScoreVisible(int32 PlayerId)
 		TextNamePlayer2->SetText(FText::AsNumber(PlayerId));
 	}
 }
+
+void UOverlayWidget::SetBallSquareColor(FLinearColor Color)
+{
+	BallColor->SetBrushColor(Color);
+}
+

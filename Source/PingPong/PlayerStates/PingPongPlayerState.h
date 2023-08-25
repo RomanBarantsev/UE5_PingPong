@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPongPlayerState.generated.h"
 
 class APingPongGameState;
@@ -20,4 +21,11 @@ protected:
 	int ShootBalls = 0;
 	UPROPERTY()
 	APingPongGameState* GameState;
+	EModificators Modificator = EModificators::NONE;
+
+public:
+	UFUNCTION()
+	EModificators GetModificator();
+	UFUNCTION()
+	void SetModificator(EModificators modificator);
 };

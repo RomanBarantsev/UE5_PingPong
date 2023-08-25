@@ -26,17 +26,17 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 private:
-	UFUNCTION(Client,Reliable)	
+	UFUNCTION(Server,Reliable)	
 	void FillPool();
 	UPROPERTY(EditAnywhere)
-	int32 PoolSize = 1;
+	int32 PoolSize = 5;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APingPongBall> BallClass;
 	UPROPERTY()
 	TArray<APingPongBall*> BallsPool;
-	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 public:
-	UFUNCTION()
+	UFUNCTION(Server,Reliable)
 	void ReleaseBall(APingPongBall* PingPongBall);
 	UFUNCTION()
 	APingPongBall* GetBall();

@@ -22,7 +22,14 @@ void APingPongGameState::BeginPlay()
 	{
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 		check(GameMode);
-	}	
+	}
+	ModificatorColors.FindOrAdd(EModificators::FAST,FLinearColor::Green);
+	ModificatorColors.FindOrAdd(EModificators::SLOW,FLinearColor::Red);
+	ModificatorColors.FindOrAdd(EModificators::SHRINK,FLinearColor::Yellow);
+	ModificatorColors.FindOrAdd(EModificators::EXPAND,FLinearColor::Blue);
+	ModificatorColors.FindOrAdd(EModificators::REVERSE_CONTROL,FLinearColor::White);
+	ModificatorColors.FindOrAdd(EModificators::LIGHTS_OFF,FLinearColor::Black);
+	ModificatorColors.FindOrAdd(EModificators::NONE,FLinearColor::Gray);
 	Super::BeginPlay();
 }
 
@@ -91,6 +98,14 @@ TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 {
 	return PlayerControllers;
 }
+
+FLinearColor APingPongGameState::GetModificatorColor(EModificators modificator)
+{
+	FLinearColor Color = ModificatorColors.FindRef(modificator);
+	return Color;
+}
+
+
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
 {

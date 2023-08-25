@@ -4,22 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPongBall.generated.h"
 
 class APingPongPlatform;
 class APingPongGameMode;
 class APingPongGameState;
 class USphereComponent;
-
-UENUM()
-enum EModificators
-{
-	FAST,
-	SHRINK,
-	REVERSE_CONTROL,
-	LIGHTS_OFF,
-	NONE
-};
 
 UCLASS()
 class PINGPONG_API APingPongBall : public AActor
@@ -44,7 +35,7 @@ protected:
 	float MoveSpeed = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated,EditAnywhere)
 	bool isMoving = false;	
 	FVector forwardVector;
 	FVector currLoc;
@@ -82,9 +73,19 @@ UPROPERTY()
 	TArray<AActor*> Actors;
 
 private:
-	EModificators Modificator= EModificators::NONE;
+	UPROPERTY()
+	EModificators Modificator = EModificators::NONE;
+	
+private:	
+	UPROPERTY(Replicated)
+	UMaterialInstanceDynamic* DynamicMaterial;
+	UPROPERTY(ReplicatedUsing=SetColor)
+	FLinearColor BallColor;
+	
 public:
+	UFUNCTION(NetMulticast,Reliable,WithValidation)
+	void SetModification(EModificators mod);
 	UFUNCTION()
-	EModificators GetModificator();
+	void SetColor();
 };
 

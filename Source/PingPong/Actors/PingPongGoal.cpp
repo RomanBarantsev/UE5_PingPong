@@ -14,7 +14,7 @@ APingPongGoal::APingPongGoal()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	BoxCollision->SetupAttachment(RootComponent);	
 	bReplicates=true;
-	
+	//TODO make goal blink on touch float blend = 0.5f + FMath::Cos(GetWorld()->TimeSeconds)/2;
 }
 
 // Called when the game starts or when spawned

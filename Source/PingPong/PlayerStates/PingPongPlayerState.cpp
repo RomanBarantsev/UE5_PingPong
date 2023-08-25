@@ -16,3 +16,13 @@ void APingPongPlayerState::BeginPlay()
 	Super::BeginPlay();
 }
 
+EModificators APingPongPlayerState::GetModificator()
+{
+	return Modificator;
+}
+
+void APingPongPlayerState::SetModificator(EModificators modificator)
+{
+	Modificator = modificator;
+}
+

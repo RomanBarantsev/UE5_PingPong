@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPongPlayerController.generated.h"
+class APingPongPlayerState;
 class APingPongHUD;
 UENUM()
 enum class EUIStatus : uint8
@@ -25,11 +27,14 @@ class PINGPONG_API APingPongPlayerController : public APlayerController
 	GENERATED_BODY()
 protected:
 	virtual void BeginPlay() override;
+	
 	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY()
 	FTransform StartTransform;
 	UPROPERTY()
 	APingPongGameState* PingPongGameState;
+	UPROPERTY()
+	APingPongPlayerState* PingPongPlayerState;
 	UFUNCTION(Server,Reliable)
 	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
@@ -83,4 +88,10 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetScoreText(int32 PlayerId);
 
+private:
+	
+	UFUNCTION(Server,Reliable)
+	void ScrollColor();
+	UFUNCTION(Client,Reliable)
+	void SetColorUI(FLinearColor Color);
 };

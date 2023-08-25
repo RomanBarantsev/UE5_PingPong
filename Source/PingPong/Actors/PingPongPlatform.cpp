@@ -23,8 +23,6 @@ APingPongPlatform::APingPongPlatform()
 	ShootDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Shoot Direction Arrow"));
 	ShootDirectionArrow->SetupAttachment(BodyMesh);
 	ShootDirectionArrow->SetIsReplicated(true);
-	BallPool = CreateDefaultSubobject<UPingPongBallPool>("BallsPool");
-	BallPool->SetIsReplicated(true);
 	bReplicates=true;	
 }
 
@@ -43,7 +41,7 @@ void APingPongPlatform::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 }
 
-bool APingPongPlatform::Server_Fire_Validate()
+bool APingPongPlatform::Server_Fire_Validate(EModificators Modificator)
 {
 	return true;
 }
@@ -65,14 +63,19 @@ bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
 	return true;
 }
 
-void APingPongPlatform::Server_Fire_Implementation()
+void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
 {
-	APingPongBall* Ball = BallPool->GetBall();
+	//APingPongBall* Ball = BallPool->GetBall();
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner=GetOwner();
+	APingPongBall* Ball = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+	Ball->SetModification(Modificator);
 	Ball->SetActorHiddenInGame(false);
 	Ball->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
 	Ball->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
 	Ball->SetActorEnableCollision(true);
 	Ball->StartMove();
+	
 }
 
 void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)

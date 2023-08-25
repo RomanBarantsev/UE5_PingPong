@@ -6,9 +6,11 @@
 #include <Net/UnrealNetwork.h>
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Interfaces/IPluginManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 #include "PingPong/UI/MainMenu.h"
 #include "PingPong/UI/OverlayWidget.h"
 #include "PingPong/UI/HUDs/PingPongHUD.h"
@@ -25,7 +27,7 @@ void APingPongPlayerController::BeginPlay()
 		check(PingPongHUD);		
 	}	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	check(PingPongGameState);	
+	check(PingPongGameState);		
 	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 	bShowMouseCursor=true;
@@ -90,6 +92,7 @@ void APingPongPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MouseX", this,&APingPongPlayerController::RotatePlatform);
 	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
+	InputComponent->BindAction("ScrollColor",EInputEvent::IE_Pressed,this, &APingPongPlayerController::ScrollColor);
 }
 
 void APingPongPlayerController::MoveRight(float AxisValue)
@@ -110,8 +113,10 @@ void APingPongPlayerController::RotatePlatform(float AxisValue)
 void APingPongPlayerController::Fire_Implementation()
 {
 	if(Platform)
-	{		
-		Platform->Server_Fire();
+	{
+		PingPongPlayerState = GetPlayerState<APingPongPlayerState>();
+		check(PingPongPlayerState);
+		Platform->Server_Fire(PingPongPlayerState->GetModificator());
 	}
 }
 
@@ -119,7 +124,6 @@ bool APingPongPlayerController::Fire_Validate()
 {
 	return true;
 }
-
 
 void APingPongPlayerController::Server_PlatformMoveForward_Implementation(float AxisValue)
 {
@@ -196,6 +200,28 @@ void APingPongPlayerController::OpenMenu()
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 	}
+}
+
+void APingPongPlayerController::SetColorUI_Implementation(FLinearColor Color)
+{
+	PingPongHUD->GetOverlayWidget()->SetBallSquareColor(Color);
+}
+
+void APingPongPlayerController::ScrollColor_Implementation()
+{
+	PingPongPlayerState = GetPlayerState<APingPongPlayerState>();
+	check(PingPongPlayerState);
+	if (PingPongPlayerState->GetModificator()==EModificators::NONE)
+	{
+		PingPongPlayerState->SetModificator(EModificators::FAST);
+	}
+	else
+	{
+		int ModificatorNumber = static_cast<int>(PingPongPlayerState->GetModificator());
+		ModificatorNumber++;
+		PingPongPlayerState->SetModificator(static_cast<EModificators>(ModificatorNumber));
+	}
+	SetColorUI(PingPongGameState->GetModificatorColor(PingPongPlayerState->GetModificator()));
 }
 
 void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float Score)

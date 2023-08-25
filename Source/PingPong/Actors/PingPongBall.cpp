@@ -21,7 +21,7 @@ APingPongBall::APingPongBall()
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Body	Mesh"));
 	SetRootComponent(BodyMesh);
 	BodyMesh->SetIsReplicated(true);
-	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));	
+	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
 	bReplicates=true;	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
 }
@@ -32,10 +32,10 @@ void APingPongBall::BeginPlay()
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(PingPongGameMode)
-	{
-//		PingPongGameMode->OnMatchStateChanged.AddUObject(this,&APingPongBall::BallMatchState);
-	}
+	
+	auto Material = BodyMesh->GetMaterial(0);
+	DynamicMaterial = UMaterialInstanceDynamic::Create(Material,nullptr);
+	BodyMesh->SetMaterial(0,DynamicMaterial);
 	Super::BeginPlay();
 }
 
@@ -47,7 +47,6 @@ void APingPongBall::Tick(float DeltaTime)
 	{
 		Server_Move(DeltaTime);
 	}
-
 }
 
 void APingPongBall::StartMove()
@@ -60,9 +59,24 @@ void APingPongBall::StopMove()
 	Server_StopMove();
 }
 
-EModificators APingPongBall::GetModificator()
+void APingPongBall::SetColor()
 {
-	return Modificator;
+	if(DynamicMaterial)
+	{
+		DynamicMaterial->SetVectorParameterValue(TEXT("color"),BallColor);	
+	}
+}
+
+bool APingPongBall::SetModification_Validate(EModificators mod)
+{
+	return true;
+}
+
+void APingPongBall::SetModification_Implementation(EModificators mod)
+{
+	Modificator=mod;
+	BallColor = PingPongGameState->GetModificatorColor(Modificator);
+	SetColor();
 }
 
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -148,6 +162,7 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 	FHitResult hitResult;
 	if(!SetActorLocation(newLoc, true, &hitResult))
 	{
+		if(Modificator!=EModificators::NONE) isMoving=false;
 		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
 		Vec.Normalize();
 		forwardVector=FVector(Vec.X,Vec.Y,0);

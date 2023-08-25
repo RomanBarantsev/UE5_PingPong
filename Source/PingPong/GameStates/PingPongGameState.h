@@ -17,6 +17,18 @@ enum class EPlayersStatus
 	NONE UMETA(DisplayName="None")
 };
 
+UENUM()
+enum class EModificators 
+{
+	FAST,
+	SLOW,
+	SHRINK,
+	EXPAND,
+	REVERSE_CONTROL,
+	LIGHTS_OFF,
+	NONE
+};
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
 
 /**
@@ -62,4 +74,10 @@ public:
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
 	UFUNCTION(Client,Reliable)
 	void UpdatePlayersScore(int32 playerId, int32 Score);
+	
+private:
+	TMap<EModificators,FLinearColor> ModificatorColors;
+public:
+	UFUNCTION()
+	FLinearColor GetModificatorColor(EModificators modificator); 
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "OverlayWidget.generated.h"
@@ -31,7 +32,10 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WaitingPlayersText;
 	UPROPERTY(meta=(BindWidget))
-	UButton* ReadyButton;
+	UButton* ReadyButton;	
+	UPROPERTY(meta=(BindWidget))
+	UBorder* BallColor;
+	
 	virtual void NativeConstruct() override;
 private:
 	UFUNCTION()
@@ -55,4 +59,6 @@ public:
 	void UpdateScore(int32 playerId, float Score);
 	UFUNCTION()
 	void SetPlayerScoreVisible(int32 PlayerId);
+	UFUNCTION()
+	void SetBallSquareColor(FLinearColor Color);
 };

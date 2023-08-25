@@ -32,9 +32,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	USceneComponent* SceneComponent;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
-	UStaticMeshComponent* BodyMesh;
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
-	UPingPongBallPool* BallPool;
+	UStaticMeshComponent* BodyMesh;	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UArrowComponent* ShootDirectionArrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -49,8 +47,9 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_Rotate(float AxisValue);
 	UFUNCTION(Server,Reliable, WithValidation)
-	void Server_Fire();
-
+	void Server_Fire(EModificators Modificator);
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APingPongBall> BallClass;
 protected:
 	UPROPERTY()
 	FRotator DefaultRotation;
