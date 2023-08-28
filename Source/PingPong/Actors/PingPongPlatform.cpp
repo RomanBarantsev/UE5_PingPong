@@ -14,11 +14,12 @@ APingPongPlatform::APingPongPlatform()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
-	SetRootComponent(SceneComponent);
-	SceneComponent->SetIsReplicated(true);
+	BodyMeshRoot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody BodyMeshRoot"));
+	SetRootComponent(BodyMeshRoot);
+	BodyMeshRoot->SetIsReplicated(true);
+	BodyMeshRoot->bHiddenInGame=true;
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody Mesh"));
-	BodyMesh->SetupAttachment(SceneComponent);	
+	BodyMesh->SetupAttachment(RootComponent);	
 	BodyMesh->SetIsReplicated(true);
 	ShootDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Shoot Direction Arrow"));
 	ShootDirectionArrow->SetupAttachment(BodyMesh);

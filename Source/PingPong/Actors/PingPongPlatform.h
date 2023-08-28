@@ -29,10 +29,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 protected:	
+	// UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
+	// USceneComponent* SceneComponent;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
-	USceneComponent* SceneComponent;
+	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
-	UStaticMeshComponent* BodyMesh;	
+	UStaticMeshComponent* BodyMeshRoot;	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UArrowComponent* ShootDirectionArrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

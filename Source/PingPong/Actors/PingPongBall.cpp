@@ -161,8 +161,7 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 	newLoc = currLoc + forwardVector * MoveSpeed * DeltaTime;
 	FHitResult hitResult;
 	if(!SetActorLocation(newLoc, true, &hitResult))
-	{
-		if(Modificator!=EModificators::NONE) isMoving=false;
+	{		
 		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
 		Vec.Normalize();
 		forwardVector=FVector(Vec.X,Vec.Y,0);
