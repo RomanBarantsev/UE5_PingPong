@@ -74,10 +74,10 @@ UPROPERTY()
 
 private:
 	UPROPERTY()
-	EModificators Modificator = EModificators::NONE;
+	EModificators Modificator = EModificators::None;
 	
 private:	
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
 	UPROPERTY(ReplicatedUsing=SetColor)
 	FLinearColor BallColor;

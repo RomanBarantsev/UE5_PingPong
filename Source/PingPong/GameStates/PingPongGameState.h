@@ -9,6 +9,7 @@
 
 class APingPongPlayerController;
 class APingPongGameMode;
+
 UENUM()
 enum class EPlayersStatus
 {	
@@ -20,13 +21,21 @@ enum class EPlayersStatus
 UENUM()
 enum class EModificators 
 {
-	FAST,
-	SLOW,
-	SHRINK,
-	EXPAND,
-	REVERSE_CONTROL,
-	LIGHTS_OFF,
-	NONE
+	Fast,
+	Slow,
+	Shrink,
+	Expand,
+	ReverseControl,
+	LightsOff,
+	None
+};
+
+USTRUCT()
+struct FBallsStruct
+{
+	GENERATED_BODY()
+	FLinearColor Color;
+	int32 Points;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
@@ -76,7 +85,7 @@ public:
 	void UpdatePlayersScore(int32 playerId, int32 Score);
 	
 private:
-	TMap<EModificators,FLinearColor> ModificatorColors;
+	TMap<EModificators,FBallsStruct> ModificatorColors;
 public:
 	UFUNCTION()
 	FLinearColor GetModificatorColor(EModificators modificator); 

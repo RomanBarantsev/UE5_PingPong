@@ -211,9 +211,9 @@ void APingPongPlayerController::ScrollColor_Implementation()
 {
 	PingPongPlayerState = GetPlayerState<APingPongPlayerState>();
 	check(PingPongPlayerState);
-	if (PingPongPlayerState->GetModificator()==EModificators::NONE)
+	if (PingPongPlayerState->GetModificator()==EModificators::None)
 	{
-		PingPongPlayerState->SetModificator(EModificators::FAST);
+		PingPongPlayerState->SetModificator(EModificators::Fast);
 	}
 	else
 	{

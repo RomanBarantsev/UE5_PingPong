@@ -34,7 +34,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
-	UStaticMeshComponent* BodyMeshRoot;	
+	UStaticMeshComponent* MeshRoot;	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UArrowComponent* ShootDirectionArrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

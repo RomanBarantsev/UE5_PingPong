@@ -21,7 +21,7 @@ protected:
 	int ShootBalls = 0;
 	UPROPERTY()
 	APingPongGameState* GameState;
-	EModificators Modificator = EModificators::NONE;
+	EModificators Modificator = EModificators::None;
 
 public:
 	UFUNCTION()

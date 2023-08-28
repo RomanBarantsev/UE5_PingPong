@@ -14,17 +14,21 @@ APingPongPlatform::APingPongPlatform()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
-	BodyMeshRoot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody BodyMeshRoot"));
-	SetRootComponent(BodyMeshRoot);
-	BodyMeshRoot->SetIsReplicated(true);
-	BodyMeshRoot->bHiddenInGame=true;
+	MeshRoot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody BodyMeshRoot"));
+	SetRootComponent(MeshRoot);
+	MeshRoot->SetIsReplicated(true);
+	MeshRoot->bHiddenInGame=true;
+	MeshRoot->SetWorldScale3D(FVector(3,3,3));
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlatformBody Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);	
 	BodyMesh->SetIsReplicated(true);
+	BodyMesh->SetWorldScale3D(FVector(0.33,1,0.33));
 	ShootDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Shoot Direction Arrow"));
 	ShootDirectionArrow->SetupAttachment(BodyMesh);
 	ShootDirectionArrow->SetIsReplicated(true);
-	bReplicates=true;	
+	bReplicates=true;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBodyMeshRoot(TEXT("/Script/Engine.StaticMesh'/ControlRig/Controls/ControlRig_Circle_1mm.ControlRig_Circle_1mm'"));
+
 }
 
 // Called when the game starts or when spawned

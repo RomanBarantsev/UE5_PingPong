@@ -23,13 +23,20 @@ void APingPongGameState::BeginPlay()
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 		check(GameMode);
 	}
-	ModificatorColors.FindOrAdd(EModificators::FAST,FLinearColor::Green);
-	ModificatorColors.FindOrAdd(EModificators::SLOW,FLinearColor::Red);
-	ModificatorColors.FindOrAdd(EModificators::SHRINK,FLinearColor::Yellow);
-	ModificatorColors.FindOrAdd(EModificators::EXPAND,FLinearColor::Blue);
-	ModificatorColors.FindOrAdd(EModificators::REVERSE_CONTROL,FLinearColor::White);
-	ModificatorColors.FindOrAdd(EModificators::LIGHTS_OFF,FLinearColor::Black);
-	ModificatorColors.FindOrAdd(EModificators::NONE,FLinearColor::Gray);
+	const FBallsStruct Fast = {FLinearColor::Green,1};
+	const FBallsStruct Slow = {FLinearColor::Red,1};
+	const FBallsStruct Shrink = {FLinearColor::Yellow,1};
+	const FBallsStruct Expand = {FLinearColor::Blue,1};
+	const FBallsStruct ReverseControl = {FLinearColor::Blue,1};
+	const FBallsStruct LightsOff = {FLinearColor::Black,1};
+	const FBallsStruct None = {FLinearColor::Gray,1};
+	ModificatorColors.FindOrAdd(EModificators::Fast,Fast);
+	ModificatorColors.FindOrAdd(EModificators::Slow,Slow);
+	ModificatorColors.FindOrAdd(EModificators::Shrink,Shrink);
+	ModificatorColors.FindOrAdd(EModificators::Expand,Expand);
+	ModificatorColors.FindOrAdd(EModificators::ReverseControl,ReverseControl);
+	ModificatorColors.FindOrAdd(EModificators::LightsOff,LightsOff);
+	ModificatorColors.FindOrAdd(EModificators::None,None);
 	Super::BeginPlay();
 }
 
@@ -101,8 +108,8 @@ TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 
 FLinearColor APingPongGameState::GetModificatorColor(EModificators modificator)
 {
-	FLinearColor Color = ModificatorColors.FindRef(modificator);
-	return Color;
+	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
+	return Struct.Color;
 }
 
 

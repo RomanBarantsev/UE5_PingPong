@@ -20,6 +20,7 @@ APingPongBall::APingPongBall()
 	PrimaryActorTick.bCanEverTick = true;
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ball Body	Mesh"));
 	SetRootComponent(BodyMesh);
+	BodyMesh->SetCollisionObjectType(ECC_WorldDynamic);
 	BodyMesh->SetIsReplicated(true);
 	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
 	bReplicates=true;	
