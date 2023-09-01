@@ -9,6 +9,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
+#include "PingPong/ActorComponents/PlatformModificator.h"
 #include "PingPong/GameModes/PingPongGameMode.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
@@ -88,11 +89,40 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
 void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 {
-	if(Cast<APingPongPlatform>(hitResult.GetActor()))
+	if(GetOwner()==nullptr)
 	{
-		LastTouchedPlatform=Cast<APingPongPlatform>(hitResult.GetActor());
+		if(Cast<APingPongPlatform>(hitResult.GetActor()))
+		{
+			LastTouchedPlatform=Cast<APingPongPlatform>(hitResult.GetActor());
+		}
+		if (!LastTouchedPlatform) return;
 	}
-	if (!LastTouchedPlatform) return;
+	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
+	{
+		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
+		if(!ActorComponent) return;
+		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
+		if(PlatformModificator)
+		{
+			if(Modificator==EModificators::Fast)
+			{
+				PlatformModificator->SetSpeedOfPlatform();
+			}
+			if(Modificator==EModificators::Slow)
+			{
+				PlatformModificator->SetSpeedOfPlatform();
+			}
+			if(Modificator==EModificators::Slow)
+			{
+				PlatformModificator->SetSpeedOfPlatform();
+			}
+			if(Modificator==EModificators::Shrink)
+			{
+				PlatformModificator->SetPlatformSize();
+			}
+			
+		}
+	}
 	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(hitResult.GetActor()))
 	{
 		AActor* owner = PingPongGoal->GetOwner();
@@ -105,7 +135,7 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 			check(PingPongPlayerState);			
 			PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+1);
 			PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
-		}		
+		}	
 	}
 }
 

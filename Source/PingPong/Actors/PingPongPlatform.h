@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PingPong/ActorComponents/PingPongBallPool.h"
+#include "PingPong/ActorComponents/PlatformModificator.h"
 #include "PingPongPlatform.generated.h"
 
 class APingPongPlayerController;
@@ -29,14 +30,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 protected:	
-	// UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
-	// USceneComponent* SceneComponent;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category =	"Components")
 	UStaticMeshComponent* MeshRoot;	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UArrowComponent* ShootDirectionArrow;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UAudioComponent* AudioComponent;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPlatformModificator* PlatformModificator;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 15;
 	float RotationInterpolationKey=0.1f;
@@ -52,7 +55,20 @@ public:
 	void Server_Fire(EModificators Modificator);
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APingPongBall> BallClass;
+
+public:
+	UFUNCTION(Server,Unreliable)	
+	void Floating();	
+protected:	
+	UPROPERTY(Replicated)
+	float AxisMoveValue = 0;
+	float InitialZ=0;
+	float Amplitude=10.0f;;
+	float Frequency=1;
+	float RunningTime=1;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
-	UPROPERTY()
-	FRotator DefaultRotation;
+	UFUNCTION(Client,Reliable)
+	void SetSoundPitch(float pitch);
 };

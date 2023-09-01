@@ -23,13 +23,13 @@ void APingPongGameState::BeginPlay()
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 		check(GameMode);
 	}
-	const FBallsStruct Fast = {FLinearColor::Green,1};
-	const FBallsStruct Slow = {FLinearColor::Red,1};
-	const FBallsStruct Shrink = {FLinearColor::Yellow,1};
-	const FBallsStruct Expand = {FLinearColor::Blue,1};
-	const FBallsStruct ReverseControl = {FLinearColor::Blue,1};
-	const FBallsStruct LightsOff = {FLinearColor::Black,1};
-	const FBallsStruct None = {FLinearColor::Gray,1};
+	const FBallsStruct Fast = {FLinearColor::Green,1,1};
+	const FBallsStruct Slow = {FLinearColor::Red,1,1};
+	const FBallsStruct Shrink = {FLinearColor::Yellow,1,1};
+	const FBallsStruct Expand = {FLinearColor::Blue,1,1};
+	const FBallsStruct ReverseControl = {FLinearColor::Blue,1,1};
+	const FBallsStruct LightsOff = {FLinearColor::Black,1,1};
+	const FBallsStruct None = {FLinearColor::Gray,1,1};
 	ModificatorColors.FindOrAdd(EModificators::Fast,Fast);
 	ModificatorColors.FindOrAdd(EModificators::Slow,Slow);
 	ModificatorColors.FindOrAdd(EModificators::Shrink,Shrink);

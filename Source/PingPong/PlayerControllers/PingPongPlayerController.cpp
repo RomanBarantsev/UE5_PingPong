@@ -40,6 +40,7 @@ void APingPongPlayerController::Tick(float DeltaSeconds)
 	if(Platform)
 	{		
 		Platform->Server_Rotate(0);
+		if(!bIsMovingForward && !bIsMovingSides) Platform->Floating();
 	}
 }
 
@@ -130,6 +131,8 @@ void APingPongPlayerController::Server_PlatformMoveForward_Implementation(float 
 	if(Platform)
 	{		
 		Platform->Server_MoveForward(AxisValue);
+		if(AxisValue==0) bIsMovingForward=false;
+		else bIsMovingForward=true;
 	}
 	else
 	{
@@ -142,22 +145,26 @@ bool APingPongPlayerController::Server_PlatformMoveForward_Validate(float AxisVa
 	return true;
 }
 
-bool APingPongPlayerController::Server_PlatformMoveRight_Validate(float AxisValue)
-{
-	return true;
-}
-
 void APingPongPlayerController::Server_PlatformMoveRight_Implementation(float AxisValue)
 {
 	if(Platform)
 	{		
 		Platform->Server_MoveRight(AxisValue);
+		if(AxisValue==0) bIsMovingSides=false;
+		else bIsMovingSides=true;
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("APingPongPlayerController::Server_PlatformMoveRight_Implementation: HAS NO PLATFORM!"));
 	}
 }
+
+bool APingPongPlayerController::Server_PlatformMoveRight_Validate(float AxisValue)
+{
+	return true;
+}
+
+
 
 bool APingPongPlayerController::Initialize_Validate()
 {

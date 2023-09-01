@@ -4,9 +4,12 @@
 #include "PingPongPlatform.h"
 #include <Engine/World.h>
 #include <Kismet/GameplayStatics.h>
+
+#include "K2Node_AddComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
+#include "Components/AudioComponent.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 // Sets default values
@@ -26,9 +29,12 @@ APingPongPlatform::APingPongPlatform()
 	ShootDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Shoot Direction Arrow"));
 	ShootDirectionArrow->SetupAttachment(BodyMesh);
 	ShootDirectionArrow->SetIsReplicated(true);
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetAutoActivate(true);
+	PlatformModificator = CreateDefaultSubobject<UPlatformModificator>(TEXT("Platform Modificator"));
 	bReplicates=true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBodyMeshRoot(TEXT("/Script/Engine.StaticMesh'/ControlRig/Controls/ControlRig_Circle_1mm.ControlRig_Circle_1mm'"));
-
+	
 }
 
 // Called when the game starts or when spawned
@@ -36,7 +42,7 @@ void APingPongPlatform::BeginPlay()
 {
 	Super::BeginPlay();
 	SetReplicateMovement(true);
-	DefaultRotation = BodyMesh->GetRelativeRotation();
+	InitialZ=GetActorLocation().Z;	
 }
 
 
@@ -45,6 +51,26 @@ void APingPongPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
 }
+
+void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME( APingPongPlatform, AxisMoveValue );
+}
+
+void APingPongPlatform::SetSoundPitch_Implementation(float pitch)
+{
+	AudioComponent->SetPitchMultiplier(pitch);
+}
+
+void APingPongPlatform::Floating_Implementation()
+{
+	FVector NewLocation = GetActorLocation();
+	NewLocation.Z = InitialZ + Amplitude * FMath::Sin(Frequency * RunningTime);
+	SetActorLocation(NewLocation);
+	RunningTime += 0.01;
+}
+
 
 bool APingPongPlatform::Server_Fire_Validate(EModificators Modificator)
 {
@@ -56,7 +82,6 @@ void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
 	if(AxisValue!=0)
 	{
 		FRotator Rotator;
-		//if(BodyMesh->GetComponentRotation().Yaw>DefaultRotation.Yaw+90 || BodyMesh->GetComponentRotation().Yaw<DefaultRotation.Yaw-90) return;
 		Rotator.Yaw = BodyMesh->GetComponentRotation().Yaw + AxisValue;
 		BodyMesh->SetWorldRotation(Rotator);
 		//TODO Clamp to angle, and return rotation back on some time.
@@ -85,15 +110,21 @@ void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
 
 void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
 {
+	AxisMoveValue = AxisValue;
 	if(AxisValue != 0)
 	{
+		SetSoundPitch(2);
 		FVector currLocation = GetActorLocation();
 		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * AxisValue;
-		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
+		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,0.5);
 		if(!SetActorLocation(lerpNewLocation, true))
 		{
 			
 		}
+	}
+	else
+	{
+		SetSoundPitch(1);
 	}
 }
 
@@ -104,6 +135,7 @@ bool APingPongPlatform::Server_MoveForward_Validate(float AxisValue)
 
 void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 {
+	AxisMoveValue = AxisValue;
 	if(AxisValue != 0)
     {
 	    FVector currLocation = GetActorLocation();

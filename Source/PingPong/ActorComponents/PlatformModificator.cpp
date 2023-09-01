@@ -3,6 +3,8 @@
 
 #include "PlatformModificator.h"
 
+#include "PingPong/Actors/PingPongPlatform.h"
+
 // Sets default values for this component's properties
 UPlatformModificator::UPlatformModificator()
 {
@@ -39,11 +41,13 @@ void UPlatformModificator::SetReverseControl()
 
 void UPlatformModificator::SetPlatformSize()
 {
-	
+	AActor* OwningActor = GetOwner();
+	APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(OwningActor);
+	if(PingPongPlatform)
+		PingPongPlatform->SetActorScale3D(FVector(1,0.5,1));
 }
 
 void UPlatformModificator::SetSpeedOfPlatform()
 {
 	
 }
-

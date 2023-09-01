@@ -36,6 +36,7 @@ struct FBallsStruct
 	GENERATED_BODY()
 	FLinearColor Color;
 	int32 Points;
+	int32 ShotCost;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)

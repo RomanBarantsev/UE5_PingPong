@@ -88,10 +88,13 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetScoreText(int32 PlayerId);
 
-private:
-	
+private:	
 	UFUNCTION(Server,Reliable)
 	void ScrollColor();
 	UFUNCTION(Client,Reliable)
 	void SetColorUI(FLinearColor Color);
+
+private:
+	bool bIsMovingSides=false;
+	bool bIsMovingForward=false;
 };
