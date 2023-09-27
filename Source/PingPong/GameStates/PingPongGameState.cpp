@@ -23,13 +23,13 @@ void APingPongGameState::BeginPlay()
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 		check(GameMode);
 	}
-	const FBallsStruct Fast = {FLinearColor::Green,1,1};
-	const FBallsStruct Slow = {FLinearColor::Red,1,1};
-	const FBallsStruct Shrink = {FLinearColor::Yellow,1,1};
-	const FBallsStruct Expand = {FLinearColor::Blue,1,1};
-	const FBallsStruct ReverseControl = {FLinearColor::Blue,1,1};
-	const FBallsStruct LightsOff = {FLinearColor::Black,1,1};
-	const FBallsStruct None = {FLinearColor::Gray,1,1};
+	const FBallsStruct Fast = {FLinearColor::Green,2,1};
+	const FBallsStruct Slow = {FLinearColor::Red,3,1};
+	const FBallsStruct Shrink = {FLinearColor::Yellow,4,1};
+	const FBallsStruct Expand = {FLinearColor::Blue,5,1};
+	const FBallsStruct ReverseControl = {FLinearColor::Blue,6,1};
+	const FBallsStruct LightsOff = {FLinearColor::Black,7,1};
+	const FBallsStruct None = {FLinearColor::Gray,8,1};
 	ModificatorColors.FindOrAdd(EModificators::Fast,Fast);
 	ModificatorColors.FindOrAdd(EModificators::Slow,Slow);
 	ModificatorColors.FindOrAdd(EModificators::Shrink,Shrink);
@@ -112,6 +112,11 @@ FLinearColor APingPongGameState::GetModificatorColor(EModificators modificator)
 	return Struct.Color;
 }
 
+int32 APingPongGameState::GetModificatorPoints(EModificators modificator)
+{
+	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
+	return Struct.Points;
+}
 
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)

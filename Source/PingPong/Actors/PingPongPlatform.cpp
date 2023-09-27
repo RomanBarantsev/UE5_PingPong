@@ -6,6 +6,7 @@
 #include <Kismet/GameplayStatics.h>
 
 #include "K2Node_AddComponent.h"
+#include "PingPongBallModificated.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
@@ -32,6 +33,7 @@ APingPongPlatform::APingPongPlatform()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 	AudioComponent->SetAutoActivate(true);
 	PlatformModificator = CreateDefaultSubobject<UPlatformModificator>(TEXT("Platform Modificator"));
+	BallsPoolComponent = CreateDefaultSubobject<UPingPongBallPool>(TEXT("BallsPoll"));
 	bReplicates=true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBodyMeshRoot(TEXT("/Script/Engine.StaticMesh'/ControlRig/Controls/ControlRig_Circle_1mm.ControlRig_Circle_1mm'"));
 	
@@ -98,7 +100,8 @@ void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
 	//APingPongBall* Ball = BallPool->GetBall();
 	FActorSpawnParameters spawnParams;
 	spawnParams.Owner=GetOwner();
-	APingPongBall* Ball = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+	APingPongBallModificated* Ball = GetWorld()->SpawnActor<APingPongBallModificated>(BallClass,spawnParams);
+	//BallsPoolComponent->AddBallToPool(Ball);
 	Ball->SetModification(Modificator);
 	Ball->SetActorHiddenInGame(false);
 	Ball->SetActorLocation(ShootDirectionArrow->GetComponentLocation());

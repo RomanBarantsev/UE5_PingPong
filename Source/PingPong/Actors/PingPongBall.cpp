@@ -24,8 +24,13 @@ APingPongBall::APingPongBall()
 	BodyMesh->SetCollisionObjectType(ECC_WorldDynamic);
 	BodyMesh->SetIsReplicated(true);
 	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
+	if(MeshAsset.Succeeded())
+	{
+		BodyMesh->SetStaticMesh(MeshAsset.Object);
+	}
 	bReplicates=true;	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBallMeshObj(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
+	
 }
 
 // Called when the game starts or when spawned
@@ -33,11 +38,8 @@ void APingPongBall::BeginPlay()
 {
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));	
 	
-	auto Material = BodyMesh->GetMaterial(0);
-	DynamicMaterial = UMaterialInstanceDynamic::Create(Material,nullptr);
-	BodyMesh->SetMaterial(0,DynamicMaterial);
 	Super::BeginPlay();
 }
 
@@ -61,24 +63,31 @@ void APingPongBall::StopMove()
 	Server_StopMove();
 }
 
-void APingPongBall::SetColor()
+void APingPongBall::SetBallOwner(FHitResult HitResult)
 {
-	if(DynamicMaterial)
+	if(Cast<APingPongPlatform>(HitResult.GetActor()))
 	{
-		DynamicMaterial->SetVectorParameterValue(TEXT("color"),BallColor);	
+		LastTouchedPlatform=Cast<APingPongPlatform>(HitResult.GetActor());
+		SetOwner(LastTouchedPlatform->GetOwner());
+	}	
+}
+
+void APingPongBall::AddScoreToPlayer(AActor* Player,int Score)
+{
+	APingPongPlayerState* PingPongPlayerState=GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
+	check(PingPongPlayerState);			
+	PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+Score);
+	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
+}
+
+void APingPongBall::CheckGoal(FHitResult HitResult)
+{
+	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor()))
+	{
+		AActor* GoalOwner = PingPongGoal->GetOwner();
+		check(GoalOwner);
+		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner,1);
 	}
-}
-
-bool APingPongBall::SetModification_Validate(EModificators mod)
-{
-	return true;
-}
-
-void APingPongBall::SetModification_Implementation(EModificators mod)
-{
-	Modificator=mod;
-	BallColor = PingPongGameState->GetModificatorColor(Modificator);
-	SetColor();
 }
 
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -88,54 +97,11 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 }
 
 void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
-{
-	if(GetOwner()==nullptr)
+{	
+	SetBallOwner(hitResult);
+	if(GetOwner())
 	{
-		if(Cast<APingPongPlatform>(hitResult.GetActor()))
-		{
-			LastTouchedPlatform=Cast<APingPongPlatform>(hitResult.GetActor());
-		}
-		if (!LastTouchedPlatform) return;
-	}
-	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
-	{
-		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
-		if(!ActorComponent) return;
-		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
-		if(PlatformModificator)
-		{
-			if(Modificator==EModificators::Fast)
-			{
-				PlatformModificator->SetSpeedOfPlatform();
-			}
-			if(Modificator==EModificators::Slow)
-			{
-				PlatformModificator->SetSpeedOfPlatform();
-			}
-			if(Modificator==EModificators::Slow)
-			{
-				PlatformModificator->SetSpeedOfPlatform();
-			}
-			if(Modificator==EModificators::Shrink)
-			{
-				PlatformModificator->SetPlatformSize();
-			}
-			
-		}
-	}
-	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(hitResult.GetActor()))
-	{
-		AActor* owner = PingPongGoal->GetOwner();
-		check(owner);
-		AActor* PlatfromOwner = LastTouchedPlatform->GetOwner();
-		check(PlatfromOwner);
-		if(owner->GetInstigatorController()!=PlatfromOwner->GetInstigator()->GetController())
-		{
-			APingPongPlayerState* PingPongPlayerState =LastTouchedPlatform->GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
-			check(PingPongPlayerState);			
-			PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+1);
-			PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
-		}	
+		CheckGoal(hitResult);
 	}
 }
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PingPongBallModificated.h"
 #include "GameFramework/Actor.h"
 #include "PingPong/ActorComponents/PingPongBallPool.h"
 #include "PingPong/ActorComponents/PlatformModificator.h"
@@ -41,6 +42,8 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UPlatformModificator* PlatformModificator;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPingPongBallPool* BallsPoolComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 15;
 	float RotationInterpolationKey=0.1f;
 	
@@ -54,7 +57,7 @@ public:
 	UFUNCTION(Server,Reliable, WithValidation)
 	void Server_Fire(EModificators Modificator);
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<APingPongBall> BallClass;
+	TSubclassOf<APingPongBallModificated> BallClass;
 
 public:
 	UFUNCTION(Server,Unreliable)	

@@ -89,5 +89,7 @@ private:
 	TMap<EModificators,FBallsStruct> ModificatorColors;
 public:
 	UFUNCTION()
-	FLinearColor GetModificatorColor(EModificators modificator); 
+	FLinearColor GetModificatorColor(EModificators modificator);
+	UFUNCTION()
+	int32 GetModificatorPoints(EModificators modificator);
 };

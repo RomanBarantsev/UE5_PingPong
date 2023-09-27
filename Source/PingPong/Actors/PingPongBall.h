@@ -32,7 +32,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
-	float MoveSpeed = 100;
+	float MoveSpeed = 500;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
 	UPROPERTY(Replicated,EditAnywhere)
@@ -51,7 +51,7 @@ protected:
 	void Multicast_HitEffect(FVector location);
 	virtual void GetLifetimeReplicatedProps(TArray < class FLifetimeProperty >& OutLifetimeProps) const override;
 	UFUNCTION(Server,Reliable)
-	void OnBallHitAnything(FHitResult hitResult);
+	virtual void OnBallHitAnything(FHitResult hitResult);
 	UPROPERTY()
 	APingPongPlatform* LastTouchedPlatform;
 public:
@@ -72,20 +72,12 @@ UPROPERTY()
 	UPROPERTY()
 	TArray<AActor*> Actors;
 
-private:
-	UPROPERTY()
-	EModificators Modificator = EModificators::None;
-	
-private:	
-	UPROPERTY()
-	UMaterialInstanceDynamic* DynamicMaterial;
-	UPROPERTY(ReplicatedUsing=SetColor)
-	FLinearColor BallColor;
-	
-public:
-	UFUNCTION(NetMulticast,Reliable,WithValidation)
-	void SetModification(EModificators mod);
+protected:
 	UFUNCTION()
-	void SetColor();
+	void SetBallOwner(FHitResult HitResult);
+	UFUNCTION()
+	virtual void AddScoreToPlayer(AActor* Player,int Score);
+	UFUNCTION()
+	void CheckGoal(FHitResult HitResult);
 };
 

@@ -27,7 +27,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 private:
 	UFUNCTION(Server,Reliable)	
-	void FillPool();
+	void FillPool();	
 	UPROPERTY(EditAnywhere)
 	int32 PoolSize = 5;
 	UPROPERTY(EditAnywhere)
@@ -40,5 +40,7 @@ public:
 	void ReleaseBall(APingPongBall* PingPongBall);
 	UFUNCTION()
 	APingPongBall* GetBall();
+	UFUNCTION(Server,Reliable)	
+	void AddBallToPool(APingPongBall* Ball);
 };
 

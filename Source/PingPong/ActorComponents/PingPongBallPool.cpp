@@ -37,6 +37,11 @@ void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
+void UPingPongBallPool::AddBallToPool_Implementation(APingPongBall* Ball)
+{
+	BallsPool.Add(Ball);
+}
+
 void UPingPongBallPool::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
