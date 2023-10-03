@@ -4,6 +4,7 @@
 #include "PlatformModificator.h"
 
 #include "PingPong/Actors/PingPongPlatform.h"
+#include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 // Sets default values for this component's properties
 UPlatformModificator::UPlatformModificator()
@@ -20,7 +21,7 @@ UPlatformModificator::UPlatformModificator()
 void UPlatformModificator::BeginPlay()
 {
 	Super::BeginPlay();
-
+	GetOwningPlatform();
 	// ...
 	
 }
@@ -34,20 +35,24 @@ void UPlatformModificator::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UPlatformModificator::SetReverseControl()
+void UPlatformModificator::GetOwningPlatform()
 {
-	
+	AActor* OwningActor = GetOwner();
+	PingPongPlatform = Cast<APingPongPlatform>(OwningActor);
+	check(PingPongPlatform);
+}
+
+void UPlatformModificator::SetReverseControl()
+{	
+		PingPongPlatform->bInvertedControl=!PingPongPlatform->bInvertedControl;
 }
 
 void UPlatformModificator::SetPlatformSize()
-{
-	AActor* OwningActor = GetOwner();
-	APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(OwningActor);
-	if(PingPongPlatform)
+{	
 		PingPongPlatform->SetActorScale3D(FVector(1,0.5,1));
 }
 
-void UPlatformModificator::SetSpeedOfPlatform()
+void UPlatformModificator::SetSpeedOfPlatform(int32 Multiplier)
 {
-	
+	PingPongPlatform->SetSpeedMultiplier(Multiplier);
 }

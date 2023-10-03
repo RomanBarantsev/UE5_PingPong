@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PingPongBallModificated.h"
 #include "GameFramework/Actor.h"
 #include "PingPong/ActorComponents/PingPongBallPool.h"
 #include "PingPong/ActorComponents/PlatformModificator.h"
@@ -57,7 +56,7 @@ public:
 	UFUNCTION(Server,Reliable, WithValidation)
 	void Server_Fire(EModificators Modificator);
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<APingPongBallModificated> BallClass;
+	TSubclassOf<APingPongBall> BallClass;
 
 public:
 	UFUNCTION(Server,Unreliable)	
@@ -74,4 +73,10 @@ protected:
 protected:
 	UFUNCTION(Client,Reliable)
 	void SetSoundPitch(float pitch);
+	
+public:
+	UPROPERTY()
+	bool bInvertedControl = false;
+	UFUNCTION()
+	void SetSpeedMultiplier(int32 Multiplier);
 };

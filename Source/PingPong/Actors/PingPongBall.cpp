@@ -38,7 +38,11 @@ void APingPongBall::BeginPlay()
 {
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));	
+	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	
+	auto Material = BodyMesh->GetMaterial(0);
+	DynamicMaterial = UMaterialInstanceDynamic::Create(Material,nullptr);
+	BodyMesh->SetMaterial(0,DynamicMaterial);
 	
 	Super::BeginPlay();
 }
@@ -72,11 +76,11 @@ void APingPongBall::SetBallOwner(FHitResult HitResult)
 	}	
 }
 
-void APingPongBall::AddScoreToPlayer(AActor* Player,int Score)
+void APingPongBall::AddScoreToPlayer(AActor* Player)
 {
 	APingPongPlayerState* PingPongPlayerState=GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
 	check(PingPongPlayerState);			
-	PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+Score);
+	PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+PingPongGameState->GetModificatorPoints(Modificator));
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 }
 
@@ -86,8 +90,63 @@ void APingPongBall::CheckGoal(FHitResult HitResult)
 	{
 		AActor* GoalOwner = PingPongGoal->GetOwner();
 		check(GoalOwner);
-		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner,1);
+		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);
 	}
+}
+
+void APingPongBall::SetColor()
+{
+	if(DynamicMaterial)
+    	{
+    		DynamicMaterial->SetVectorParameterValue(TEXT("color"),BallColor);	
+    	}
+}
+
+
+void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
+{
+	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
+	{
+		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
+		if(!ActorComponent) return;
+		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
+		if(PlatformModificator)
+		{
+			if(Modificator==EModificators::Fast)
+			{
+				PlatformModificator->SetSpeedOfPlatform(2);
+			}
+			if(Modificator==EModificators::Slow)
+			{
+				PlatformModificator->SetSpeedOfPlatform(0.5);
+			}
+			if(Modificator==EModificators::Shrink)
+			{
+				PlatformModificator->SetPlatformSize();
+			}
+			if(Modificator==EModificators::ReverseControl)
+			{
+				PlatformModificator->SetReverseControl();
+			}
+			if(Modificator==EModificators::LightsOff)
+			{
+				
+			}
+			SetModification(EModificators::None);
+		}
+	}
+}
+
+void APingPongBall::SetModification_Implementation(EModificators mod)
+{
+	Modificator=mod;
+	BallColor = PingPongGameState->GetModificatorColor(Modificator);
+	SetColor();
+}
+
+bool APingPongBall::SetModification_Validate(EModificators mod)
+{
+	return true;
 }
 
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -102,6 +161,7 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 	if(GetOwner())
 	{
 		CheckGoal(hitResult);
+		OnPlatformHitModificator(hitResult);
 	}
 }
 

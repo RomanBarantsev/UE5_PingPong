@@ -5,7 +5,6 @@
 
 #include <Engine/World.h>
 #include <Net/UnrealNetwork.h>
-
 #include "../Actors/PingPongBall.h"
 
 
@@ -24,7 +23,7 @@ void UPingPongBallPool::BeginPlay()
 {
 	Super::BeginPlay();
 	SetIsReplicated(true);
-	FillPool();
+	//FillPool();
 }
 
 

@@ -8,6 +8,8 @@
 #include "PingPongBallPool.generated.h"
 
 
+class APingPongBallModificated;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PINGPONG_API UPingPongBallPool : public UActorComponent
 {

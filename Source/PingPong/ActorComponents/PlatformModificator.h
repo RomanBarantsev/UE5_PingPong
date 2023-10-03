@@ -7,6 +7,8 @@
 #include "PlatformModificator.generated.h"
 
 
+class APingPongPlatform;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGPONG_API UPlatformModificator : public UActorComponent
 {
@@ -23,12 +25,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+private:
+	UPROPERTY()
+	APingPongPlatform* PingPongPlatform;
+	void GetOwningPlatform();
 public:
 	UFUNCTION()
 	void SetReverseControl();
 	UFUNCTION()
 	void SetPlatformSize();
 	UFUNCTION()
-	void SetSpeedOfPlatform();
+	void SetSpeedOfPlatform(int32 Multiplier);
 };

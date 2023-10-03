@@ -27,7 +27,7 @@ void APingPongGameState::BeginPlay()
 	const FBallsStruct Slow = {FLinearColor::Red,3,1};
 	const FBallsStruct Shrink = {FLinearColor::Yellow,4,1};
 	const FBallsStruct Expand = {FLinearColor::Blue,5,1};
-	const FBallsStruct ReverseControl = {FLinearColor::Blue,6,1};
+	const FBallsStruct ReverseControl = {FLinearColor::White,6,1};
 	const FBallsStruct LightsOff = {FLinearColor::Black,7,1};
 	const FBallsStruct None = {FLinearColor::Gray,8,1};
 	ModificatorColors.FindOrAdd(EModificators::Fast,Fast);

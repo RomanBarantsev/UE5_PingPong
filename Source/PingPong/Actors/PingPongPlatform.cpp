@@ -4,9 +4,7 @@
 #include "PingPongPlatform.h"
 #include <Engine/World.h>
 #include <Kismet/GameplayStatics.h>
-
 #include "K2Node_AddComponent.h"
-#include "PingPongBallModificated.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
@@ -60,6 +58,12 @@ void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME( APingPongPlatform, AxisMoveValue );
 }
 
+void APingPongPlatform::SetSpeedMultiplier(int32 Multiplier)
+{
+	MoveSpeed=MoveSpeed*Multiplier;
+}
+
+
 void APingPongPlatform::SetSoundPitch_Implementation(float pitch)
 {
 	AudioComponent->SetPitchMultiplier(pitch);
@@ -97,25 +101,30 @@ bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
 
 void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
 {
-	//APingPongBall* Ball = BallPool->GetBall();
 	FActorSpawnParameters spawnParams;
 	spawnParams.Owner=GetOwner();
-	APingPongBallModificated* Ball = GetWorld()->SpawnActor<APingPongBallModificated>(BallClass,spawnParams);
-	//BallsPoolComponent->AddBallToPool(Ball);
-	Ball->SetModification(Modificator);
-	Ball->SetActorHiddenInGame(false);
-	Ball->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
-	Ball->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
-	Ball->SetActorEnableCollision(true);
-	Ball->StartMove();
+	APingPongBall* PingPongBall = BallsPoolComponent->GetBall();
+	if(!PingPongBall)
+	PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+	BallsPoolComponent->AddBallToPool(PingPongBall);
+	PingPongBall->SetModification(Modificator);
+	PingPongBall->SetActorHiddenInGame(false);
+	PingPongBall->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
+	PingPongBall->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
+	PingPongBall->SetActorEnableCollision(true);
+	PingPongBall->StartMove();
 	
 }
 
 void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
 {
-	AxisMoveValue = AxisValue;
+	AxisMoveValue = AxisValue;	
 	if(AxisValue != 0)
 	{
+		if(bInvertedControl)
+		{
+			AxisValue=-AxisValue;
+		}
 		SetSoundPitch(2);
 		FVector currLocation = GetActorLocation();
 		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * AxisValue;
@@ -139,6 +148,10 @@ bool APingPongPlatform::Server_MoveForward_Validate(float AxisValue)
 void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 {
 	AxisMoveValue = AxisValue;
+	if(bInvertedControl)
+	{
+		AxisValue=-AxisValue;
+	}
 	if(AxisValue != 0)
     {
 	    FVector currLocation = GetActorLocation();

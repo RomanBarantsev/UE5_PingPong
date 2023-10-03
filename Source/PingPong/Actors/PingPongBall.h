@@ -12,7 +12,7 @@ class APingPongGameMode;
 class APingPongGameState;
 class USphereComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class PINGPONG_API APingPongBall : public AActor
 {
 	GENERATED_BODY()
@@ -76,8 +76,23 @@ protected:
 	UFUNCTION()
 	void SetBallOwner(FHitResult HitResult);
 	UFUNCTION()
-	virtual void AddScoreToPlayer(AActor* Player,int Score);
+	virtual void AddScoreToPlayer(AActor* Player);
 	UFUNCTION()
 	void CheckGoal(FHitResult HitResult);
+	
+private:
+	UPROPERTY()
+	UMaterialInstanceDynamic* DynamicMaterial;
+	UPROPERTY(ReplicatedUsing=SetColor)
+	FLinearColor BallColor;
+	UPROPERTY()
+	EModificators Modificator = EModificators::None;	
+	UFUNCTION()
+	void SetColor();
+	UFUNCTION(Server,Reliable)
+	void OnPlatformHitModificator(FHitResult hitResult);
+public:
+	UFUNCTION(NetMulticast,Reliable,WithValidation)
+	void SetModification(EModificators mod);
 };
 
