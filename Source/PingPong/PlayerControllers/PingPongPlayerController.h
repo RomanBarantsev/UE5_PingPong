@@ -92,7 +92,7 @@ private:
 	UFUNCTION(Server,Reliable)
 	void ScrollColor();
 	UFUNCTION(Client,Reliable)
-	void SetColorUI(FLinearColor Color);
+	void SetColorAndPriceUI(FLinearColor Color,int32 Price);
 
 private:
 	bool bIsMovingSides=false;

@@ -36,13 +36,14 @@ private:
 	TSubclassOf<APingPongBall> BallClass;
 	UPROPERTY()
 	TArray<APingPongBall*> BallsPool;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 public:
-	UFUNCTION(Server,Reliable)
+	UFUNCTION(Server,Reliable,WithValidation)
 	void ReleaseBall(APingPongBall* PingPongBall);
 	UFUNCTION()
 	APingPongBall* GetBall();
-	UFUNCTION(Server,Reliable)	
+	UFUNCTION()	
 	void AddBallToPool(APingPongBall* Ball);
+	UFUNCTION(Server,Reliable)
+	void SpawnBallOnServer(AActor* Owner, FTransform spawnTransform,EModificators modification);
 };
 

@@ -209,9 +209,10 @@ void APingPongPlayerController::OpenMenu()
 	}
 }
 
-void APingPongPlayerController::SetColorUI_Implementation(FLinearColor Color)
+void APingPongPlayerController::SetColorAndPriceUI_Implementation(FLinearColor Color,int32 Price)
 {
 	PingPongHUD->GetOverlayWidget()->SetBallSquareColor(Color);
+	PingPongHUD->GetOverlayWidget()->SetBallShotCostText(Price);
 }
 
 void APingPongPlayerController::ScrollColor_Implementation()
@@ -228,7 +229,8 @@ void APingPongPlayerController::ScrollColor_Implementation()
 		ModificatorNumber++;
 		PingPongPlayerState->SetModificator(static_cast<EModificators>(ModificatorNumber));
 	}
-	SetColorUI(PingPongGameState->GetModificatorColor(PingPongPlayerState->GetModificator()));
+	SetColorAndPriceUI(PingPongGameState->GetModificatorColor(PingPongPlayerState->GetModificator()),
+		PingPongGameState->GetModificatorShotCost(PingPongPlayerState->GetModificator()));
 }
 
 void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float Score)

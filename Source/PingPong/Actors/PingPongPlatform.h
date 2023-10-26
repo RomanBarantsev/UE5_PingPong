@@ -60,7 +60,8 @@ public:
 
 public:
 	UFUNCTION(Server,Unreliable)	
-	void Floating();	
+	void Floating();
+	
 protected:	
 	UPROPERTY(Replicated)
 	float AxisMoveValue = 0;
@@ -79,4 +80,10 @@ public:
 	bool bInvertedControl = false;
 	UFUNCTION()
 	void SetSpeedMultiplier(int32 Multiplier);
+	UFUNCTION()
+	bool CheckScore(EModificators Modificator);
+
+private:
+	UPROPERTY()
+	APingPongGameState* GameState;
 };

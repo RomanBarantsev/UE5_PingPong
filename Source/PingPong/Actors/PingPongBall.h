@@ -75,24 +75,29 @@ UPROPERTY()
 protected:
 	UFUNCTION()
 	void SetBallOwner(FHitResult HitResult);
-	UFUNCTION()
+	UFUNCTION(Server,Reliable)
 	virtual void AddScoreToPlayer(AActor* Player);
-	UFUNCTION()
+	UFUNCTION(Server,Reliable)
 	void CheckGoal(FHitResult HitResult);
 	
 private:
 	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
-	UPROPERTY(ReplicatedUsing=SetColor)
+	UPROPERTY(ReplicatedUsing="SetColor")
 	FLinearColor BallColor;
 	UPROPERTY()
 	EModificators Modificator = EModificators::None;	
-	UFUNCTION()
-	void SetColor();
 	UFUNCTION(Server,Reliable)
 	void OnPlatformHitModificator(FHitResult hitResult);
 public:
-	UFUNCTION(NetMulticast,Reliable,WithValidation)
+	UFUNCTION(Server,Reliable,WithValidation)
 	void SetModification(EModificators mod);
+	UFUNCTION()
+	void SetSpeed(float Speed);
+private:
+	UFUNCTION()
+	void ReturnToPool();
+	UFUNCTION(NetMulticast,Reliable)
+	void SetColor();
 };
 

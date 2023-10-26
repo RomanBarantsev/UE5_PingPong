@@ -23,13 +23,13 @@ void APingPongGameState::BeginPlay()
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 		check(GameMode);
 	}
-	const FBallsStruct Fast = {FLinearColor::Green,2,1};
-	const FBallsStruct Slow = {FLinearColor::Red,3,1};
-	const FBallsStruct Shrink = {FLinearColor::Yellow,4,1};
-	const FBallsStruct Expand = {FLinearColor::Blue,5,1};
-	const FBallsStruct ReverseControl = {FLinearColor::White,6,1};
-	const FBallsStruct LightsOff = {FLinearColor::Black,7,1};
-	const FBallsStruct None = {FLinearColor::Gray,8,1};
+	const FBallsStruct Fast = {FLinearColor::Green,2,2,1200};
+	const FBallsStruct Slow = {FLinearColor::Red,3,2,1200};
+	const FBallsStruct Shrink = {FLinearColor::Yellow,4,3,1400};
+	const FBallsStruct Expand = {FLinearColor::Blue,5,3,1400};
+	const FBallsStruct ReverseControl = {FLinearColor::White,6,4,1600};
+	const FBallsStruct LightsOff = {FLinearColor::Black,7,5,1600};
+	const FBallsStruct None = {FLinearColor::Gray,8,1,1000};
 	ModificatorColors.FindOrAdd(EModificators::Fast,Fast);
 	ModificatorColors.FindOrAdd(EModificators::Slow,Slow);
 	ModificatorColors.FindOrAdd(EModificators::Shrink,Shrink);
@@ -116,6 +116,18 @@ int32 APingPongGameState::GetModificatorPoints(EModificators modificator)
 {
 	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
 	return Struct.Points;
+}
+
+int32 APingPongGameState::GetModificatorShotCost(EModificators modificator) const
+{
+	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
+	return Struct.ShotCost;
+}
+
+float APingPongGameState::GetModificatorSpeed(EModificators modificator) const
+{
+	FBallsStruct Struct = ModificatorColors.FindRef(modificator);
+	return Struct.Speed;
 }
 
 

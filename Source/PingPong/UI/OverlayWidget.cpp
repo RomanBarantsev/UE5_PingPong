@@ -110,3 +110,8 @@ void UOverlayWidget::SetBallSquareColor(FLinearColor Color)
 	BallColor->SetBrushColor(Color);
 }
 
+void UOverlayWidget::SetBallShotCostText(int32 score)
+{
+	BallCost->SetText(FText::AsNumber(score));
+}
+

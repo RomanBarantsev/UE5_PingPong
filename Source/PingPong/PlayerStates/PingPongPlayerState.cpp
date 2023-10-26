@@ -8,11 +8,13 @@
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
-
 void APingPongPlayerState::BeginPlay()
 {
 	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(GameState);
+	#if WITH_EDITOR
+	SetScore(50);
+	#endif
 	Super::BeginPlay();
 }
 
@@ -25,4 +27,5 @@ void APingPongPlayerState::SetModificator(EModificators modificator)
 {
 	Modificator = modificator;
 }
+
 

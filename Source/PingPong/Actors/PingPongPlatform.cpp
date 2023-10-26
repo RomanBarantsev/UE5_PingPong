@@ -10,6 +10,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/AudioComponent.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 
 // Sets default values
 APingPongPlatform::APingPongPlatform()
@@ -32,6 +33,7 @@ APingPongPlatform::APingPongPlatform()
 	AudioComponent->SetAutoActivate(true);
 	PlatformModificator = CreateDefaultSubobject<UPlatformModificator>(TEXT("Platform Modificator"));
 	BallsPoolComponent = CreateDefaultSubobject<UPingPongBallPool>(TEXT("BallsPoll"));
+	BallsPoolComponent->SetIsReplicated(true);
 	bReplicates=true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBodyMeshRoot(TEXT("/Script/Engine.StaticMesh'/ControlRig/Controls/ControlRig_Circle_1mm.ControlRig_Circle_1mm'"));
 	
@@ -42,7 +44,9 @@ void APingPongPlatform::BeginPlay()
 {
 	Super::BeginPlay();
 	SetReplicateMovement(true);
-	InitialZ=GetActorLocation().Z;	
+	InitialZ=GetActorLocation().Z;
+	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	check(GameState);
 }
 
 
@@ -61,6 +65,18 @@ void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void APingPongPlatform::SetSpeedMultiplier(int32 Multiplier)
 {
 	MoveSpeed=MoveSpeed*Multiplier;
+}
+
+bool APingPongPlatform::CheckScore(EModificators Modificator)
+{
+	APingPongPlayerState* PlayerState = Cast<APingPongPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	check(PlayerState);
+	if(PlayerState->GetScore()-GameState->GetModificatorShotCost(Modificator)>0)
+	{
+		PlayerState->SetScore(PlayerState->GetScore()-GameState->GetModificatorShotCost(Modificator));
+		return true;
+	}
+	return false;
 }
 
 
@@ -101,19 +117,12 @@ bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
 
 void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
 {
-	FActorSpawnParameters spawnParams;
-	spawnParams.Owner=GetOwner();
+	if(!CheckScore(Modificator)) return;
 	APingPongBall* PingPongBall = BallsPoolComponent->GetBall();
-	if(!PingPongBall)
-	PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
-	BallsPoolComponent->AddBallToPool(PingPongBall);
-	PingPongBall->SetModification(Modificator);
-	PingPongBall->SetActorHiddenInGame(false);
-	PingPongBall->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
-	PingPongBall->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
-	PingPongBall->SetActorEnableCollision(true);
-	PingPongBall->StartMove();
-	
+	FTransform Transform;
+	Transform.SetLocation(ShootDirectionArrow->GetComponentLocation());
+	Transform.SetRotation(ShootDirectionArrow->GetComponentRotation().Quaternion());
+	BallsPoolComponent->SpawnBallOnServer(GetOwner(),Transform,Modificator);			
 }
 
 void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
@@ -128,7 +137,7 @@ void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
 		SetSoundPitch(2);
 		FVector currLocation = GetActorLocation();
 		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * AxisValue;
-		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,0.5);
+		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
 		if(!SetActorLocation(lerpNewLocation, true))
 		{
 			

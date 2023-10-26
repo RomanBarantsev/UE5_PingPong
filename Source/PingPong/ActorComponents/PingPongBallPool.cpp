@@ -5,7 +5,10 @@
 
 #include <Engine/World.h>
 #include <Net/UnrealNetwork.h>
+
+#include "DiffResults.h"
 #include "../Actors/PingPongBall.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values for this component's properties
@@ -15,6 +18,7 @@ UPingPongBallPool::UPingPongBallPool()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	// ...
+	
 }
 
 
@@ -23,7 +27,7 @@ void UPingPongBallPool::BeginPlay()
 {
 	Super::BeginPlay();
 	SetIsReplicated(true);
-	//FillPool();
+	
 }
 
 
@@ -32,23 +36,40 @@ void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
                                       FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	// ...
 }
 
-void UPingPongBallPool::AddBallToPool_Implementation(APingPongBall* Ball)
-{
+void UPingPongBallPool::AddBallToPool(APingPongBall* Ball)
+{	
 	BallsPool.Add(Ball);
 }
 
-void UPingPongBallPool::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransform spawnTransform,EModificators modification)
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	//DOREPLIFETIME(UPingPongBallPool,BallsPool);
+	APingPongBall* PingPongBall = GetBall();
+	if(!PingPongBall)
+	{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Owner=Owner;
+		PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+		AddBallToPool(PingPongBall);
+	}	
+	PingPongBall->SetModification(modification);
+	PingPongBall->SetActorHiddenInGame(false);
+	PingPongBall->SetActorLocation(spawnTransform.GetLocation());
+	PingPongBall->RotateBallTo(spawnTransform.GetRotation().Rotator());
+	PingPongBall->SetActorEnableCollision(true);
+	PingPongBall->StartMove();
+}
+
+bool UPingPongBallPool::ReleaseBall_Validate(APingPongBall* PingPongBall)
+{
+	return true;
 }
 
 APingPongBall* UPingPongBallPool::GetBall()
 {
+	
 	for (auto Ball : BallsPool)
 	{
 		if(Ball->IsHidden())

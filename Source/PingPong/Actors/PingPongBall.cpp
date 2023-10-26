@@ -4,6 +4,7 @@
 #include "PingPongBall.h"
 #include "PingPongGoal.h"
 #include "PingPongPlatform.h"
+#include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -13,6 +14,7 @@
 #include "PingPong/GameModes/PingPongGameMode.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "Util/ColorConstants.h"
 
 // Sets default values
 APingPongBall::APingPongBall()
@@ -29,6 +31,7 @@ APingPongBall::APingPongBall()
 	{
 		BodyMesh->SetStaticMesh(MeshAsset.Object);
 	}
+	
 	bReplicates=true;	
 	
 }
@@ -39,10 +42,6 @@ void APingPongBall::BeginPlay()
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	
-	auto Material = BodyMesh->GetMaterial(0);
-	DynamicMaterial = UMaterialInstanceDynamic::Create(Material,nullptr);
-	BodyMesh->SetMaterial(0,DynamicMaterial);
 	
 	Super::BeginPlay();
 }
@@ -76,7 +75,18 @@ void APingPongBall::SetBallOwner(FHitResult HitResult)
 	}	
 }
 
-void APingPongBall::AddScoreToPlayer(AActor* Player)
+void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
+{
+	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor()))
+	{
+		AActor* GoalOwner = PingPongGoal->GetOwner();
+		check(GoalOwner);
+		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);		
+		ReturnToPool();
+	}
+}
+
+void APingPongBall::AddScoreToPlayer_Implementation(AActor* Player)
 {
 	APingPongPlayerState* PingPongPlayerState=GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
 	check(PingPongPlayerState);			
@@ -84,24 +94,29 @@ void APingPongBall::AddScoreToPlayer(AActor* Player)
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 }
 
-void APingPongBall::CheckGoal(FHitResult HitResult)
+void APingPongBall::SetSpeed(float Speed)
 {
-	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor()))
+	MoveSpeed=Speed;
+}
+
+void APingPongBall::ReturnToPool()
+{
+	StopMove();
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+}
+
+void APingPongBall::SetColor_Implementation()
+{
+	
+	if(!DynamicMaterial)
 	{
-		AActor* GoalOwner = PingPongGoal->GetOwner();
-		check(GoalOwner);
-		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);
+		auto Material = BodyMesh->GetMaterial(0);
+		DynamicMaterial = UMaterialInstanceDynamic::Create(Material,nullptr);
+		BodyMesh->SetMaterial(0,DynamicMaterial);
 	}
+	DynamicMaterial->SetVectorParameterValue(TEXT("color"),BallColor);
 }
-
-void APingPongBall::SetColor()
-{
-	if(DynamicMaterial)
-    	{
-    		DynamicMaterial->SetVectorParameterValue(TEXT("color"),BallColor);	
-    	}
-}
-
 
 void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 {
@@ -132,16 +147,17 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 			{
 				
 			}
-			SetModification(EModificators::None);
+			if(Modificator==EModificators::None) ReturnToPool();
+			SetModification(EModificators::None);	
 		}
-	}
+	}	
 }
 
 void APingPongBall::SetModification_Implementation(EModificators mod)
 {
-	Modificator=mod;
-	BallColor = PingPongGameState->GetModificatorColor(Modificator);
-	SetColor();
+	Modificator=mod;	
+	BallColor = PingPongGameState->GetModificatorColor(mod);
+	MoveSpeed = PingPongGameState->GetModificatorSpeed(mod);	
 }
 
 bool APingPongBall::SetModification_Validate(EModificators mod)
@@ -153,6 +169,7 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(APingPongBall,isMoving);
+	DOREPLIFETIME(APingPongBall,BallColor);
 }
 
 void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)

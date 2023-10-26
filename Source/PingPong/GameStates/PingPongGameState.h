@@ -37,6 +37,7 @@ struct FBallsStruct
 	FLinearColor Color;
 	int32 Points;
 	int32 ShotCost;
+	float Speed;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
@@ -92,4 +93,8 @@ public:
 	FLinearColor GetModificatorColor(EModificators modificator);
 	UFUNCTION()
 	int32 GetModificatorPoints(EModificators modificator);
+	UFUNCTION()
+	int32 GetModificatorShotCost(EModificators modificator) const;
+	UFUNCTION()
+	float GetModificatorSpeed(EModificators modificator) const;
 };
