@@ -47,6 +47,9 @@ void APingPongPlatform::BeginPlay()
 	InitialZ=GetActorLocation().Z;
 	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(GameState);
+	FVector Origin,BoxExtended;
+	GetActorBounds(false,Origin,BoxExtended,false);
+	UKismetSystemLibrary::PrintText(GetWorld(),FText::AsNumber(BoxExtended.X));
 }
 
 
@@ -163,6 +166,7 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 	}
 	if(AxisValue != 0)
     {
+		SetSoundPitch(2);
 	    FVector currLocation = GetActorLocation();
 		FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * AxisValue;
 		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
@@ -171,6 +175,10 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 		
 		}
     }
+	else
+	{
+		SetSoundPitch(1);
+	}
 }
 
 bool APingPongPlatform::Server_MoveRight_Validate(float AxisValue)

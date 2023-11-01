@@ -57,18 +57,19 @@ public:
 	void Server_Fire(EModificators Modificator);
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APingPongBall> BallClass;
-
+	
+protected:
+	float InitialZ=0;
+	float Amplitude=10.0f;;
+	float Frequency=1;
+	float RunningTime=1;
 public:
 	UFUNCTION(Server,Unreliable)	
 	void Floating();
 	
 protected:	
 	UPROPERTY(Replicated)
-	float AxisMoveValue = 0;
-	float InitialZ=0;
-	float Amplitude=10.0f;;
-	float Frequency=1;
-	float RunningTime=1;
+	float AxisMoveValue = 0;	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:

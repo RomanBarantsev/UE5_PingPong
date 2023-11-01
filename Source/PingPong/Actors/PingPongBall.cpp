@@ -2,9 +2,12 @@
 
 
 #include "PingPongBall.h"
+
+#include "BallGCActor.h"
 #include "PingPongGoal.h"
 #include "PingPongPlatform.h"
-#include "GameFramework/GameSession.h"
+#include "Components/AudioComponent.h"
+#include "GeometryCollection/GeometryCollectionActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -14,7 +17,8 @@
 #include "PingPong/GameModes/PingPongGameMode.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
-#include "Util/ColorConstants.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
+#include "GeometryCollection/GeometryCollectionSizeSpecificUtility.h"
 
 // Sets default values
 APingPongBall::APingPongBall()
@@ -26,12 +30,15 @@ APingPongBall::APingPongBall()
 	BodyMesh->SetCollisionObjectType(ECC_WorldDynamic);
 	BodyMesh->SetIsReplicated(true);
 	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
+	HitWallSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Wall Sound"));
+	HitWallSound->SetAutoActivate(false);
+	HitPlatformSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Platform Sound"));
+	HitPlatformSound->SetAutoActivate(false);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
 	if(MeshAsset.Succeeded())
 	{
 		BodyMesh->SetStaticMesh(MeshAsset.Object);
-	}
-	
+	}	
 	bReplicates=true;	
 	
 }
@@ -41,8 +48,7 @@ void APingPongBall::BeginPlay()
 {
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	
+	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));	
 	Super::BeginPlay();
 }
 
@@ -69,7 +75,7 @@ void APingPongBall::StopMove()
 void APingPongBall::SetBallOwner(FHitResult HitResult)
 {
 	if(Cast<APingPongPlatform>(HitResult.GetActor()))
-	{
+	{		
 		LastTouchedPlatform=Cast<APingPongPlatform>(HitResult.GetActor());
 		SetOwner(LastTouchedPlatform->GetOwner());
 	}	
@@ -81,7 +87,8 @@ void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
 	{
 		AActor* GoalOwner = PingPongGoal->GetOwner();
 		check(GoalOwner);
-		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);		
+		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);
+		Multicast_HitEffect(HitResult.Location);
 		ReturnToPool();
 	}
 }
@@ -101,9 +108,33 @@ void APingPongBall::SetSpeed(float Speed)
 
 void APingPongBall::ReturnToPool()
 {
+	SpawnChaosBall();
 	StopMove();
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
+}
+
+
+void APingPongBall::SpawnChaosBall_Implementation()
+{
+	FActorSpawnParameters params;
+	ABallGCActor* SpawnedGeometryActor = GetWorld()->SpawnActor<ABallGCActor>(BallGCActor,GetActorLocation(),GetActorRotation(),params);
+	SpawnedGeometryActor->DispatchBeginPlay();
+	SpawnedGeometryActor->InitializeComponents();
+	SpawnedGeometryActor->PostActorConstruction();
+	SpawnedGeometryActor->SetMaterialColor(BallColor);
+	SpawnedGeometryActor->SetActorLocation(GetActorLocation());
+	SpawnedGeometryActor->GetGeometryCollectionComponent()->Activate(true);	
+}
+
+void APingPongBall::PlayHitPlatformSound_Implementation()
+{
+	HitPlatformSound->Play();
+}
+
+void APingPongBall::PlayHitWallSound_Implementation()
+{
+	HitWallSound->Play();
 }
 
 void APingPongBall::SetColor_Implementation()
@@ -122,6 +153,7 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 {
 	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
 	{
+		if(hitResult.GetActor()->GetOwner()) PlayHitPlatformSound();
 		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
 		if(!ActorComponent) return;
 		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
@@ -147,7 +179,6 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 			{
 				
 			}
-			if(Modificator==EModificators::None) ReturnToPool();
 			SetModification(EModificators::None);	
 		}
 	}	
@@ -175,6 +206,7 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 {	
 	SetBallOwner(hitResult);
+	if(!hitResult.GetActor()->GetOwner()) PlayHitWallSound();
 	if(GetOwner())
 	{
 		CheckGoal(hitResult);
@@ -184,10 +216,10 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 
 void APingPongBall::RotateBallTo_Implementation(FRotator Rotator)
 {
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlatform::StaticClass(),Actors);	
-	if(!Actors.IsEmpty() && Rotator==FRotator::ZeroRotator)
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlatform::StaticClass(),PlatformActors);	
+	if(!PlatformActors.IsEmpty() && Rotator==FRotator::ZeroRotator)
 	{		
-		FVector Direction = GetActorLocation()-Actors[(UKismetMathLibrary::RandomInteger(Actors.Num()-1))]->GetActorLocation();
+		FVector Direction = GetActorLocation()-PlatformActors[(UKismetMathLibrary::RandomInteger(PlatformActors.Num()-1))]->GetActorLocation();
 		Direction.Normalize();
 		FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
 		SetActorRotation(FRotator(0,TargetRotation.Yaw-UKismetMathLibrary::RandomInteger(45),0));
@@ -204,8 +236,8 @@ void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
 {
 	UWorld * world = GetWorld();
 	if(world && HitEffect)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,location);
+	{		
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,location);		
 	}
 }
 
@@ -238,8 +270,7 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 	{		
 		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
 		Vec.Normalize();
-		forwardVector=FVector(Vec.X,Vec.Y,0);
-		Multicast_HitEffect(hitResult.Location);
+		forwardVector=FVector(Vec.X,Vec.Y,0);		
 		OnBallHitAnything(hitResult);
     }
 }

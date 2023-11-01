@@ -8,7 +8,7 @@ public class PingPong : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"UMG", "Slate"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"UMG", "Slate","GeometryCollectionEngine"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 		

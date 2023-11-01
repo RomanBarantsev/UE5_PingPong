@@ -68,8 +68,7 @@ bool UPingPongBallPool::ReleaseBall_Validate(APingPongBall* PingPongBall)
 }
 
 APingPongBall* UPingPongBallPool::GetBall()
-{
-	
+{	
 	for (auto Ball : BallsPool)
 	{
 		if(Ball->IsHidden())

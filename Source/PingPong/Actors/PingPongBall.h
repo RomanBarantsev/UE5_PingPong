@@ -4,9 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GeometryCollection/Facades/CollectionBoundsFacade.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPongBall.generated.h"
 
+class ABallGCActor;
+class AGeometryCollectionActor;
+class UGeometryCollection;
+class UGeometryCollectionComponent;
+class USoundCue;
 class APingPongPlatform;
 class APingPongGameMode;
 class APingPongGameState;
@@ -31,6 +37,10 @@ public:
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UAudioComponent* HitWallSound;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UAudioComponent* HitPlatformSound;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float MoveSpeed = 500;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
@@ -70,7 +80,7 @@ protected:
 UPROPERTY()
 	APingPongGameMode* PingPongGameMode;
 	UPROPERTY()
-	TArray<AActor*> Actors;
+	TArray<AActor*> PlatformActors;
 
 protected:
 	UFUNCTION()
@@ -95,9 +105,20 @@ public:
 	UFUNCTION()
 	void SetSpeed(float Speed);
 private:
-	UFUNCTION()
+	UFUNCTION(Blueprintable,BlueprintCallable)
 	void ReturnToPool();
 	UFUNCTION(NetMulticast,Reliable)
 	void SetColor();
+	UFUNCTION(NetMulticast,Reliable)
+	void PlayHitWallSound();
+	UFUNCTION(NetMulticast,Reliable)
+	void PlayHitPlatformSound();
+	UFUNCTION(Server,Reliable)
+	void SpawnChaosBall();
+	
+	
+public:
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	TSubclassOf<ABallGCActor> BallGCActor;
 };
 
