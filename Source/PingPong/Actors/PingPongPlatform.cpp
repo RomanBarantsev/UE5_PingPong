@@ -4,7 +4,6 @@
 #include "PingPongPlatform.h"
 #include <Engine/World.h>
 #include <Kismet/GameplayStatics.h>
-#include "K2Node_AddComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"

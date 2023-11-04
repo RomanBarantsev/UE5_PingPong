@@ -2,11 +2,7 @@
 
 
 #include "PingPongPlayerController.h"
-
-#include <Net/UnrealNetwork.h>
-
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Interfaces/IPluginManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
@@ -260,17 +256,17 @@ void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 	UIStatus=status;
 	switch (UIStatus)
 	{
-	case 1: //UILoaded
+	case EUIStatus::UILoaded: //UILoaded
 		{
 			PingPongGameState->IncreaseLoadedPlayer();
 			break;
 		}
-	case 2: //ReadyButtonPressed
+	case EUIStatus::ReadyButtonPressed: //ReadyButtonPressed
 		{
 			PingPongGameState->IncreaseReadyPlayer();
 			break;
 		}
-	case 3: //UIPaused
+	case EUIStatus::UIPaused: //UIPaused
 		{
 				
 			break;

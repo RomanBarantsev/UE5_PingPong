@@ -161,11 +161,11 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 		{
 			if(Modificator==EModificators::Fast)
 			{
-				PlatformModificator->SetSpeedOfPlatform(2);
+				PlatformModificator->SetSpeedOfPlatform(2.0);
 			}
 			if(Modificator==EModificators::Slow)
 			{
-				PlatformModificator->SetSpeedOfPlatform(0.5);
+				PlatformModificator->SetSpeedOfPlatform(1);
 			}
 			if(Modificator==EModificators::Shrink)
 			{
