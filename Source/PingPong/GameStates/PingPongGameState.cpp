@@ -64,6 +64,7 @@ void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 void APingPongGameState::IncreaseLoadedPlayer_Implementation()
 {
 	LoadedPlayers++;
+	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 	if(LoadedPlayers==GameMode->GetPlayersCount())
 	{
 		for (auto PlayerController : PlayerControllers)

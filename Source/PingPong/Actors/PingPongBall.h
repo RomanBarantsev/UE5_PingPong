@@ -107,8 +107,10 @@ public:
 private:
 	UFUNCTION(Blueprintable,BlueprintCallable)
 	void ReturnToPool();
+public:
 	UFUNCTION(NetMulticast,Reliable)
 	void SetColor();
+private:
 	UFUNCTION(NetMulticast,Reliable)
 	void PlayHitWallSound();
 	UFUNCTION(NetMulticast,Reliable)

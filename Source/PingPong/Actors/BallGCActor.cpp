@@ -6,6 +6,7 @@
 #include "GeometryCollection/GeometryCollectionCache.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "GeometryCollection/GeometryCollectionObject.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 ABallGCActor::ABallGCActor()
 {
@@ -24,6 +25,7 @@ void ABallGCActor::BeginPlay()
 
 void ABallGCActor::SetMaterialColor_Implementation(FLinearColor color)
 {
+	UKismetSystemLibrary::PrintString(GetWorld(),TEXT("Set Score "));
 	if(!DynamicMaterial)
 	{
 		auto Material = GetGeometryCollectionComponent()->GetMaterial(0);

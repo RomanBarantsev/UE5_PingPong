@@ -42,7 +42,6 @@ protected:
 private:
 	UFUNCTION()
 	void SetScoreTextVisible();
-	
 protected:
 	UFUNCTION()
 	void OnReadyButtonPushed();	

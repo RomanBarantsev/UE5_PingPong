@@ -139,7 +139,6 @@ void APingPongBall::PlayHitWallSound_Implementation()
 
 void APingPongBall::SetColor_Implementation()
 {
-	
 	if(!DynamicMaterial)
 	{
 		auto Material = BodyMesh->GetMaterial(0);
@@ -188,7 +187,8 @@ void APingPongBall::SetModification_Implementation(EModificators mod)
 {
 	Modificator=mod;	
 	BallColor = PingPongGameState->GetModificatorColor(mod);
-	MoveSpeed = PingPongGameState->GetModificatorSpeed(mod);	
+	MoveSpeed = PingPongGameState->GetModificatorSpeed(mod);
+	SetColor();
 }
 
 bool APingPongBall::SetModification_Validate(EModificators mod)

@@ -43,8 +43,18 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	
 }
 
+void APingPongGameMode::Logout(AController* Exiting)
+{
+	//TODO client which reconnect after close window is desync, and platform stays in level. Some bug need to fix. 
+	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(Exiting);
+	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
+	check(PingPongGameState);
+	PingPongGameState->GetPlayersControllers().Remove(PingPongPlayerController);
+	Super::Logout(Exiting);
+}
+
 APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerController* PingPongPlayerController,
-	UWorld* World)
+                                                                UWorld* World)
 {
 	APingPongPlayerPawn* newPawn = Cast<APingPongPlayerPawn>(PingPongPlayerController->GetPawn());
 	if(!newPawn)

@@ -23,7 +23,7 @@ void APingPongPlayerController::BeginPlay()
 		check(PingPongHUD);		
 	}	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	check(PingPongGameState);		
+	check(PingPongGameState);
 	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 	bShowMouseCursor=true;
@@ -253,6 +253,8 @@ void APingPongPlayerController::AllPlayersConnected_Implementation()
 
 void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 {
+	if(HasAuthority() && UKismetSystemLibrary::IsDedicatedServer(GetWorld())) return; 
+	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	UIStatus=status;
 	switch (UIStatus)
 	{

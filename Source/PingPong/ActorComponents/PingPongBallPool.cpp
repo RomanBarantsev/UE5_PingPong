@@ -59,6 +59,7 @@ void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransfo
 	PingPongBall->SetActorLocation(spawnTransform.GetLocation());
 	PingPongBall->RotateBallTo(spawnTransform.GetRotation().Rotator());
 	PingPongBall->SetActorEnableCollision(true);
+	PingPongBall->SetColor();
 	PingPongBall->StartMove();
 }
 
