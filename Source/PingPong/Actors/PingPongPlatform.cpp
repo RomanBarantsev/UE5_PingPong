@@ -89,6 +89,7 @@ void APingPongPlatform::SetSoundPitch_Implementation(float pitch)
 
 void APingPongPlatform::Floating_Implementation()
 {
+	if (!bFloating) return;
 	FVector NewLocation = GetActorLocation();
 	NewLocation.Z = InitialZ + Amplitude * FMath::Sin(Frequency * RunningTime);
 	SetActorLocation(NewLocation);
@@ -107,6 +108,8 @@ void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
 	{
 		FRotator Rotator;
 		Rotator.Yaw = BodyMesh->GetComponentRotation().Yaw + AxisValue;
+		Rotator.Pitch=0;
+		Rotator.Roll=0;
 		BodyMesh->SetWorldRotation(Rotator);
 		//TODO Clamp to angle, and return rotation back on some time.
 	}
@@ -130,24 +133,24 @@ void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
 void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
 {
 	AxisMoveValue = AxisValue;	
-	if(AxisValue != 0)
+	if(true)
 	{
 		if(bInvertedControl)
 		{
 			AxisValue=-AxisValue;
 		}
-		SetSoundPitch(2);
-		FVector currLocation = GetActorLocation();
-		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * AxisValue;
-		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
-		if(!SetActorLocation(lerpNewLocation, true))
+		SetSoundPitch(FMath::Abs(AxisValue)+1);
+		targetForwardAxisValue = AxisValue;
+		CurrentForwardAxisValue = FMath::Lerp(CurrentForwardAxisValue,targetForwardAxisValue,InterpolationKey);	
+		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * CurrentForwardAxisValue;
+		if(!SetActorLocation(nextLocation, true))
 		{
 			
 		}
 	}
-	else
+	if(AxisValue==0)
 	{
-		SetSoundPitch(1);
+		CurrentForwardAxisValue=0;
 	}
 }
 
@@ -165,18 +168,19 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 	}
 	if(AxisValue != 0)
     {
-		SetSoundPitch(2);
-	    FVector currLocation = GetActorLocation();
-		FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * AxisValue;
-		auto lerpNewLocation = UKismetMathLibrary::VLerp(currLocation,nextLocation,1);
-		if(!SetActorLocation(lerpNewLocation, true))
+		SetSoundPitch(FMath::Abs(AxisValue)+1);
+		targetRightAxisValue = AxisValue;
+		CurrentRightAxisValue = FMath::Lerp(CurrentRightAxisValue,targetRightAxisValue,InterpolationKey);	
+		FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * CurrentRightAxisValue;
+		if(!SetActorLocation(nextLocation, true))
 		{
 		
 		}
     }
-	else
+	if(GetVelocity()==FVector::Zero() && AxisMoveValue==0)
 	{
-		SetSoundPitch(1);
+		CurrentRightAxisValue=0;
+		SetSoundPitch(AxisValue+1);
 	}
 }
 

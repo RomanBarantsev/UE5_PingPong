@@ -44,7 +44,11 @@ protected:
 	UPingPongBallPool* BallsPoolComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 15;
-	float RotationInterpolationKey=0.1f;
+	float InterpolationKey = 0.02f;
+	float CurrentRightAxisValue;
+	float targetRightAxisValue;
+	float CurrentForwardAxisValue;
+	float targetForwardAxisValue;
 	
 public:
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -66,6 +70,8 @@ protected:
 public:
 	UFUNCTION(Server,Unreliable)	
 	void Floating();
+	UPROPERTY(EditAnywhere)
+	bool bFloating = true; 
 	
 protected:	
 	UPROPERTY(Replicated)
