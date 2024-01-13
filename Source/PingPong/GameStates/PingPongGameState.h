@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameMode.h"
+#include "Engine/DataTable.h"
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
@@ -16,6 +16,18 @@ enum class EPlayersStatus
 	AllPlayersConnected UMETA(DisplayName="AllPlayerConnected"),
 	AllPlayersIsReady UMETA(DisplayName="AllPlayersIsReady"),
 	NONE UMETA(DisplayName="None")
+};
+
+USTRUCT()
+struct FBallsModificators :public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere)
+	FLinearColor Color;
+	UPROPERTY(EditAnywhere)
+	int32 Points;
+	UPROPERTY(EditAnywhere)
+	int32 ShotCost;
 };
 
 UENUM()
