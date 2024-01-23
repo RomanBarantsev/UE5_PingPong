@@ -58,6 +58,27 @@ void APingPongPlatform::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 }
 
+void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
+{
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner=GetOwner();
+	APingPongBall* PingPongBall = BallsPoolComponent->GetBall();
+	if(!PingPongBall)
+		PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+	BallsPoolComponent->AddBallToPool(PingPongBall);
+	PingPongBall->SetModification(Modificator);
+	PingPongBall->SetActorHiddenInGame(false);
+	PingPongBall->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
+	PingPongBall->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
+	PingPongBall->SetActorEnableCollision(true);
+	PingPongBall->StartMove();
+}
+
+bool APingPongPlatform::Server_Fire_Validate(EBallModificators Modificator)
+{
+	return true;
+}
+
 void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -94,12 +115,6 @@ void APingPongPlatform::Floating_Implementation()
 	NewLocation.Z = InitialZ + Amplitude * FMath::Sin(Frequency * RunningTime);
 	SetActorLocation(NewLocation);
 	RunningTime += 0.01;
-}
-
-
-bool APingPongPlatform::Server_Fire_Validate(EModificators Modificator)
-{
-	return true;
 }
 
 void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)

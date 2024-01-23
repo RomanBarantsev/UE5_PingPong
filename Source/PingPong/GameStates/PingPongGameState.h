@@ -18,36 +18,29 @@ enum class EPlayersStatus
 	NONE UMETA(DisplayName="None")
 };
 
-USTRUCT()
-struct FBallsModificators :public FTableRowBase
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnywhere)
-	FLinearColor Color;
-	UPROPERTY(EditAnywhere)
-	int32 Points;
-	UPROPERTY(EditAnywhere)
-	int32 ShotCost;
-};
-
 UENUM()
-enum class EModificators 
-{
-	Fast,
-	Slow,
-	Shrink,
-	Expand,
-	ReverseControl,
-	LightsOff,
-	None
+enum class EBallModificators	
+{	
+	Fast UMETA(DisplayName="Fast"),
+	Slow UMETA(DisplayName="Slow"),
+	Shrink UMETA(DisplayName="Shrink"),
+	Expand UMETA(DisplayName="Expand"),
+	ReverseControl UMETA(DisplayName="ReverseControl"),
+	LightsOff UMETA(DisplayName="LightsOff"),
+	None UMETA(DisplayName="None")	
 };
 
 USTRUCT()
-struct FBallsStruct
+struct FBallModificators :public FTableRowBase
 {
 	GENERATED_BODY()
+	UPROPERTY(EditAnywhere)
+	EBallModificators BallModificators;
+	UPROPERTY(EditAnywhere)
 	FLinearColor Color;
+	UPROPERTY(EditAnywhere)
 	int32 Points;
+	UPROPERTY(EditAnywhere)
 	int32 ShotCost;
 	float Speed;
 };
@@ -99,14 +92,15 @@ public:
 	void UpdatePlayersScore(int32 playerId, int32 Score);
 	
 private:
-	TMap<EModificators,FBallsStruct> ModificatorColors;
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	UDataTable* BallModificatorsDataTable;
+	TArray<FName> BallModificatorsRowNames;
 public:
 	UFUNCTION()
-	FLinearColor GetModificatorColor(EModificators modificator);
+	FLinearColor GetModificatorColor(EBallModificators modificator);
 	UFUNCTION()
-	int32 GetModificatorPoints(EModificators modificator);
+	int32 GetModificatorPoints(EBallModificators modificator);
 	UFUNCTION()
-	int32 GetModificatorShotCost(EModificators modificator) const;
-	UFUNCTION()
-	float GetModificatorSpeed(EModificators modificator) const;
+	int32 GetShotCost(EBallModificators modificator);
+	FBallModificators* GetModificationRow(EBallModificators Modificator);
 };

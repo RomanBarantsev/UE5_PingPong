@@ -215,15 +215,15 @@ void APingPongPlayerController::ScrollColor_Implementation()
 {
 	PingPongPlayerState = GetPlayerState<APingPongPlayerState>();
 	check(PingPongPlayerState);
-	if (PingPongPlayerState->GetModificator()==EModificators::None)
+	if (PingPongPlayerState->GetModificator()==EBallModificators::None)
 	{
-		PingPongPlayerState->SetModificator(EModificators::Fast);
+		PingPongPlayerState->SetModificator(EBallModificators::Fast);
 	}
 	else
 	{
 		int ModificatorNumber = static_cast<int>(PingPongPlayerState->GetModificator());
 		ModificatorNumber++;
-		PingPongPlayerState->SetModificator(static_cast<EModificators>(ModificatorNumber));
+		PingPongPlayerState->SetModificator(static_cast<EBallModificators>(ModificatorNumber));
 	}
 	SetColorAndPriceUI(PingPongGameState->GetModificatorColor(PingPongPlayerState->GetModificator()),
 		PingPongGameState->GetModificatorShotCost(PingPongPlayerState->GetModificator()));

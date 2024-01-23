@@ -158,23 +158,23 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
 		if(PlatformModificator)
 		{
-			if(Modificator==EModificators::Fast)
+			if(Modificator==EBallModificators::Fast)
 			{
 				PlatformModificator->SetSpeedOfPlatform(2.0);
 			}
-			if(Modificator==EModificators::Slow)
+			if(Modificator==EBallModificators::Slow)
 			{
 				PlatformModificator->SetSpeedOfPlatform(1);
 			}
-			if(Modificator==EModificators::Shrink)
+			if(Modificator==EBallModificators::Shrink)
 			{
 				PlatformModificator->SetPlatformSize();
 			}
-			if(Modificator==EModificators::ReverseControl)
+			if(Modificator==EBallModificators::ReverseControl)
 			{
 				PlatformModificator->SetReverseControl();
 			}
-			if(Modificator==EModificators::LightsOff)
+			if(Modificator==EBallModificators::LightsOff)
 			{
 				
 			}

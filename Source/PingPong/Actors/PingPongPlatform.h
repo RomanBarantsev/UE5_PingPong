@@ -58,7 +58,7 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_Rotate(float AxisValue);
 	UFUNCTION(Server,Reliable, WithValidation)
-	void Server_Fire(EModificators Modificator);
+	void Server_Fire(EBallModificators Modificator);
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APingPongBall> BallClass;
 	

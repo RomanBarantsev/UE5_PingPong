@@ -22,22 +22,17 @@ void APingPongGameState::BeginPlay()
 	{
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 		check(GameMode);
-	}
-	const FBallsStruct Fast = {FLinearColor::Green,2,2,1200};
-	const FBallsStruct Slow = {FLinearColor::Red,3,2,1200};
-	const FBallsStruct Shrink = {FLinearColor::Yellow,4,3,1400};
-	const FBallsStruct Expand = {FLinearColor::Blue,5,3,1400};
-	const FBallsStruct ReverseControl = {FLinearColor::White,6,4,1600};
-	const FBallsStruct LightsOff = {FLinearColor::Black,7,5,1600};
-	const FBallsStruct None = {FLinearColor::Gray,8,1,1000};
-	ModificatorColors.FindOrAdd(EModificators::Fast,Fast);
-	ModificatorColors.FindOrAdd(EModificators::Slow,Slow);
-	ModificatorColors.FindOrAdd(EModificators::Shrink,Shrink);
-	ModificatorColors.FindOrAdd(EModificators::Expand,Expand);
-	ModificatorColors.FindOrAdd(EModificators::ReverseControl,ReverseControl);
-	ModificatorColors.FindOrAdd(EModificators::LightsOff,LightsOff);
-	ModificatorColors.FindOrAdd(EModificators::None,None);
+	}	
 	Super::BeginPlay();
+	if(BallModificatorsDataTable)
+	{
+		BallModificatorsRowNames =	BallModificatorsDataTable->GetRowNames();
+	}
+	else
+	{
+		UKismetSystemLibrary::QuitGame(GetWorld(),UGameplayStatics::GetPlayerController(GetWorld(),0),EQuitPreference::Type::Quit,false);
+		UE_LOG(LogTemp, Warning, TEXT("No Ball Modificators DataTable"));
+	}
 }
 
 void APingPongGameState::UpdateCharacterState(EPlayersStatus NewPlayersState)
@@ -107,30 +102,36 @@ TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 	return PlayerControllers;
 }
 
-FLinearColor APingPongGameState::GetModificatorColor(EModificators modificator)
-{
-	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
-	return Struct.Color;
+FLinearColor APingPongGameState::GetModificatorColor(EBallModificators modificator)
+{		
+	FBallModificators* RowMod = GetModificationRow(modificator);
+	return RowMod->Color;
 }
 
-int32 APingPongGameState::GetModificatorPoints(EModificators modificator)
+int32 APingPongGameState::GetModificatorPoints(EBallModificators modificator)
 {
-	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
-	return Struct.Points;
+	FBallModificators* RowMod = GetModificationRow(modificator);
+	return RowMod->Points;
 }
 
-int32 APingPongGameState::GetModificatorShotCost(EModificators modificator) const
+int32 APingPongGameState::GetShotCost(EBallModificators modificator)
 {
-	FBallsStruct Struct = ModificatorColors.FindRef(modificator);	
-	return Struct.ShotCost;
+	FBallModificators* RowMod = GetModificationRow(modificator);
+	return RowMod->ShotCost;
 }
 
-float APingPongGameState::GetModificatorSpeed(EModificators modificator) const
+FBallModificators* APingPongGameState::GetModificationRow(EBallModificators Modificator)
 {
-	FBallsStruct Struct = ModificatorColors.FindRef(modificator);
-	return Struct.Speed;
+	for(const auto& RowName : BallModificatorsRowNames)
+	{
+		FBallModificators* RowMod = BallModificatorsDataTable->FindRow<FBallModificators>(RowName,"Context String",true);
+		if(RowMod->BallModificators==Modificator)
+		{
+			return  RowMod;
+		}			
+	}
+	return nullptr;
 }
-
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
 {
