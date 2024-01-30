@@ -58,22 +58,6 @@ void APingPongPlatform::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 }
 
-void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
-{
-	FActorSpawnParameters spawnParams;
-	spawnParams.Owner=GetOwner();
-	APingPongBall* PingPongBall = BallsPoolComponent->GetBall();
-	if(!PingPongBall)
-		PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
-	BallsPoolComponent->AddBallToPool(PingPongBall);
-	PingPongBall->SetModification(Modificator);
-	PingPongBall->SetActorHiddenInGame(false);
-	PingPongBall->SetActorLocation(ShootDirectionArrow->GetComponentLocation());
-	PingPongBall->RotateBallTo(ShootDirectionArrow->GetComponentRotation());
-	PingPongBall->SetActorEnableCollision(true);
-	PingPongBall->StartMove();
-}
-
 bool APingPongPlatform::Server_Fire_Validate(EBallModificators Modificator)
 {
 	return true;
@@ -90,13 +74,13 @@ void APingPongPlatform::SetSpeedMultiplier(int32 Multiplier)
 	MoveSpeed=MoveSpeed*Multiplier;
 }
 
-bool APingPongPlatform::CheckScore(EModificators Modificator)
+bool APingPongPlatform::CheckScore(EBallModificators Modificator)
 {
 	APingPongPlayerState* PlayerState = Cast<APingPongPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	check(PlayerState);
-	if(PlayerState->GetScore()-GameState->GetModificatorShotCost(Modificator)>0)
+	if(PlayerState->GetScore()-GameState->GetShotCost(Modificator)>0)
 	{
-		PlayerState->SetScore(PlayerState->GetScore()-GameState->GetModificatorShotCost(Modificator));
+		PlayerState->SetScore(PlayerState->GetScore()-GameState->GetShotCost(Modificator));
 		return true;
 	}
 	return false;
@@ -135,7 +119,7 @@ bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
 	return true;
 }
 
-void APingPongPlatform::Server_Fire_Implementation(EModificators Modificator)
+void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
 {
 	if(!CheckScore(Modificator)) return;
 	APingPongBall* PingPongBall = BallsPoolComponent->GetBall();

@@ -42,6 +42,7 @@ struct FBallModificators :public FTableRowBase
 	int32 Points;
 	UPROPERTY(EditAnywhere)
 	int32 ShotCost;
+	UPROPERTY(EditAnywhere)
 	float Speed;
 };
 
@@ -102,5 +103,7 @@ public:
 	int32 GetModificatorPoints(EBallModificators modificator);
 	UFUNCTION()
 	int32 GetShotCost(EBallModificators modificator);
+	UFUNCTION()
+	int32 GetBallSpeed(EBallModificators modificator);
 	FBallModificators* GetModificationRow(EBallModificators Modificator);
 };

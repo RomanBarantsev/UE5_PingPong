@@ -44,6 +44,6 @@ public:
 	UFUNCTION()	
 	void AddBallToPool(APingPongBall* Ball);
 	UFUNCTION(Server,Reliable)
-	void SpawnBallOnServer(AActor* Owner, FTransform spawnTransform,EModificators modification);
+	void SpawnBallOnServer(AActor* Owner, FTransform spawnTransform,EBallModificators modification);
 };
 

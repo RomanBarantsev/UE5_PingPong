@@ -88,7 +88,7 @@ public:
 	UFUNCTION()
 	void SetSpeedMultiplier(int32 Multiplier);
 	UFUNCTION()
-	bool CheckScore(EModificators Modificator);
+	bool CheckScore(EBallModificators Modificator);
 
 private:
 	UPROPERTY()

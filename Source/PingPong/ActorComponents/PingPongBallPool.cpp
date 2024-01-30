@@ -44,9 +44,9 @@ void UPingPongBallPool::AddBallToPool(APingPongBall* Ball)
 	BallsPool.Add(Ball);
 }
 
-void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransform spawnTransform,EModificators modification)
+void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransform spawnTransform,EBallModificators modification)
 {
-	APingPongBall* PingPongBall = GetBall();
+	APingPongBall* PingPongBall=nullptr;
 	if(!PingPongBall)
 	{
 		FActorSpawnParameters spawnParams;

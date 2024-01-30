@@ -120,6 +120,12 @@ int32 APingPongGameState::GetShotCost(EBallModificators modificator)
 	return RowMod->ShotCost;
 }
 
+int32 APingPongGameState::GetBallSpeed(EBallModificators modificator)
+{
+	FBallModificators* RowMod = GetModificationRow(modificator);
+	return RowMod->Speed;
+}
+
 FBallModificators* APingPongGameState::GetModificationRow(EBallModificators Modificator)
 {
 	for(const auto& RowName : BallModificatorsRowNames)

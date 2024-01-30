@@ -178,20 +178,20 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 			{
 				
 			}
-			SetModification(EModificators::None);	
+			SetModification(EBallModificators::None);	
 		}
 	}	
 }
 
-void APingPongBall::SetModification_Implementation(EModificators mod)
+void APingPongBall::SetModification_Implementation(EBallModificators mod)
 {
 	Modificator=mod;	
 	BallColor = PingPongGameState->GetModificatorColor(mod);
-	MoveSpeed = PingPongGameState->GetModificatorSpeed(mod);
+	MoveSpeed = PingPongGameState->GetBallSpeed(mod);
 	SetColor();
 }
 
-bool APingPongBall::SetModification_Validate(EModificators mod)
+bool APingPongBall::SetModification_Validate(EBallModificators mod)
 {
 	return true;
 }

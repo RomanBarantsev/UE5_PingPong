@@ -226,7 +226,7 @@ void APingPongPlayerController::ScrollColor_Implementation()
 		PingPongPlayerState->SetModificator(static_cast<EBallModificators>(ModificatorNumber));
 	}
 	SetColorAndPriceUI(PingPongGameState->GetModificatorColor(PingPongPlayerState->GetModificator()),
-		PingPongGameState->GetModificatorShotCost(PingPongPlayerState->GetModificator()));
+		PingPongGameState->GetShotCost(PingPongPlayerState->GetModificator()));
 }
 
 void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float Score)

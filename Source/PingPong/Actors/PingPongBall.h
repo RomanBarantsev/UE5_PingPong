@@ -96,12 +96,12 @@ private:
 	UPROPERTY(ReplicatedUsing="SetColor")
 	FLinearColor BallColor;
 	UPROPERTY()
-	EModificators Modificator = EModificators::None;	
+	EBallModificators Modificator = EBallModificators::None;	
 	UFUNCTION(Server,Reliable)
 	void OnPlatformHitModificator(FHitResult hitResult);
 public:
 	UFUNCTION(Server,Reliable,WithValidation)
-	void SetModification(EModificators mod);
+	void SetModification(EBallModificators mod);
 	UFUNCTION()
 	void SetSpeed(float Speed);
 private:
