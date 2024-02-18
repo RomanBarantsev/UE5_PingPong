@@ -104,33 +104,33 @@ TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 
 FLinearColor APingPongGameState::GetModificatorColor(EBallModificators modificator)
 {		
-	FBallModificators* RowMod = GetModificationRow(modificator);
+	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->Color;
 }
 
 int32 APingPongGameState::GetModificatorPoints(EBallModificators modificator)
 {
-	FBallModificators* RowMod = GetModificationRow(modificator);
+	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->Points;
 }
 
 int32 APingPongGameState::GetShotCost(EBallModificators modificator)
 {
-	FBallModificators* RowMod = GetModificationRow(modificator);
+	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->ShotCost;
 }
 
 int32 APingPongGameState::GetBallSpeed(EBallModificators modificator)
 {
-	FBallModificators* RowMod = GetModificationRow(modificator);
+	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->Speed;
 }
 
-FBallModificators* APingPongGameState::GetModificationRow(EBallModificators Modificator)
+FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators Modificator)
 {
 	for(const auto& RowName : BallModificatorsRowNames)
 	{
-		FBallModificators* RowMod = BallModificatorsDataTable->FindRow<FBallModificators>(RowName,"Context String",true);
+		FBallModificatorsTable* RowMod = BallModificatorsDataTable->FindRow<FBallModificatorsTable>(RowName,"Context String",true);
 		if(RowMod->BallModificators==Modificator)
 		{
 			return  RowMod;

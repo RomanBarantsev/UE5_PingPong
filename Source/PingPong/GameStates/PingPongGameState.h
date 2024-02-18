@@ -31,19 +31,19 @@ enum class EBallModificators
 };
 
 USTRUCT()
-struct FBallModificators :public FTableRowBase
+struct FBallModificatorsTable :public FTableRowBase
 {
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere)
-	EBallModificators BallModificators;
+	EBallModificators BallModificators = EBallModificators::None;
 	UPROPERTY(EditAnywhere)
-	FLinearColor Color;
+	FLinearColor Color=FLinearColor::Black;
 	UPROPERTY(EditAnywhere)
-	int32 Points;
+	int32 Points=1;
 	UPROPERTY(EditAnywhere)
-	int32 ShotCost;
+	int32 ShotCost=1;
 	UPROPERTY(EditAnywhere)
-	float Speed;
+	float Speed=800;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
@@ -105,5 +105,5 @@ public:
 	int32 GetShotCost(EBallModificators modificator);
 	UFUNCTION()
 	int32 GetBallSpeed(EBallModificators modificator);
-	FBallModificators* GetModificationRow(EBallModificators Modificator);
+	FBallModificatorsTable* GetModificationRow(EBallModificators Modificator);
 };
