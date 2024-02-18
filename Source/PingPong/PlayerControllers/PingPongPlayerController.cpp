@@ -78,19 +78,33 @@ bool APingPongPlayerController::SpawnPlatform_Validate()
 {
 	return PlatformClass != NULL;
 }
-
-
-
+#if PLATFORM_ANDROID
 void APingPongPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	InputComponent->BindAxis("LeftRight", this,&APingPongPlayerController::MoveRight);
 	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
-	InputComponent->BindAxis("MouseX", this,&APingPongPlayerController::RotatePlatform);
 	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
 	InputComponent->BindAction("ScrollColor",EInputEvent::IE_Pressed,this, &APingPongPlayerController::ScrollColor);
+	InputComponent->BindAxis("AndroidRotate", this,&APingPongPlayerController::RotatePlatform);	
+	InputComponent->bBlockInput = true;	
 }
+
+#else
+	
+void APingPongPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	InputComponent->BindAxis("LeftRight", this,&APingPongPlayerController::MoveRight);
+	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
+	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
+	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
+	InputComponent->BindAction("ScrollColor",EInputEvent::IE_Pressed,this, &APingPongPlayerController::ScrollColor);
+	InputComponent->BindAxis("MouseX", this,&APingPongPlayerController::RotatePlatform);
+}
+#endif
+
 
 void APingPongPlayerController::MoveRight(float AxisValue)
 {	
