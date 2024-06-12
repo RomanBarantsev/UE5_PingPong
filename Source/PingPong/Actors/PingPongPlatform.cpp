@@ -42,6 +42,7 @@ APingPongPlatform::APingPongPlatform()
 void APingPongPlatform::BeginPlay()
 {
 	Super::BeginPlay();
+	StartRotatePos = BodyMesh->GetComponentRotation().Yaw;
 	SetReplicateMovement(true);
 	InitialZ=GetActorLocation().Z;
 	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
@@ -106,11 +107,11 @@ void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
 	if(AxisValue!=0)
 	{
 		FRotator Rotator;
-		Rotator.Yaw = BodyMesh->GetComponentRotation().Yaw + AxisValue;
+		Rotator.Yaw = BodyMesh->GetRelativeRotation().Yaw + AxisValue;
 		Rotator.Pitch=0;
 		Rotator.Roll=0;
-		BodyMesh->SetWorldRotation(Rotator);
-		//TODO Clamp to angle, and return rotation back on some time.
+		Rotator.Yaw =FMath::Clamp(Rotator.Yaw,-45,45);
+		BodyMesh->SetRelativeRotation(Rotator);
 	}
 }
 
@@ -165,8 +166,6 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 	{
 		AxisValue=-AxisValue;
 	}
-	if(AxisValue != 0)
-    {
 		SetSoundPitch(FMath::Abs(AxisValue)+1);
 		targetRightAxisValue = AxisValue;
 		CurrentRightAxisValue = FMath::Lerp(CurrentRightAxisValue,targetRightAxisValue,InterpolationKey);	
@@ -175,7 +174,6 @@ void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
 		{
 		
 		}
-    }
 	if(GetVelocity()==FVector::Zero() && AxisMoveValue==0)
 	{
 		CurrentRightAxisValue=0;

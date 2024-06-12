@@ -75,7 +75,8 @@ public:
 	
 protected:	
 	UPROPERTY(Replicated)
-	float AxisMoveValue = 0;	
+	float AxisMoveValue = 0;
+	float StartRotatePos;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
