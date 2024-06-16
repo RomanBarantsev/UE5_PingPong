@@ -40,7 +40,6 @@ APingPongBall::APingPongBall()
 		BodyMesh->SetStaticMesh(MeshAsset.Object);
 	}	
 	bReplicates=true;	
-	
 }
 
 // Called when the game starts or when spawned
@@ -55,8 +54,8 @@ void APingPongBall::BeginPlay()
 // Called every frame
 void APingPongBall::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);	
-	if (GetNetMode() != ENetMode::NM_Client && isMoving)
+	Super::Tick(DeltaTime);
+	if (HasAuthority())
 	{
 		Server_Move(DeltaTime);
 	}
