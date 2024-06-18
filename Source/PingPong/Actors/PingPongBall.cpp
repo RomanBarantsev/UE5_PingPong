@@ -82,13 +82,17 @@ void APingPongBall::SetBallOwner(FHitResult HitResult)
 
 void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
 {
-	if(APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor()))
+	APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor());
+	if(PingPongGoal)
 	{
 		AActor* GoalOwner = PingPongGoal->GetOwner();
 		check(GoalOwner);
 		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);
 		Multicast_HitEffect(HitResult.Location);
-		ReturnToPool();
+		if (!Indestructible)
+		{
+			ReturnToPool();
+		}
 	}
 }
 
@@ -151,9 +155,11 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 {
 	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
 	{
-		if(hitResult.GetActor()->GetOwner()) PlayHitPlatformSound();
+		if(hitResult.GetActor()->GetOwner())
+			PlayHitPlatformSound();
 		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
-		if(!ActorComponent) return;
+		if(!ActorComponent)
+			return;
 		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
 		if(PlatformModificator)
 		{
@@ -205,7 +211,8 @@ void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 {	
 	SetBallOwner(hitResult);
-	if(!hitResult.GetActor()->GetOwner()) PlayHitWallSound();
+	if(!hitResult.GetActor()->GetOwner())
+		PlayHitWallSound();
 	if(GetOwner())
 	{
 		CheckGoal(hitResult);

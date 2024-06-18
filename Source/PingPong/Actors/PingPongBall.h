@@ -105,6 +105,8 @@ public:
 	UFUNCTION()
 	void SetSpeed(float Speed);
 private:
+	UPROPERTY(EditAnywhere);
+	bool Indestructible;
 	UFUNCTION(Blueprintable,BlueprintCallable)
 	void ReturnToPool();
 public:
