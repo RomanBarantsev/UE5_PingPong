@@ -85,7 +85,6 @@ void APingPongGoal::Tick(float DeltaTime)
 void APingPongGoal::UpdateLightBrightness_Implementation(float BrightnessOutput)
 {
 	DynamicMaterial->SetScalarParameterValue(TEXT("Opacity"),BrightnessOutput);
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,FString::SanitizeFloat(BrightnessOutput));
 }
 
 void APingPongGoal::UpdateLightColor(FLinearColor ColorOutput)

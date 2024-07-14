@@ -88,11 +88,14 @@ void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
 {
 	APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor());
 	if(PingPongGoal)
-	{
-		PingPongGoal->LightUpLightBox();
+	{		
 		AActor* GoalOwner = PingPongGoal->GetOwner();
 		check(GoalOwner);
-		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);
+		if(GoalOwner!=GetOwner())
+		{
+			PingPongGoal->LightUpLightBox();
+			AddScoreToPlayer(GoalOwner);
+		}
 		Multicast_HitEffect(HitResult.Location);
 		if (!Indestructible)
 		{
