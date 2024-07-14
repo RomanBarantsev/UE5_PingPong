@@ -38,7 +38,11 @@ APingPongBall::APingPongBall()
 	if(MeshAsset.Succeeded())
 	{
 		BodyMesh->SetStaticMesh(MeshAsset.Object);
-	}	
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,FString{"No MeshAsset is found for ball"});
+	}
 	bReplicates=true;	
 }
 
@@ -85,6 +89,7 @@ void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
 	APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor());
 	if(PingPongGoal)
 	{
+		PingPongGoal->LightUpLightBox();
 		AActor* GoalOwner = PingPongGoal->GetOwner();
 		check(GoalOwner);
 		if(GoalOwner!=GetOwner()) AddScoreToPlayer(GoalOwner);
