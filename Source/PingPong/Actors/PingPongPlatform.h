@@ -60,6 +60,9 @@ public:
 	UFUNCTION(Server,Reliable, WithValidation)
 	void Server_Fire(EBallModificators Modificator);
 	UPROPERTY(EditAnywhere)
+	float RotateAngle=45;
+	
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<APingPongBall> BallClass;
 	
 protected:

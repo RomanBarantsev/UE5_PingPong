@@ -110,7 +110,7 @@ void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
 		Rotator.Yaw = BodyMesh->GetRelativeRotation().Yaw + AxisValue;
 		Rotator.Pitch=0;
 		Rotator.Roll=0;
-		Rotator.Yaw =FMath::Clamp(Rotator.Yaw,-45,45);
+		Rotator.Yaw =FMath::Clamp(Rotator.Yaw,-RotateAngle,RotateAngle);
 		BodyMesh->SetRelativeRotation(Rotator);
 	}
 }
