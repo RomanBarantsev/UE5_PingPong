@@ -42,19 +42,28 @@ protected:
 	UPlatformModificator* PlatformModificator;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPingPongBallPool* BallsPoolComponent;
+	
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 15;
-	float InterpolationKey = 0.02f;
+	float MoveSpeed = 150;
+	float InterpolationKey = 0.05f;
+	float interpolatedYaw;
 	float CurrentRightAxisValue;
 	float targetRightAxisValue;
 	float CurrentForwardAxisValue;
 	float targetForwardAxisValue;
-	
+	FVector TargetLocation;
+	FVector currentLocation;
 public:
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+    void Server_MoveRight(float DeltaTime);
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+    void Server_MoveForward(float DeltaTime);
 	UFUNCTION(Server, Reliable, WithValidation)
-    void Server_MoveRight(float AxisValue);
+    void Server_GetRightValue(float AxisValue);
 	UFUNCTION(Server, Reliable, WithValidation)
-    void Server_MoveForward(float AxisValue);
+    void Server_GetForwardValue(float AxisValue);
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_Rotate(float AxisValue);
 	UFUNCTION(Server,Reliable, WithValidation)
@@ -77,8 +86,6 @@ public:
 	bool bFloating = true; 
 	
 protected:	
-	UPROPERTY(Replicated)
-	float AxisMoveValue = 0;
 	float StartRotatePos;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

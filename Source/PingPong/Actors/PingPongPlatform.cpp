@@ -50,13 +50,23 @@ void APingPongPlatform::BeginPlay()
 	FVector Origin,BoxExtended;
 	GetActorBounds(false,Origin,BoxExtended,false);
 	UKismetSystemLibrary::PrintText(GetWorld(),FText::AsNumber(BoxExtended.X));
+	currentLocation = MeshRoot->GetComponentLocation();
 }
 
 
 // Called every frame
 void APingPongPlatform::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);	
+	Super::Tick(DeltaTime);
+	Server_MoveRight(DeltaTime);
+	Server_MoveForward(DeltaTime);
+	FVector vectorSpeed = (currentLocation - MeshRoot->GetComponentLocation());
+	double speed = vectorSpeed.X+vectorSpeed.Y;
+	speed =  FMath::Abs(speed);
+	currentLocation = MeshRoot->GetComponentLocation();
+	UE_LOG(LogTemp, Warning,TEXT("speed=,%f"),speed);
+	
+	SetSoundPitch(speed);
 }
 
 bool APingPongPlatform::Server_Fire_Validate(EBallModificators Modificator)
@@ -64,10 +74,29 @@ bool APingPongPlatform::Server_Fire_Validate(EBallModificators Modificator)
 	return true;
 }
 
+void APingPongPlatform::Server_GetRightValue_Implementation(float AxisValue)
+{
+	CurrentRightAxisValue=AxisValue;
+}
+
+bool APingPongPlatform::Server_GetRightValue_Validate(float AxisValue)
+{
+	return true;
+}
+
+void APingPongPlatform::Server_GetForwardValue_Implementation(float AxisValue)
+{
+	CurrentForwardAxisValue=AxisValue;
+}
+
+bool APingPongPlatform::Server_GetForwardValue_Validate(float AxisValue)
+{
+	return true;
+}
+
 void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME( APingPongPlatform, AxisMoveValue );
 }
 
 void APingPongPlatform::SetSpeedMultiplier(int32 Multiplier)
@@ -130,54 +159,38 @@ void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator
 	BallsPoolComponent->SpawnBallOnServer(GetOwner(),Transform,Modificator);			
 }
 
-void APingPongPlatform::Server_MoveForward_Implementation(float AxisValue)
+void APingPongPlatform::Server_MoveForward_Implementation(float DeltaTime)
 {
-	AxisMoveValue = AxisValue;	
-	if(true)
+	if(bInvertedControl)
 	{
-		if(bInvertedControl)
-		{
-			AxisValue=-AxisValue;
-		}
-		SetSoundPitch(FMath::Abs(AxisValue)+1);
-		targetForwardAxisValue = AxisValue;
-		CurrentForwardAxisValue = FMath::Lerp(CurrentForwardAxisValue,targetForwardAxisValue,InterpolationKey);	
-		FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * CurrentForwardAxisValue;
-		if(!SetActorLocation(nextLocation, true))
-		{
-			
-		}
-	}
-	if(AxisValue==0)
+		CurrentRightAxisValue=-CurrentRightAxisValue;
+	}	
+	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue,CurrentForwardAxisValue,InterpolationKey);
+	SetSoundPitch(FMath::Abs(targetForwardAxisValue)+1);	
+	FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * targetForwardAxisValue*DeltaTime;
+	if(!SetActorLocation(nextLocation, true))
 	{
-		CurrentForwardAxisValue=0;
+		
 	}
 }
 
-bool APingPongPlatform::Server_MoveForward_Validate(float AxisValue)
+bool APingPongPlatform::Server_MoveForward_Validate(float DeltaTime)
 {
 	return true;
 }
 
-void APingPongPlatform::Server_MoveRight_Implementation(float AxisValue)
+void APingPongPlatform::Server_MoveRight_Implementation(float DeltaTime)
 {
-	AxisMoveValue = AxisValue;
 	if(bInvertedControl)
 	{
-		AxisValue=-AxisValue;
-	}
-		SetSoundPitch(FMath::Abs(AxisValue)+1);
-		targetRightAxisValue = AxisValue;
-		CurrentRightAxisValue = FMath::Lerp(CurrentRightAxisValue,targetRightAxisValue,InterpolationKey);	
-		FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * CurrentRightAxisValue;
-		if(!SetActorLocation(nextLocation, true))
-		{
-		
-		}
-	if(GetVelocity()==FVector::Zero() && AxisMoveValue==0)
+		CurrentRightAxisValue=-CurrentRightAxisValue;
+	}	
+	targetRightAxisValue = FMath::Lerp(targetRightAxisValue,CurrentRightAxisValue,InterpolationKey);
+	
+	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue*DeltaTime;		
+	if(!SetActorLocation(nextLocation, true))
 	{
-		CurrentRightAxisValue=0;
-		SetSoundPitch(AxisValue+1);
+		
 	}
 }
 

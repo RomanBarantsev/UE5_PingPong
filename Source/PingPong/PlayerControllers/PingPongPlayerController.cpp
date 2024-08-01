@@ -140,7 +140,7 @@ void APingPongPlayerController::Server_PlatformMoveForward_Implementation(float 
 {
 	if(Platform)
 	{		
-		Platform->Server_MoveForward(AxisValue);
+		Platform->Server_GetForwardValue(AxisValue);
 		if(AxisValue==0) bIsMovingForward=false;
 		else bIsMovingForward=true;
 	}
@@ -159,7 +159,7 @@ void APingPongPlayerController::Server_PlatformMoveRight_Implementation(float Ax
 {
 	if(Platform)
 	{		
-		Platform->Server_MoveRight(AxisValue);
+		Platform->Server_GetRightValue(AxisValue);
 		if(AxisValue==0) bIsMovingSides=false;
 		else bIsMovingSides=true;
 	}
