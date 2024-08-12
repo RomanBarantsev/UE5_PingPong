@@ -173,13 +173,17 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 		{
 			if(Modificator==EBallModificators::Fast)
 			{
-				PlatformModificator->SetSpeedOfPlatform(2.0);
+				PlatformModificator->SetSpeedOfPlatform(PingPongGameState->GetBallModificationValue(EBallModificators::Fast));
 			}
 			if(Modificator==EBallModificators::Slow)
 			{
-				PlatformModificator->SetSpeedOfPlatform(1);
+				PlatformModificator->SetSpeedOfPlatform(PingPongGameState->GetBallModificationValue(EBallModificators::Slow));
 			}
 			if(Modificator==EBallModificators::Shrink)
+			{
+				PlatformModificator->SetPlatformSize();
+			}
+			if(Modificator==EBallModificators::Expand)
 			{
 				PlatformModificator->SetPlatformSize();
 			}
@@ -284,7 +288,8 @@ void APingPongBall::Server_Move_Implementation(float DeltaTime)
 	{		
 		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
 		Vec.Normalize();
-		forwardVector=FVector(Vec.X,Vec.Y,0);		
+		UE_LOG(LogTemp, Display, TEXT("%s"),*Vec.ToString());
+		forwardVector=FVector(Vec.X,Vec.Y,0);
 		OnBallHitAnything(hitResult);
     }
 }
