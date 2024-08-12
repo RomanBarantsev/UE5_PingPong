@@ -126,6 +126,12 @@ int32 APingPongGameState::GetBallSpeed(EBallModificators modificator)
 	return RowMod->Speed;
 }
 
+float APingPongGameState::GetBallModificationValue(EBallModificators modificator)
+{
+	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
+	return RowMod->ModificatorValue;
+}
+
 FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators Modificator)
 {
 	for(const auto& RowName : BallModificatorsRowNames)

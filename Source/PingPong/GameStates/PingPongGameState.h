@@ -44,6 +44,8 @@ struct FBallModificatorsTable :public FTableRowBase
 	int32 ShotCost=1;
 	UPROPERTY(EditAnywhere)
 	float Speed=800;
+	UPROPERTY(EditAnywhere)
+	float ModificatorValue=0;
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
@@ -105,5 +107,7 @@ public:
 	int32 GetShotCost(EBallModificators modificator);
 	UFUNCTION()
 	int32 GetBallSpeed(EBallModificators modificator);
+	UFUNCTION()
+	float GetBallModificationValue(EBallModificators modificator);
 	FBallModificatorsTable* GetModificationRow(EBallModificators Modificator);
 };
