@@ -64,9 +64,9 @@ void APingPongPlatform::Tick(float DeltaTime)
 	double speed = vectorSpeed.X+vectorSpeed.Y;
 	speed =  FMath::Abs(speed);
 	currentLocation = MeshRoot->GetComponentLocation();
-	UE_LOG(LogTemp, Warning,TEXT("speed=,%f"),speed);
-	
-	SetSoundPitch(speed);
+	//TODO FIX SOUND ON CLIENT SIDE
+	SetSoundPitch(FMath::Max(FMath::Abs(targetForwardAxisValue),FMath::Abs(targetRightAxisValue))*5);
+	//UE_LOG(LogTemp,Warning,TEXT("speed=%f"),FMath::Max(FMath::Abs(targetForwardAxisValue),FMath::Abs(targetRightAxisValue)))
 }
 
 bool APingPongPlatform::Server_Fire_Validate(EBallModificators Modificator)

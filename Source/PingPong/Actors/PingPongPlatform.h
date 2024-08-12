@@ -46,7 +46,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 150;
+	float MoveSpeed = 2000;
 	float InterpolationKey = 0.05f;
 	float interpolatedYaw;
 	float CurrentRightAxisValue;
