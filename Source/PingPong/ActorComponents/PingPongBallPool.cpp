@@ -39,21 +39,24 @@ void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-void UPingPongBallPool::AddBallToPool(APingPongBall* Ball)
-{	
-	BallsPool.Add(Ball);
-}
 
 void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransform spawnTransform,EBallModificators modification)
 {
 	APingPongBall* PingPongBall=nullptr;
+	for (const auto& Ball : BallsPool)
+	{
+		if(Ball->IsHidden())
+		{
+			PingPongBall =  Ball;
+		}
+	}	
 	if(!PingPongBall)
 	{
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner=Owner;
 		PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
 		AddBallToPool(PingPongBall);
-	}	
+	}
 	PingPongBall->SetModification(modification);
 	PingPongBall->SetActorHiddenInGame(false);
 	PingPongBall->SetActorLocation(spawnTransform.GetLocation());
@@ -68,16 +71,9 @@ bool UPingPongBallPool::ReleaseBall_Validate(APingPongBall* PingPongBall)
 	return true;
 }
 
-APingPongBall* UPingPongBallPool::GetBall()
-{	
-	for (auto Ball : BallsPool)
-	{
-		if(Ball->IsHidden())
-		{
-			return Ball;
-		}
-	}	
-	return nullptr;
+void UPingPongBallPool::AddBallToPool_Implementation(APingPongBall* Ball)
+{
+	BallsPool.Add(Ball);
 }
 
 void UPingPongBallPool::ReleaseBall_Implementation(APingPongBall* PingPongBall)

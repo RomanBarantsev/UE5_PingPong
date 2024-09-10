@@ -39,9 +39,7 @@ private:
 public:
 	UFUNCTION(Server,Reliable,WithValidation)
 	void ReleaseBall(APingPongBall* PingPongBall);
-	UFUNCTION()
-	APingPongBall* GetBall();
-	UFUNCTION()	
+	UFUNCTION(Server,Reliable)	
 	void AddBallToPool(APingPongBall* Ball);
 	UFUNCTION(Server,Reliable)
 	void SpawnBallOnServer(AActor* Owner, FTransform spawnTransform,EBallModificators modification);
