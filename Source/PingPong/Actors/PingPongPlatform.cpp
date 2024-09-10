@@ -151,12 +151,12 @@ bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
 
 void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
 {
-	if(!CheckScore(Modificator)) return;
-	APingPongBall* PingPongBall = BallsPoolComponent->GetBall();
+	if(!CheckScore(Modificator)) return; //enough points to shoot
 	FTransform Transform;
 	Transform.SetLocation(ShootDirectionArrow->GetComponentLocation());
 	Transform.SetRotation(ShootDirectionArrow->GetComponentRotation().Quaternion());
-	BallsPoolComponent->SpawnBallOnServer(GetOwner(),Transform,Modificator);			
+	BallsPoolComponent->SpawnBallOnServer(GetOwner(),Transform,Modificator);
+	//TODO why is it spawning when it should be already exist in pool?
 }
 
 void APingPongPlatform::Server_MoveForward_Implementation(float DeltaTime)

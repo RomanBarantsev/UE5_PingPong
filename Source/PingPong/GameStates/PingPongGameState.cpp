@@ -86,7 +86,6 @@ void APingPongGameState::UpdateCountdown_Implementation()
 				APingPongBall* PingPongBall = Cast<APingPongBall>(findActor);
 				check(PingPongBall);
 				PingPongBall->StartMove();
-				PingPongBall->RotateBallTo();
 			}
 		}
 	}
