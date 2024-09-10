@@ -30,6 +30,16 @@ APingPongBall::APingPongBall()
 	BodyMesh->SetCollisionObjectType(ECC_WorldDynamic);
 	BodyMesh->SetIsReplicated(true);
 	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
+	BodyMesh->SetSimulatePhysics(true);
+	BodyMesh->BodyInstance.SetMassOverride(0);
+	BodyMesh->BodyInstance.bLockZTranslation=true;
+	BodyMesh->SetNotifyRigidBodyCollision(true);
+	// static ConstructorHelpers::FObjectFinder<UPhysicalMaterial> BodyMeshPhysicalAsset(TEXT("/Game/PingPong/Blueprints/NoFrictionMaterial.NoFrictionMaterial"));
+	// if(BodyMeshPhysicalAsset.Succeeded())
+	// {
+	// 	BodyMesh->SetPhysMaterialOverride(BodyMeshPhysicalAsset.Object);
+	// }
+	//TODO Need to Fix
 	HitWallSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Wall Sound"));
 	HitWallSound->SetAutoActivate(false);
 	HitPlatformSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Platform Sound"));
@@ -43,6 +53,7 @@ APingPongBall::APingPongBall()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,FString{"No MeshAsset is found for ball"});
 	}
+	BodyMesh->OnComponentHit.AddDynamic(this,&APingPongBall::OnHit);
 	bReplicates=true;	
 }
 
@@ -59,10 +70,6 @@ void APingPongBall::BeginPlay()
 void APingPongBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (HasAuthority())
-	{
-		Server_Move(DeltaTime);
-	}
 }
 
 void APingPongBall::StartMove()
@@ -123,6 +130,15 @@ void APingPongBall::ReturnToPool()
 	StopMove();
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
+}
+
+void APingPongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector normalImpulse, const FHitResult& Hit)
+{
+	if(HasAuthority())
+	{
+		OnBallHitAnything(Hit);
+		IncreaseBallSpeed();
+	}	
 }
 
 
@@ -213,6 +229,19 @@ bool APingPongBall::SetModification_Validate(EBallModificators mod)
 	return true;
 }
 
+void APingPongBall::IncreaseBallSpeed_Implementation()
+{
+	if(MoveSpeed<MaxBallSpeed)
+		MoveSpeed+=IncreaseSpeedStep;
+	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
+	BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
+}
+
+bool APingPongBall::IncreaseBallSpeed_Validate()
+{
+	return true;
+}
+
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -234,22 +263,8 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 
 void APingPongBall::RotateBallTo_Implementation(FRotator Rotator)
 {
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongPlatform::StaticClass(),PlatformActors);	
-	if(!PlatformActors.IsEmpty() && Rotator==FRotator::ZeroRotator)
-	{		
-		FVector Direction = GetActorLocation()-PlatformActors[(UKismetMathLibrary::RandomInteger(PlatformActors.Num()-1))]->GetActorLocation();
-		Direction.Normalize();
-		FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
-		SetActorRotation(FRotator(0,TargetRotation.Yaw-UKismetMathLibrary::RandomInteger(45),0));
-	}
-	else
-	{
-		SetActorRotation(Rotator);
-	}
-	FQuat ActorQuat = GetActorRotation().Quaternion();
-	forwardVector=ActorQuat.GetForwardVector();
+	SetActorRotation(Rotator);
 }
-
 void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
 {
 	UWorld * world = GetWorld();
@@ -261,6 +276,7 @@ void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
 
 void APingPongBall::Server_StopMove_Implementation()
 {
+	BodyMesh->SetPhysicsLinearVelocity(FVector::Zero());
 	isMoving = false;
 }
 
@@ -272,30 +288,19 @@ bool APingPongBall::Server_StopMove_Validate()
 void APingPongBall::Server_StartMove_Implementation()
 {
 	isMoving = true;
+	MoveSpeed=MinBallSpeed;
+	FVector Impulse;
+	if(Modificator == EBallModificators::None)
+		Impulse = FVector(UKismetMathLibrary::RandomFloatInRange(0,1),UKismetMathLibrary::RandomFloatInRange(0,1),0);
+	else
+	{
+		Impulse = FVector(BodyMesh->GetForwardVector());
+	}
+	BodyMesh->AddImpulse(Impulse);	
+	IncreaseBallSpeed();
 }
 
 bool APingPongBall::Server_StartMove_Validate()
 {
 	return true;
 }
-
-void APingPongBall::Server_Move_Implementation(float DeltaTime)
-{	
-	currLoc = GetActorLocation();
-	newLoc = currLoc + forwardVector * MoveSpeed * DeltaTime;
-	FHitResult hitResult;
-	if(!SetActorLocation(newLoc, true, &hitResult))
-	{		
-		FVector Vec = UKismetMathLibrary::MirrorVectorByNormal(hitResult.TraceEnd-hitResult.TraceStart,hitResult.ImpactNormal);
-		Vec.Normalize();
-		UE_LOG(LogTemp, Display, TEXT("%s"),*Vec.ToString());
-		forwardVector=FVector(Vec.X,Vec.Y,0);
-		OnBallHitAnything(hitResult);
-    }
-}
-
-bool APingPongBall::Server_Move_Validate(float DeltaTime)
-{
-	return true;
-}
-

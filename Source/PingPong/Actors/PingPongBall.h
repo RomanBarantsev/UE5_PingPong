@@ -42,21 +42,24 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UAudioComponent* HitPlatformSound;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
-	float MoveSpeed = 500;
+	float MinBallSpeed = 500;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
+	float MaxBallSpeed = 1000;
+	float MoveSpeed = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
+	float IncreaseSpeedStep = 300;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
 	UPROPERTY(Replicated,EditAnywhere)
-	bool isMoving = false;	
-	FVector forwardVector;
-	FVector currLoc;
-	FVector newLoc ;
+	bool isMoving = false;
+	
 protected:
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_Move(float DeltaTime);
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_StartMove();
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_StopMove();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void IncreaseBallSpeed();
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect(FVector location);
 	virtual void GetLifetimeReplicatedProps(TArray < class FLifetimeProperty >& OutLifetimeProps) const override;
@@ -73,7 +76,6 @@ public:
 public:
 	UFUNCTION(Server, Reliable)
 	void RotateBallTo(FRotator Rotator=FRotator::ZeroRotator);
-		
 protected:
 	UPROPERTY()
 	APingPongGameState* PingPongGameState;
@@ -119,10 +121,13 @@ private:
 	void PlayHitPlatformSound();
 	UFUNCTION(Server,Reliable)
 	void SpawnChaosBall();
-	
-	
+		
 public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TSubclassOf<ABallGCActor> BallGCActor;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector normalImpulse, const
+	           FHitResult& Hit);
 };
 
