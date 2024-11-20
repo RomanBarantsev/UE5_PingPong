@@ -290,12 +290,7 @@ void APingPongBall::Server_StartMove_Implementation()
 	isMoving = true;
 	MoveSpeed=MinBallSpeed;
 	FVector Impulse;
-	if(Modificator == EBallModificators::None)
-		Impulse = FVector(UKismetMathLibrary::RandomFloatInRange(0,1),UKismetMathLibrary::RandomFloatInRange(0,1),0);
-	else
-	{
-		Impulse = FVector(BodyMesh->GetForwardVector());
-	}
+	Impulse = FVector(BodyMesh->GetForwardVector());
 	BodyMesh->AddImpulse(Impulse);	
 	IncreaseBallSpeed();
 }
