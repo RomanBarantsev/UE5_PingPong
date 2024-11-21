@@ -21,11 +21,11 @@ ABallGCActor::ABallGCActor()
 void ABallGCActor::BeginPlay()
 {
 	Super::BeginPlay();
+	
 }
 
 void ABallGCActor::SetMaterialColor_Implementation(FLinearColor color)
-{
-	UKismetSystemLibrary::PrintString(GetWorld(),TEXT("Set Score "));
+{	
 	if(!DynamicMaterial)
 	{
 		auto Material = GetGeometryCollectionComponent()->GetMaterial(0);

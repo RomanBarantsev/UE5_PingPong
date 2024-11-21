@@ -134,6 +134,8 @@ void APingPongBall::ReturnToPool()
 
 void APingPongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector normalImpulse, const FHitResult& Hit)
 {
+	if (IsHidden())
+		return;
 	if(HasAuthority())
 	{
 		OnBallHitAnything(Hit);
@@ -151,7 +153,7 @@ void APingPongBall::SpawnChaosBall_Implementation()
 	SpawnedGeometryActor->PostActorConstruction();
 	SpawnedGeometryActor->SetMaterialColor(BallColor);
 	SpawnedGeometryActor->SetActorLocation(GetActorLocation());
-	SpawnedGeometryActor->GetGeometryCollectionComponent()->Activate(true);	
+	SpawnedGeometryActor->GetGeometryCollectionComponent()->Activate(true);
 }
 
 void APingPongBall::PlayHitPlatformSound_Implementation()
