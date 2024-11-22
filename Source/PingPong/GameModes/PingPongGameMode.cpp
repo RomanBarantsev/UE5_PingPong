@@ -91,8 +91,13 @@ int APingPongGameMode::GetPlayersCount() const
 	return PlayersCount;
 }
 
+void APingPongGameMode::GameEnd()
+{
+	
+}
+
 void APingPongGameMode::SetPawnRotationAndLocation_Implementation(APingPongPlayerPawn* PingPongPlayerPawn,
-	APingPongPlayerController* PingPongPlayerController)
+                                                                  APingPongPlayerController* PingPongPlayerController)
 {
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(), foundActors);

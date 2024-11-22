@@ -48,7 +48,8 @@ struct FBallModificatorsTable :public FTableRowBase
 	float ModificatorValue=0;
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged,int32,CurrentMaxScore);
 
 /**
  * 
@@ -72,8 +73,15 @@ private:
 	TArray<APingPongPlayerController*> PlayerControllers;
 	UPROPERTY(Replicated)
 	EPlayersStatus CurrentPlayersState;
-	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
-	int ScoreToEnd=100;
+
+	UPROPERTY()
+	FOnScoreChanged OnScoreChanged;
+	int ScoreToEnd=51;
+public:
+	UFUNCTION(Category="Score")
+	void AddMaxScore(int Score);
+private:
+	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;	
 	UPROPERTY(Replicated)
 	int32 ReadyPlayers=0;
 	UPROPERTY(Replicated)

@@ -117,6 +117,7 @@ void APingPongBall::AddScoreToPlayer_Implementation(AActor* Player)
 	check(PingPongPlayerState);			
 	PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+PingPongGameState->GetModificatorPoints(Modificator));
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
+	PingPongGameState->AddMaxScore(PingPongPlayerState->GetScore());
 }
 
 void APingPongBall::SetSpeed(float Speed)

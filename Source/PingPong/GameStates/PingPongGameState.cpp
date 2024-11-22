@@ -47,6 +47,15 @@ EPlayersStatus APingPongGameState::GetPlayersStatus() const
 	return CurrentPlayersState;
 }
 
+void APingPongGameState::AddMaxScore(int Score)
+{
+	if (Score>=ScoreToEnd)
+	{
+		GameMode->OnEndPlay;
+	}
+	OnScoreChanged.Broadcast(Score);
+}
+
 void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

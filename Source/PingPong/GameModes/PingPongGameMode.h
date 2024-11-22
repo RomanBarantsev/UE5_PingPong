@@ -40,4 +40,7 @@ public:
 	
 	UFUNCTION()
 	int GetPlayersCount() const;
+	
+	UFUNCTION()
+	void GameEnd();
 };
