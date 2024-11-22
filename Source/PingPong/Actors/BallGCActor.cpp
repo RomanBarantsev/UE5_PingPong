@@ -6,6 +6,7 @@
 #include "GeometryCollection/GeometryCollectionCache.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "GeometryCollection/GeometryCollectionObject.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 ABallGCActor::ABallGCActor()
@@ -21,7 +22,7 @@ ABallGCActor::ABallGCActor()
 void ABallGCActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GeometryCollectionComponent->AddImpulse(FVector(FMath::RandRange(500,1000),FMath::RandRange(500,1000),0),NAME_None,true);
 }
 
 void ABallGCActor::SetMaterialColor_Implementation(FLinearColor color)

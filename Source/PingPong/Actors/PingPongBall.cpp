@@ -147,6 +147,7 @@ void APingPongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 void APingPongBall::SpawnChaosBall_Implementation()
 {
 	FActorSpawnParameters params;
+	params.Owner = this;
 	ABallGCActor* SpawnedGeometryActor = GetWorld()->SpawnActor<ABallGCActor>(BallGCActor,GetActorLocation(),GetActorRotation(),params);
 	SpawnedGeometryActor->DispatchBeginPlay();
 	SpawnedGeometryActor->InitializeComponents();

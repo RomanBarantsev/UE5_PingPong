@@ -16,8 +16,10 @@ class PINGPONG_API ABallGCActor : public AGeometryCollectionActor
 	ABallGCActor();
 	virtual void BeginPlay() override;
 public:
+	
 	UFUNCTION(NetMulticast,Reliable)
 	void SetMaterialColor(FLinearColor color);
 	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
+	FVector Direction;
 };
