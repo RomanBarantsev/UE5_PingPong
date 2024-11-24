@@ -51,9 +51,8 @@ void APingPongGameState::AddMaxScore(int Score)
 {
 	if (Score>=ScoreToEnd)
 	{
-		GameMode->OnEndPlay;
+		SetMatchState(MatchState::WaitingPostMatch);
 	}
-	OnScoreChanged.Broadcast(Score);
 }
 
 void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -151,6 +150,17 @@ FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators
 		}			
 	}
 	return nullptr;
+}
+
+void APingPongGameState::SetMatchState_Implementation(FName NewState)
+{
+	MatchState = NewState;
+	OnMatchStateChanged.Broadcast(NewState); 
+}
+
+FName APingPongGameState::GetMatchState() const
+{
+	return AGameState::GetMatchState();
 }
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)

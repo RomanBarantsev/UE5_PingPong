@@ -36,7 +36,9 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UBorder* BallColor;
 	UPROPERTY(meta=(BindWidget))
-	UTextBlock* BallCost;
+	UTextBlock* BallCost;	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* GameOverText;
 	
 	virtual void NativeConstruct() override;
 private:
@@ -64,4 +66,6 @@ public:
 	void SetBallSquareColor(FLinearColor Color);
 	UFUNCTION()
 	void SetBallShotCostText(int32 score);
+	UFUNCTION()
+	void ShowGameOverText();
 };

@@ -97,4 +97,7 @@ private:
 private:
 	bool bIsMovingSides=false;
 	bool bIsMovingForward=false;
+	
+	UFUNCTION()
+	void HandleMatchStateChange(FName NewState);
 };

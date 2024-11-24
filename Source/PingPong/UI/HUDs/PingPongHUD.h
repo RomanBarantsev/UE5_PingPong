@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "PingPongHUD.generated.h"
 
+class APingPongGameState;
 class UMainMenu;
 class UOverlayWidget;
 /**
@@ -27,9 +28,15 @@ protected:
 	UOverlayWidget* OverlayWidget;
 	UPROPERTY()
 	UMainMenu* MainMenuWidget;
+	UPROPERTY()
+	APingPongGameState* GameState;
 public:
 	UFUNCTION()
 	UOverlayWidget* GetOverlayWidget();
 	UFUNCTION()
 	UMainMenu* GetMainMenuWidget();
+
+private:
+	UFUNCTION()
+	void HandleMatchStateChange(FName NewState);
 };

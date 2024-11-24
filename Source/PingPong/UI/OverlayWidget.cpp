@@ -21,6 +21,7 @@ void UOverlayWidget::NativeConstruct()
 	TextScorePlayer2->SetVisibility(ESlateVisibility::Hidden);
 	TextNamePlayer1->SetVisibility(ESlateVisibility::Hidden);
 	TextNamePlayer2->SetVisibility(ESlateVisibility::Hidden);
+	GameOverText->SetVisibility(ESlateVisibility::Hidden);
 	Super::NativeConstruct();
 }
 
@@ -114,4 +115,11 @@ void UOverlayWidget::SetBallShotCostText(int32 score)
 {
 	BallCost->SetText(FText::AsNumber(score));
 }
+
+void UOverlayWidget::ShowGameOverText()
+{
+	GameOverText->SetVisibility(ESlateVisibility::Visible);
+	
+}
+
 

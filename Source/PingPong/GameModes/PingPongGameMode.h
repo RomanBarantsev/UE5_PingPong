@@ -9,7 +9,6 @@
 class APingPongGameState;
 class APingPongPlayerController;
 class APingPongPlayerPawn;
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName)
 class APlayerStart;
 /**
  * 
@@ -41,6 +40,4 @@ public:
 	UFUNCTION()
 	int GetPlayersCount() const;
 	
-	UFUNCTION()
-	void GameEnd();
 };

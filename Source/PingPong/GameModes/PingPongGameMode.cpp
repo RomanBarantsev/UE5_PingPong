@@ -91,10 +91,6 @@ int APingPongGameMode::GetPlayersCount() const
 	return PlayersCount;
 }
 
-void APingPongGameMode::GameEnd()
-{
-	
-}
 
 void APingPongGameMode::SetPawnRotationAndLocation_Implementation(APingPongPlayerPawn* PingPongPlayerPawn,
                                                                   APingPongPlayerController* PingPongPlayerController)

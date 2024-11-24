@@ -3,6 +3,7 @@
 
 #include "PingPongPlayerController.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
@@ -25,6 +26,7 @@ void APingPongPlayerController::BeginPlay()
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(PingPongGameState);
 	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);
+	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::HandleMatchStateChange);
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 	bShowMouseCursor=true;
 	Super::BeginPlay();	
@@ -216,6 +218,14 @@ void APingPongPlayerController::OpenMenu()
 		SetShowMouseCursor(true);
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
+	}
+}
+
+void APingPongPlayerController::HandleMatchStateChange(FName NewState)
+{
+	if(NewState==MatchState::WaitingPostMatch)
+	{
+		DisableInput(this);
 	}
 }
 

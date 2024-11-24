@@ -3,6 +3,9 @@
 
 #include "PingPongHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/GameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/UI/MainMenu.h"
 #include "PingPong/UI/OverlayWidget.h"
 
@@ -18,6 +21,11 @@ void APingPongHUD::CreateWidgets()
 {
 	OverlayWidget = Cast<UOverlayWidget>(CreateWidget(GetWorld(),OverlayWidgetSubClass));
 	MainMenuWidget = Cast<UMainMenu>(CreateWidget(GetWorld(),MainMenuWidgetSubClass));
+	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(this));
+	if(GameState)
+	{
+		GameState->OnMatchStateChanged.AddDynamic(this,&APingPongHUD::HandleMatchStateChange);
+	}
 	check(OverlayWidget);
 	check(MainMenuWidget);
 }
@@ -31,3 +39,13 @@ UMainMenu* APingPongHUD::GetMainMenuWidget()
 {
 	return MainMenuWidget;
 }
+
+void APingPongHUD::HandleMatchStateChange(FName NewState)
+{
+	if(NewState==MatchState::WaitingPostMatch)
+	{
+		OverlayWidget->ShowGameOverText();
+	}
+}
+
+

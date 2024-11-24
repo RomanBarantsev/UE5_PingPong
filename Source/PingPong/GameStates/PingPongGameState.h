@@ -49,8 +49,7 @@ struct FBallModificatorsTable :public FTableRowBase
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreChanged,int32,CurrentMaxScore);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName, NewState);
 /**
  * 
  */
@@ -74,8 +73,6 @@ private:
 	UPROPERTY(Replicated)
 	EPlayersStatus CurrentPlayersState;
 
-	UPROPERTY()
-	FOnScoreChanged OnScoreChanged;
 	int ScoreToEnd=51;
 public:
 	UFUNCTION(Category="Score")
@@ -118,4 +115,12 @@ public:
 	UFUNCTION()
 	float GetBallModificationValue(EBallModificators modificator);
 	FBallModificatorsTable* GetModificationRow(EBallModificators Modificator);
+
+	UPROPERTY(BlueprintAssignable, Category = "Match State")
+	FOnMatchStateChanged OnMatchStateChanged;
+	
+	UFUNCTION(NetMulticast,Reliable)
+	void SetMatchState(FName NewState);
+
+	FName GetMatchState() const;
 };
