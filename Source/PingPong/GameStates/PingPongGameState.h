@@ -11,14 +11,6 @@ class APingPongPlayerController;
 class APingPongGameMode;
 
 UENUM()
-enum class EPlayersStatus
-{	
-	AllPlayersConnected UMETA(DisplayName="AllPlayerConnected"),
-	AllPlayersIsReady UMETA(DisplayName="AllPlayersIsReady"),
-	NONE UMETA(DisplayName="None")
-};
-
-UENUM()
 enum class EBallModificators	
 {	
 	Fast UMETA(DisplayName="Fast"),
@@ -48,7 +40,6 @@ struct FBallModificatorsTable :public FTableRowBase
 	float ModificatorValue=0;
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayersStateChanged,EPlayersStatus);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName, NewState);
 /**
  * 
@@ -61,17 +52,9 @@ class PINGPONG_API APingPongGameState : public AGameState
 protected:
 	APingPongGameState();
 	virtual void BeginPlay() override;
-public:
-	UFUNCTION()
-	void UpdateCharacterState(EPlayersStatus NewPlayersState);
-	UFUNCTION()
-	EPlayersStatus GetPlayersStatus() const;	
-	FOnPlayersStateChanged OnPlayersStateChanged;
 private:	
 	UPROPERTY(Replicated)
 	TArray<APingPongPlayerController*> PlayerControllers;
-	UPROPERTY(Replicated)
-	EPlayersStatus CurrentPlayersState;
 
 	int ScoreToEnd=51;
 public:
@@ -82,12 +65,18 @@ private:
 	UPROPERTY(Replicated)
 	int32 ReadyPlayers=0;
 	UPROPERTY(Replicated)
-	int32 LoadedPlayers;	
+	int32 LoadedPlayers;
 	UPROPERTY()
-	int32 CountDown = 1;	
-	FTimerHandle CountDownHandle;
-	UFUNCTION(Server,Reliable)
-	void UpdateCountdown();
+	int32 StartedPlayers;
+	UPROPERTY()
+	int32 CountDown = 3;
+public:
+	UFUNCTION()
+	int32 GetCountDownTime();
+
+private:
+	UFUNCTION(Client,Reliable)
+	void SetCountDownOnPlayerSide();
 	UPROPERTY()
 	const APingPongGameMode* GameMode;
 public:
@@ -95,6 +84,8 @@ public:
 	void IncreaseReadyPlayer();
 	UFUNCTION(Server,Reliable)
 	void IncreaseLoadedPlayer();
+	UFUNCTION(Server,Reliable)
+	void IncreaseStartedPlayers();
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
 	UFUNCTION(Client,Reliable)
 	void UpdatePlayersScore(int32 playerId, int32 Score);
@@ -123,4 +114,5 @@ public:
 	void SetMatchState(FName NewState);
 
 	FName GetMatchState() const;
+	
 };

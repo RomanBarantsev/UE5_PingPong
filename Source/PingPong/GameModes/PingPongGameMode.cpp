@@ -5,7 +5,6 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongGoal.h"
-#include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
@@ -31,14 +30,7 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	if(!world) return;
 	APingPongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
-	SetClosestGoalOwner(Pawn);
-	if(PingPongGameState->GetPlayersControllers().Num()==PlayersCount)
-	{					
-		if(PingPongGameState)
-		{
-			PingPongGameState->UpdateCharacterState(EPlayersStatus::AllPlayersConnected);
-		}
-	}	
+	SetClosestGoalOwner(Pawn);	
 	Super::PostLogin(NewPlayer);
 	
 }

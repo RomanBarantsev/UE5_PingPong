@@ -25,10 +25,10 @@ void APingPongPlayerController::BeginPlay()
 	}	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(PingPongGameState);
-	PingPongGameState->OnPlayersStateChanged.AddUObject(this,&ThisClass::OnPlayersStateChanged);
 	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::HandleMatchStateChange);
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 	bShowMouseCursor=true;
+	DisableInput(this);
 	Super::BeginPlay();	
 }
 
@@ -42,10 +42,6 @@ void APingPongPlayerController::Tick(float DeltaSeconds)
 	}
 }
 
-void APingPongPlayerController::OnPlayersStateChanged_Implementation(EPlayersStatus PlayersStatus)
-{
-	
-}
 
 APingPongPlayerController::APingPongPlayerController()
 {
@@ -227,6 +223,10 @@ void APingPongPlayerController::HandleMatchStateChange(FName NewState)
 	{
 		DisableInput(this);
 	}
+	if(NewState==MatchState::InProgress)
+	{
+		EnableInput(this);
+	}
 }
 
 void APingPongPlayerController::SetColorAndPriceUI_Implementation(FLinearColor Color,int32 Price)
@@ -264,17 +264,6 @@ void APingPongPlayerController::SetScoreText_Implementation(int32 PlayerId)
 	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(PlayerId);
 }
 
-void APingPongPlayerController::AllPlayersReady_Implementation(int32 CountDownValue)
-{
-	PingPongHUD->GetOverlayWidget()->OnPlayersStateChanged(EPlayersStatus::AllPlayersIsReady);
-	PingPongHUD->GetOverlayWidget()->UpdateCountdown(CountDownValue);
-}
-
-void APingPongPlayerController::AllPlayersConnected_Implementation()
-{
-	PingPongHUD->GetOverlayWidget()->OnPlayersStateChanged(EPlayersStatus::AllPlayersConnected);
-}
-
 void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 {
 	if(HasAuthority() && UKismetSystemLibrary::IsDedicatedServer(GetWorld())) return; 
@@ -295,6 +284,11 @@ void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 	case EUIStatus::UIPaused: //UIPaused
 		{
 				
+			break;
+		}
+	case EUIStatus::Started:
+		{
+			PingPongGameState->IncreaseStartedPlayers();
 			break;
 		}
 	default:

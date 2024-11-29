@@ -14,7 +14,8 @@ enum class EUIStatus : uint8
 	NONE,
 	UILoaded,
 	ReadyButtonPressed,
-	UIPaused
+	UIPaused,
+	Started
 };
 enum class EPlayersStatus;
 class APingPongGameState;
@@ -35,8 +36,6 @@ protected:
 	APingPongGameState* PingPongGameState;
 	UPROPERTY()
 	APingPongPlayerState* PingPongPlayerState;
-	UFUNCTION(Server,Reliable)
-	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
 	TSubclassOf<class APingPongPlatform> PlatformClass;
 	UPROPERTY()
@@ -79,10 +78,6 @@ protected:
 public:
 	UFUNCTION(Server,Reliable)
 	void SetUIStatus(EUIStatus status);
-	UFUNCTION(Client,Reliable)
-	void AllPlayersConnected();
-	UFUNCTION(Client,Reliable)
-	void AllPlayersReady(int32 CountDownValue);
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 PlayerId, float Score);
 	UFUNCTION(Client,Reliable)

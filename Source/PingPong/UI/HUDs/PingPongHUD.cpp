@@ -46,6 +46,19 @@ void APingPongHUD::HandleMatchStateChange(FName NewState)
 	{
 		OverlayWidget->ShowGameOverText();
 	}
+	if(NewState==MatchState::WaitingToStart)
+	{		
+		OverlayWidget->SetCountDownTime(GameState->GetCountDownTime());
+		OverlayWidget->AllPlayersReady();		
+	}
+	if(NewState==MatchState::InProgress)
+	{
+		
+	}
+	if(NewState==MatchState::EnteringMap)
+	{
+		OverlayWidget->AllPlayersConnected();
+	}
 }
 
 

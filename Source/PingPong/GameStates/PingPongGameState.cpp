@@ -12,7 +12,6 @@
 
 APingPongGameState::APingPongGameState()
 {
-	CurrentPlayersState=EPlayersStatus::NONE;
 	bReplicates=true;
 }
 
@@ -35,18 +34,6 @@ void APingPongGameState::BeginPlay()
 	}
 }
 
-void APingPongGameState::UpdateCharacterState(EPlayersStatus NewPlayersState)
-{	
-	CurrentPlayersState=NewPlayersState;
-	if(OnPlayersStateChanged.IsBound())
-		OnPlayersStateChanged.Broadcast(CurrentPlayersState);
-}
-
-EPlayersStatus APingPongGameState::GetPlayersStatus() const
-{
-	return CurrentPlayersState;
-}
-
 void APingPongGameState::AddMaxScore(int Score)
 {
 	if (Score>=ScoreToEnd)
@@ -58,10 +45,19 @@ void APingPongGameState::AddMaxScore(int Score)
 void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME( APingPongGameState, CurrentPlayersState );
 	DOREPLIFETIME( APingPongGameState, ReadyPlayers );
 	DOREPLIFETIME( APingPongGameState, PlayerControllers );		
 	DOREPLIFETIME( APingPongGameState, LoadedPlayers );	
+}
+
+int32 APingPongGameState::GetCountDownTime()
+{
+	return CountDown;
+}
+
+void APingPongGameState::SetCountDownOnPlayerSide_Implementation()
+{
+	
 }
 
 void APingPongGameState::IncreaseLoadedPlayer_Implementation()
@@ -70,38 +66,17 @@ void APingPongGameState::IncreaseLoadedPlayer_Implementation()
 	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 	if(LoadedPlayers==GameMode->GetPlayersCount())
 	{
-		for (auto PlayerController : PlayerControllers)
-		{
-			PlayerController->AllPlayersConnected();
-		}
+		SetMatchState(MatchState::EnteringMap);
 	}
 }
 
-void APingPongGameState::UpdateCountdown_Implementation()
+void APingPongGameState::IncreaseStartedPlayers_Implementation()
 {
-	for (auto PlayerController : PlayerControllers)
+	StartedPlayers++;
+	if(StartedPlayers==GameMode->GetPlayersCount())
 	{
-		PlayerController->AllPlayersReady(CountDown);
+		SetMatchState(MatchState::InProgress);
 	}
-	if(CountDown==0)
-	{
-		TArray<AActor*> findActors;		
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongBall::StaticClass(),findActors);
-		for (auto findActor : findActors)
-		{
-			if(findActor->GetOwner()==nullptr)
-			{
-				APingPongBall* PingPongBall = Cast<APingPongBall>(findActor);
-				check(PingPongBall);
-				PingPongBall->StartMove();
-			}
-		}
-	}
-	if(CountDown<-1)
-	{		
-		GetWorld()->GetTimerManager().ClearTimer(CountDownHandle);		
-	}
-	CountDown--;
 }
 
 TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
@@ -182,10 +157,9 @@ void APingPongGameState::IncreaseReadyPlayer_Implementation()
 			{
 				APingPongPlayerState* PlayerState = PlayerControllerState->GetPlayerState<APingPongPlayerState>();
 				PlayerController->SetScoreText(PlayerState->GetPlayerId());	
-			}
-			
-		}		
-		GetWorld()->GetTimerManager().SetTimer(CountDownHandle, this, &APingPongGameState::UpdateCountdown, 1.0f, true, 0.0f);
+			}			
+		}
+		SetMatchState(MatchState::WaitingToStart);
 	}
 }
 

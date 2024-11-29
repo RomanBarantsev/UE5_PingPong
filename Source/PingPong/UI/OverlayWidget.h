@@ -54,10 +54,12 @@ protected:
 public:	
 	UFUNCTION()
 	void ShowWaitingForPlayers();
+	int32 CountdownTime;
 	UFUNCTION()
-	void OnPlayersStateChanged(EPlayersStatus PlayersStatus);	
+	void SetCountDownTime(int32 Time);
+	FTimerHandle CountDownTimerHandle;
 	UFUNCTION()
-	void UpdateCountdown(int32 value);
+	void UpdateCountdown();
 	UFUNCTION()
 	void UpdateScore(int32 playerId, float Score);
 	UFUNCTION()
@@ -68,4 +70,8 @@ public:
 	void SetBallShotCostText(int32 score);
 	UFUNCTION()
 	void ShowGameOverText();
+	UFUNCTION()
+	void AllPlayersConnected();
+	UFUNCTION()
+	void AllPlayersReady();
 };
