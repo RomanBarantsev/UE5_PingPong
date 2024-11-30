@@ -83,9 +83,12 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetScoreText(int32 PlayerId);
 
-private:	
-	UFUNCTION(Server,Reliable)
-	void ScrollColor();
+private:
+	int32 ModificationsCount;	
+	UFUNCTION(Server,Reliable,WithValidation)
+	void ScrollColorOnServer(float Axis);
+	UFUNCTION()
+	void ScrollColor(float Axis);
 	UFUNCTION(Client,Reliable)
 	void SetColorAndPriceUI(FLinearColor Color,int32 Price);
 

@@ -11,7 +11,7 @@ class APingPongPlayerController;
 class APingPongGameMode;
 
 UENUM()
-enum class EBallModificators	
+enum class EBallModificators : int8	
 {	
 	Fast UMETA(DisplayName="Fast"),
 	Slow UMETA(DisplayName="Slow"),
@@ -91,10 +91,21 @@ public:
 	void UpdatePlayersScore(int32 playerId, int32 Score);
 	
 private:
+	UFUNCTION()
+	void CalculateEnumBallModifications();
+	UPROPERTY()
+	int32 EBallModificatorsCount;
+	UPROPERTY()
+	TMap<int8,EBallModificators> ModificationMap;
+public:
+	UFUNCTION()
+	int32 GeBallModificatorsCount();
 	UPROPERTY(EditDefaultsOnly, Category = "Data")
 	UDataTable* BallModificatorsDataTable;
 	TArray<FName> BallModificatorsRowNames;
 public:
+	UFUNCTION()
+	EBallModificators GetModifcation(int8 mod);
 	UFUNCTION()
 	FLinearColor GetModificatorColor(EBallModificators modificator);
 	UFUNCTION()
@@ -106,7 +117,7 @@ public:
 	UFUNCTION()
 	float GetBallModificationValue(EBallModificators modificator);
 	FBallModificatorsTable* GetModificationRow(EBallModificators Modificator);
-
+	
 	UPROPERTY(BlueprintAssignable, Category = "Match State")
 	FOnMatchStateChanged OnMatchStateChanged;
 	

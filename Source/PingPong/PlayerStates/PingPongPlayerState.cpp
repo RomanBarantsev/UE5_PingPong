@@ -5,8 +5,6 @@
 #include <Kismet/GameplayStatics.h>
 
 #include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPong/Pawns/PingPongPlayerPawn.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 void APingPongPlayerState::BeginPlay()
 {
@@ -16,14 +14,31 @@ void APingPongPlayerState::BeginPlay()
 	SetScore(50);
 	#endif
 	Super::BeginPlay();
+	bReplicates=true;
+	maxModificator = GameState->GeBallModificatorsCount()-1;
+}
+
+void APingPongPlayerState::NextModificator()
+{
+	if(Modificator==maxModificator)
+	{
+		Modificator=0;
+		return;
+	}
+	Modificator++;
+}
+
+void APingPongPlayerState::PrevModificator()
+{
+	if(Modificator==0)
+	{
+		Modificator=maxModificator;
+		return;
+	}
+	Modificator--;
 }
 
 EBallModificators APingPongPlayerState::GetModificator()
 {
-	return Modificator;
-}
-
-void APingPongPlayerState::SetModificator(EBallModificators modificator)
-{
-	Modificator = modificator;
+	return GameState->GetModifcation(Modificator);
 }

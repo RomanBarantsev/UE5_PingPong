@@ -21,11 +21,14 @@ protected:
 	int ShootBalls = 0;
 	UPROPERTY()
 	APingPongGameState* GameState;
-	EBallModificators Modificator = EBallModificators::None;
+	int8 maxModificator=0;
+	int8 Modificator=0;
 
 public:
 	UFUNCTION()
-	EBallModificators GetModificator();
+	void NextModificator();
 	UFUNCTION()
-	void SetModificator(EBallModificators modificator);
+	void PrevModificator();
+	UFUNCTION()
+	EBallModificators GetModificator();
 };

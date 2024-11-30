@@ -32,6 +32,7 @@ void APingPongGameState::BeginPlay()
 		UKismetSystemLibrary::QuitGame(GetWorld(),UGameplayStatics::GetPlayerController(GetWorld(),0),EQuitPreference::Type::Quit,false);
 		UE_LOG(LogTemp, Warning, TEXT("No Ball Modificators DataTable"));
 	}
+	CalculateEnumBallModifications();
 }
 
 void APingPongGameState::AddMaxScore(int Score)
@@ -82,6 +83,26 @@ void APingPongGameState::IncreaseStartedPlayers_Implementation()
 TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 {
 	return PlayerControllers;
+}
+
+void APingPongGameState::CalculateEnumBallModifications()
+{
+	const UEnum* EnumPtr = StaticEnum<EBallModificators>();
+	EBallModificatorsCount = EnumPtr ? EnumPtr->NumEnums() - 1 : 0;
+	for (int i = 0; i < EBallModificatorsCount; ++i)
+	{
+		ModificationMap.Add(i,EBallModificators(i));
+	}
+}
+
+int32 APingPongGameState::GeBallModificatorsCount()
+{
+	return EBallModificatorsCount;
+}
+
+EBallModificators APingPongGameState::GetModifcation(int8 mod)
+{
+	return ModificationMap[mod];
 }
 
 FLinearColor APingPongGameState::GetModificatorColor(EBallModificators modificator)
