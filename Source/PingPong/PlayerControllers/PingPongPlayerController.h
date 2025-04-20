@@ -7,7 +7,7 @@
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPongPlayerController.generated.h"
 class APingPongPlayerState;
-class APingPongHUD;
+class ABaseHUD;
 UENUM()
 enum class EUIStatus : uint8
 {
@@ -70,7 +70,7 @@ protected:
 
 protected:
 	UPROPERTY()
-	APingPongHUD* PingPongHUD;
+	ABaseHUD* PingPongHUD;
 	UFUNCTION()
 	void OpenMenu();
 	EUIStatus UIStatus;

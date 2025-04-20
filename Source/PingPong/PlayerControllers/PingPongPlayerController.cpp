@@ -12,7 +12,7 @@
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
 #include "PingPong/UI/MainMenu.h"
 #include "PingPong/UI/OverlayWidget.h"
-#include "PingPong/UI/HUDs/PingPongHUD.h"
+#include "PingPong/UI/HUDs/BaseHUD.h"
 
 void APingPongPlayerController::BeginPlay()
 {	
@@ -21,7 +21,7 @@ void APingPongPlayerController::BeginPlay()
 		AHUD* HUD = GetHUD();
 		if(HUD)
 		{
-			PingPongHUD = Cast<APingPongHUD>(HUD);
+			PingPongHUD = Cast<ABaseHUD>(HUD);
 		}
 		check(PingPongHUD);		
 	}
@@ -208,19 +208,17 @@ bool APingPongPlayerController::Server_PlatformRotate_Validate(float AxisValue)
 
 void APingPongPlayerController::OpenMenu()
 {
-	if(PingPongHUD->GetMainMenuWidget()->IsInViewport())
+	if (bShowMouseCursor)
 	{
-		PingPongHUD->GetMainMenuWidget()->RemoveFromParent();	
 		SetShowMouseCursor(false);
-		UWidgetBlueprintLibrary::SetInputMode_GameOnly(this);
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+		PingPongHUD->SwitchUI(Widgets::MainMenu,1);
 	}
 	else
 	{
-		PingPongHUD->GetMainMenuWidget()->AddToViewport(1);
-		SetShowMouseCursor(true);
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
+		SetShowMouseCursor(true);
+		PingPongHUD->SwitchUI(Widgets::MainMenu,1);
 	}
 }
 
