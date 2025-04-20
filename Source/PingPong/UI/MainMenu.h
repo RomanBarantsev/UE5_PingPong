@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/BackgroundBlur.h"
 #include "Components/Button.h"
+#include "HUDs/BaseHUD.h"
 #include "MainMenu.generated.h"
 
 /**
@@ -18,12 +19,19 @@ class PINGPONG_API UMainMenu : public UUserWidget
 private:
 	UPROPERTY(meta=(BindWidget))
 	UButton* JoinGame;
+	UFUNCTION()
+	void JoinGame_Clicked();
+	
 	UPROPERTY(meta=(BindWidget))
 	UButton* CreateGame;
 	UPROPERTY(meta=(BindWidget))
 	UButton* Settings;
 	UPROPERTY(meta=(BindWidget))
+	UButton* Quit;
+	UPROPERTY(meta=(BindWidget))
 	UBackgroundBlur* Blur;
+	UPROPERTY()
+	ABaseHUD* HUD;
 	virtual void NativeConstruct() override;
 	
 };
