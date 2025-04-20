@@ -9,13 +9,13 @@
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
-#include "PingPong/UI/HUDs/PingPongHUD.h"
+#include "PingPong/UI/HUDs/BaseHUD.h"
 
 APingPongGameMode::APingPongGameMode()
 {
 	DefaultPawnClass = APingPongPlayerPawn::StaticClass();
 	PlayerControllerClass = APingPongPlayerController::StaticClass();
-	HUDClass = APingPongHUD::StaticClass();
+	HUDClass = ABaseHUD::StaticClass();
 	GameStateClass = APingPongGameState::StaticClass();
 	PlayerStateClass = APingPongPlayerState::StaticClass();
 }
