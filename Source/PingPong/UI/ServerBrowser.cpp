@@ -24,10 +24,16 @@ void UServerBrowser::OnRefreshPressed()
 	
 }
 
+void UServerBrowser::OnBackPressed()
+{
+	this->RemoveFromParent();
+}
+
 void UServerBrowser::NativeConstruct()
 {
 	Super::NativeConstruct();
 	RefreshBtn->OnClicked.AddDynamic(this,&UServerBrowser::OnRefreshPressed);
+	BackButton->OnClicked.AddDynamic(this,&UServerBrowser::OnBackPressed);
 }
 
 void UServerBrowser::ClearServerList() const

@@ -9,6 +9,7 @@
 #include "Components/NativeWidgetHost.h"
 #include "ServerBrowser.generated.h"
 
+
 /**
  * 
  */
@@ -31,6 +32,8 @@ protected:
 	void OnConnectPressed();
 	UFUNCTION()
 	void OnRefreshPressed();
+	UFUNCTION()
+	void OnBackPressed();
 private:
 	virtual void NativeConstruct() override;
 	
