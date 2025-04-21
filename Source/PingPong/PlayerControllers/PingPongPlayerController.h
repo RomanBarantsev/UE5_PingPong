@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/UI/HUDs/GameHUD.h"
 #include "PingPongPlayerController.generated.h"
+
 class APingPongPlayerState;
 class ABaseHUD;
 UENUM()
@@ -70,7 +72,7 @@ protected:
 
 protected:
 	UPROPERTY()
-	ABaseHUD* PingPongHUD;
+	AGameHUD* PingPongHUD;
 	UFUNCTION()
 	void OpenMenu();
 	EUIStatus UIStatus;

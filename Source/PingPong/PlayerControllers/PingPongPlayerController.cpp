@@ -21,7 +21,7 @@ void APingPongPlayerController::BeginPlay()
 		AHUD* HUD = GetHUD();
 		if(HUD)
 		{
-			PingPongHUD = Cast<ABaseHUD>(HUD);
+			PingPongHUD = Cast<AGameHUD>(HUD);
 		}
 		check(PingPongHUD);		
 	}
