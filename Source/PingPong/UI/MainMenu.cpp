@@ -10,7 +10,6 @@
 void UMainMenu::JoinGame_Clicked()
 {
 	HUD->SwitchUI(Widgets::ServerList,1);
-	this->RemoveFromParent();
 }
 
 void UMainMenu::NativeConstruct()
