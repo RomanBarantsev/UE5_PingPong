@@ -26,7 +26,7 @@ void UServerBrowser::OnRefreshPressed()
 
 void UServerBrowser::OnBackPressed()
 {
-	this->RemoveFromParent();
+	this->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UServerBrowser::NativeConstruct()
