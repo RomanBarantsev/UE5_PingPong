@@ -15,13 +15,13 @@ void ABaseHUD::SwitchUI(Widgets UIName,int32 zOrder)
 		UUserWidget* widget = UIWidgetsMap[UIName];
 		if (widget)
 		{
-			if (widget->IsInViewport())
+			if (widget->GetVisibility()==ESlateVisibility::Visible)
 			{
-				widget->RemoveFromParent();
+				widget->SetVisibility(ESlateVisibility::Collapsed);
 			}
 			else
 			{
-				widget->AddToViewport(zOrder);
+				widget->SetVisibility(ESlateVisibility::Visible);
 			}
 		}
 	}
@@ -29,11 +29,12 @@ void ABaseHUD::SwitchUI(Widgets UIName,int32 zOrder)
 
 void ABaseHUD::BeginPlay()
 {
-	
+	OnWidgetChanged.AddDynamic(this,&ABaseHUD::WidgetChanged);
 	Super::BeginPlay();	
 	if (MainMenuWidgetSubClass)
 	{
 		UUserWidget* MainMenu = CreateWidget<UUserWidget>(GetWorld(),MainMenuWidgetSubClass);
+		
 		UIWidgetsMap.Add(Widgets::MainMenu,MainMenu);
 	}	
 	if (ServerBrowserWidgetSubClass)
@@ -46,8 +47,19 @@ void ABaseHUD::BeginPlay()
 		UUserWidget* Settings = CreateWidget<UUserWidget>(GetWorld(),SettingsWidgetSubClass);	
 		UIWidgetsMap.Add(Widgets::Settings,Settings);
 	}
+	for (auto [type,widget] : UIWidgetsMap)
+	{
+		widget->SetVisibility(ESlateVisibility::Collapsed);
+		widget->AddToViewport(0);
+		if (type==Widgets::MainMenu)
+			widget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
-
+void ABaseHUD::WidgetChanged(Widgets widget)
+{
+	//widget==Widgets::MainMenu?  : SwitchUI((Widgets::MainMenu),1);
+	
+}
 
 

@@ -21,6 +21,7 @@ enum Widgets
 	ServerList,
 	Overlay
 };
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWidgetChanged,Widgets,widget);
 
 UCLASS()
 class PINGPONG_API ABaseHUD : public AHUD
@@ -37,5 +38,8 @@ protected:
 	TSubclassOf<UUserWidget> MainMenuWidgetSubClass;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> SettingsWidgetSubClass;
-
+private:
+	FOnWidgetChanged OnWidgetChanged;
+	UFUNCTION()
+	void WidgetChanged(Widgets widget);
 };
