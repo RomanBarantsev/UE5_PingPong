@@ -15,7 +15,7 @@ UCLASS()
 class PINGPONG_API UNetworkGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-protected:
+public:	
 	/**
 	*	Function to host a game!
 	*
