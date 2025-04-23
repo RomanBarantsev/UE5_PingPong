@@ -21,6 +21,8 @@ private:
 	UButton* JoinGame;
 	UFUNCTION()
 	void JoinGame_Clicked();
+	UFUNCTION()
+	void CreateGame_Clicked();
 	
 	UPROPERTY(meta=(BindWidget))
 	UButton* CreateGame;
