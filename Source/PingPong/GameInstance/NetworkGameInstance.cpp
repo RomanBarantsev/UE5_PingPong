@@ -125,8 +125,8 @@ void UNetworkGameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, b
 			SessionSearch = MakeShareable(new FOnlineSessionSearch());
 
 			SessionSearch->bIsLanQuery = bIsLAN;
-			SessionSearch->MaxSearchResults = 20;
-			SessionSearch->PingBucketSize = 50;
+			//SessionSearch->MaxSearchResults = 20;
+			//SessionSearch->PingBucketSize = 50;
 			// We only want to set this Query Setting if "bIsPresence" is true
 			if (bIsPresence)
 			{
@@ -261,7 +261,7 @@ void UNetworkGameInstance::OnDestroySessionComplete(FName SessionName, bool bWas
 			// If it was successful, we just load another level (could be a MainMenu!)
 			if (bWasSuccessful)
 			{
-				UGameplayStatics::OpenLevel(GetWorld(), "GameMap", true);
+				//UGameplayStatics::OpenLevel(GetWorld(), "GameMap", true);
 			}
 		}
 	}
@@ -272,6 +272,7 @@ void UNetworkGameInstance::StartOnlineGame()
 	ULocalPlayer* const Player = GetFirstGamePlayer();
 	
 	// Call our custom HostSession function. GameSessionName is a GameInstance variable
+	DestroySessionAndLeaveGame();
 	HostSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), NAME_GameSession, true, true, 4);
 }
 
