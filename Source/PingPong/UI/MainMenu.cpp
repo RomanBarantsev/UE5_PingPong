@@ -4,6 +4,7 @@
 #include "MainMenu.h"
 #include "HUDs/BaseHUD.h"
 #include "Kismet/GameplayStatics.h"
+#include "PingPong/GameInstance/MinimalSessionGameInstance.h"
 #include "PingPong/GameInstance/NetworkGameInstance.h"
 
 class UNetworkGameInstance;
@@ -14,8 +15,8 @@ void UMainMenu::JoinGame_Clicked()
 	UNetworkGameInstance* NetworkGI = Cast<UNetworkGameInstance>(GameInstance);
 	if (NetworkGI)
 	{
-		NetworkGI->FindOnlineGames();
-		NetworkGI->JoinOnlineGame();
+		//NetworkGI->FindOnlineGames();
+		//NetworkGI->JoinOnlineGame();
 	}
 	
 	//HUD->SwitchUI(Widgets::ServerList,1);
@@ -28,7 +29,7 @@ void UMainMenu::CreateGame_Clicked()
 	if (NetworkGI)
 	{
 		NetworkGI->StartOnlineGame();
-	}
+	}	
 }
 
 void UMainMenu::NativeConstruct()
