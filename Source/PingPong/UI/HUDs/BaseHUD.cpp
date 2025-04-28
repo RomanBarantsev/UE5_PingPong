@@ -51,7 +51,7 @@ void ABaseHUD::BeginPlay()
 	{
 		widget->SetVisibility(ESlateVisibility::Collapsed);
 		widget->AddToViewport(0);
-		if (type==Widgets::MainMenu)
+		if (type==Widgets::MainMenu && GetWorld()->GetMapName()=="EntryMap")
 			widget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
