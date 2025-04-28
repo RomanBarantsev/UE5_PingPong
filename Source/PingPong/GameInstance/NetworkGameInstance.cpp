@@ -37,7 +37,7 @@ bool UNetworkGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FN
 			SessionSettings->bAllowJoinViaPresence = true;
 			SessionSettings->bAllowJoinViaPresenceFriendsOnly = false;
 
-			SessionSettings->Set(SETTING_MAPNAME, FString("GameMap"), EOnlineDataAdvertisementType::ViaOnlineService);
+			SessionSettings->Set(SETTING_MAPNAME, FString("GameMap"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 			// Set the delegate to the Handle of the SessionInterface
 			OnCreateSessionCompleteDelegateHandle = Sessions->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
 			// Our delegate should get called when this is complete (doesn't need to be successful!)
@@ -125,8 +125,8 @@ void UNetworkGameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, b
 			SessionSearch = MakeShareable(new FOnlineSessionSearch());
 
 			SessionSearch->bIsLanQuery = bIsLAN;
-			//SessionSearch->MaxSearchResults = 20;
-			//SessionSearch->PingBucketSize = 50;
+			SessionSearch->MaxSearchResults = 20;
+			SessionSearch->PingBucketSize = 50;
 			// We only want to set this Query Setting if "bIsPresence" is true
 			if (bIsPresence)
 			{
@@ -173,6 +173,7 @@ void UNetworkGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 					// OwningUserName is just the SessionName for now. I guess you can create your own Host Settings class and GameSession Class and add a proper GameServer Name here.
 					// This is something you can't do in Blueprint for example!
 					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Sessionname: %s "), SearchIdx+1, *(SessionSearch->SearchResults[SearchIdx].Session.OwningUserName)));
+					//JoinOnlineGame();
 				}
 			}
 		}
@@ -261,7 +262,7 @@ void UNetworkGameInstance::OnDestroySessionComplete(FName SessionName, bool bWas
 			// If it was successful, we just load another level (could be a MainMenu!)
 			if (bWasSuccessful)
 			{
-				//UGameplayStatics::OpenLevel(GetWorld(), "GameMap", true);
+				UGameplayStatics::OpenLevel(GetWorld(), "EntryMap", true);
 			}
 		}
 	}
@@ -273,7 +274,7 @@ void UNetworkGameInstance::StartOnlineGame()
 	
 	// Call our custom HostSession function. GameSessionName is a GameInstance variable
 	DestroySessionAndLeaveGame();
-	HostSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), NAME_GameSession, true, true, 4);
+	HostSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), NAME_GameSession, true, false, 4);
 }
 
 void UNetworkGameInstance::FindOnlineGames()
@@ -286,7 +287,7 @@ void UNetworkGameInstance::FindOnlineGames()
 void UNetworkGameInstance::JoinOnlineGame()
 {
 	ULocalPlayer* const Player = GetFirstGamePlayer();
-
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("JoinOnlineGame")));
 	// Just a SearchResult where we can save the one we want to use, for the case we find more than one!
 	FOnlineSessionSearchResult SearchResult;
 
@@ -299,7 +300,7 @@ void UNetworkGameInstance::JoinOnlineGame()
 			if (SessionSearch->SearchResults[i].Session.OwningUserId != Player->GetPreferredUniqueNetId())
 			{
 				SearchResult = SessionSearch->SearchResults[i];
-
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OFindSessionsComplete bSuccess: %d"), SessionSearch->SearchResults[i].PingInMs));
 				// Once we found sounce a Session that is not ours, just join it. Instead of using a for loop, you could
 				// use a widget where you click on and have a reference for the GameSession it represents which you can use
 				// here
