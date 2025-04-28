@@ -2,8 +2,6 @@
 
 
 #include "PingPongPlayerController.h"
-
-#include "GameplayDebuggerTypes.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
@@ -25,14 +23,18 @@ void APingPongPlayerController::BeginPlay()
 		}
 		check(PingPongHUD);		
 	}
+	if(!PingPongPlayerState)
+	{
+		PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));	
+	}
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(PingPongGameState);
 	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::HandleMatchStateChange);
-	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
-	bShowMouseCursor=true;
-	DisableInput(this);
-	ModificationsCount = PingPongGameState->GeBallModificatorsCount();
-	Super::BeginPlay();	
+	//UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);	
+	//DisableInput(this);
+	ModificationsCount = PingPongGameState->GeBallModificatorsCount();	
+	Super::BeginPlay();
+	SetShowMouseCursor(false);
 }
 
 void APingPongPlayerController::Tick(float DeltaSeconds)
@@ -43,10 +45,7 @@ void APingPongPlayerController::Tick(float DeltaSeconds)
 		Platform->Server_Rotate(0);
 		if(!bIsMovingForward && !bIsMovingSides) Platform->Floating();
 	}
-	if(!PingPongPlayerState)
-	{
-		PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));	
-	}
+	
 }
 
 
@@ -211,7 +210,7 @@ void APingPongPlayerController::OpenMenu()
 	if (bShowMouseCursor)
 	{
 		SetShowMouseCursor(false);
-		PingPongHUD->SwitchUI(Widgets::MainMenu,1);
+		PingPongHUD->SwitchUI(Widgets::MainMenu,1);		
 	}
 	else
 	{
