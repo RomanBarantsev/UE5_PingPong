@@ -7,6 +7,7 @@
 #include "Components/BackgroundBlur.h"
 #include "Components/Button.h"
 #include "HUDs/BaseHUD.h"
+#include "PingPong/GameInstance/NetworkGameInstance.h"
 #include "MainMenu.generated.h"
 
 /**
@@ -17,6 +18,7 @@ class PINGPONG_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 private:
+	UNetworkGameInstance* NetworkGI; 
 	UPROPERTY(meta=(BindWidget))
 	UButton* JoinGame;
 	UFUNCTION()
