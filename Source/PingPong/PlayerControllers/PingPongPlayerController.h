@@ -69,12 +69,12 @@ protected:
 	void Server_PlatformMoveForward(float AxisValue);
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformRotate(float AxisValue);
-
+public:
+	UFUNCTION()
+	void OpenMenu();
 protected:
 	UPROPERTY()
 	AGameHUD* PingPongHUD;
-	UFUNCTION()
-	void OpenMenu();
 	EUIStatus UIStatus;
 	
 public:
