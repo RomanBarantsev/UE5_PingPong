@@ -8,7 +8,7 @@
 
 class UNetworkGameInstance;
 
-void UMainMenu::JoinGame_Clicked()
+void UMainMenu::OnJoinGameBtnClicked()
 {	
 	if (NetworkGI)
 	{
@@ -17,7 +17,7 @@ void UMainMenu::JoinGame_Clicked()
 	//HUD->SwitchUI(Widgets::ServerList,1);
 }
 
-void UMainMenu::CreateGame_Clicked()
+void UMainMenu::OnCreateGameBtnClicked()
 {
 	if (NetworkGI)
 	{
@@ -25,12 +25,21 @@ void UMainMenu::CreateGame_Clicked()
 	}	
 }
 
+void UMainMenu::OnDisconnectBtnClicked()
+{
+	if (NetworkGI)
+	{
+		NetworkGI->DestroySessionAndLeaveGame();
+	}
+}
+
 void UMainMenu::NativeConstruct()
 {
 	auto GameInstance = GetGameInstance();
 	NetworkGI = Cast<UNetworkGameInstance>(GameInstance);
-	JoinGame->OnClicked.AddDynamic(this,&UMainMenu::JoinGame_Clicked);
-	CreateGame->OnClicked.AddDynamic(this,&UMainMenu::CreateGame_Clicked);
+	JoinGame->OnClicked.AddDynamic(this,&UMainMenu::OnJoinGameBtnClicked);
+	CreateGame->OnClicked.AddDynamic(this,&UMainMenu::OnCreateGameBtnClicked);
+	DisconnectBtn->OnClicked.AddDynamic(this,&UMainMenu::OnDisconnectBtnClicked);
 	auto controller = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (controller->IsPlayerController())
 	{

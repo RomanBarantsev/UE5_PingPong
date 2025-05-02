@@ -22,10 +22,14 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UButton* JoinGame;
 	UFUNCTION()
-	void JoinGame_Clicked();
+	void OnJoinGameBtnClicked();
 	UFUNCTION()
-	void CreateGame_Clicked();
+	void OnCreateGameBtnClicked();
+	UFUNCTION()
+	void OnDisconnectBtnClicked();
 	
+	UPROPERTY(meta=(BindWidget))
+	UButton* DisconnectBtn;
 	UPROPERTY(meta=(BindWidget))
 	UButton* CreateGame;
 	UPROPERTY(meta=(BindWidget))
