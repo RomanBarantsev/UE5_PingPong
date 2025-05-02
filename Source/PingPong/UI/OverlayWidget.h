@@ -19,6 +19,7 @@ class PINGPONG_API UOverlayWidget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
+	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TextScorePlayer1;
 	UPROPERTY(meta=(BindWidget))
@@ -32,7 +33,9 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WaitingPlayersText;
 	UPROPERTY(meta=(BindWidget))
-	UButton* ReadyButton;	
+	UButton* ReadyButton;
+	UPROPERTY(meta=(BindWidget))
+	UButton* MenuBtn;
 	UPROPERTY(meta=(BindWidget))
 	UBorder* BallColor;
 	UPROPERTY(meta=(BindWidget))
@@ -47,6 +50,8 @@ private:
 protected:
 	UFUNCTION()
 	void OnReadyButtonPushed();	
+	UFUNCTION()
+	void OnMenuButtonPushed();	
 	UPROPERTY()
 	APingPongPlayerController* PingPongPlayerController;
 	UPROPERTY()

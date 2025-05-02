@@ -9,8 +9,13 @@
 
 void UOverlayWidget::NativeConstruct()
 {
+	MenuBtn->SetVisibility(ESlateVisibility::Hidden);
+#ifdef PLATFORM_ANDROID
+	MenuBtn->SetVisibility(ESlateVisibility::Visible);	
+#endif
 	//TODO Make text blocks for dynamic creating with Slate
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
+	MenuBtn->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnMenuButtonPushed);
 	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
 	check(PingPongPlayerController);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
@@ -49,6 +54,11 @@ void UOverlayWidget::OnReadyButtonPushed()
 {
 	PingPongPlayerController->SetUIStatus(EUIStatus::ReadyButtonPressed);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UOverlayWidget::OnMenuButtonPushed()
+{
+	PingPongPlayerController->OpenMenu();
 }
 
 void UOverlayWidget::UpdateCountdown()
