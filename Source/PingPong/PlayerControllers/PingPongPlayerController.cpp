@@ -8,12 +8,20 @@
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
-#include "PingPong/UI/MainMenu.h"
 #include "PingPong/UI/OverlayWidget.h"
 #include "PingPong/UI/HUDs/BaseHUD.h"
 
 void APingPongPlayerController::BeginPlay()
-{	
+{
+	/*FString PlatformName = UGameplayStatics::GetPlatformName();
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Running on platform: %s"), *PlatformName));
+	UE_LOG(LogTemp, Warning, TEXT("Running on platform: %s"), *PlatformName);*/
+#if defined(UE_EDITOR) || defined(PLATFORM_WINDOWS)
+	SetVirtualJoystickVisibility(false);
+	ActivateTouchInterface(nullptr);	
+#endif
+
+
 	if(IsLocalPlayerController())
 	{
 		AHUD* HUD = GetHUD();

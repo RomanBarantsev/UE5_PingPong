@@ -17,6 +17,7 @@ APingPongPlayerPawn::APingPongPlayerPawn()
 	RootComponent = root;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
+	SpringArm->SetRelativeRotation(FRotator(0.0f, -25.0f, 0.0f));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	SetReplicates(true);

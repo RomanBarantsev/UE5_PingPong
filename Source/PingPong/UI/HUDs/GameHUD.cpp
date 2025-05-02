@@ -20,11 +20,12 @@ UMainMenu* AGameHUD::GetMainMenuWidget()
 }
 
 void AGameHUD::CreateWidgets()
-{
+{		
+	if (MainMenuWidgetSubClass)
+		MainMenuWidget = Cast<UMainMenu>(CreateWidget(GetWorld(),MainMenuWidgetSubClass));
 	if (OverlayWidgetSubClass)
 		OverlayWidget = Cast<UOverlayWidget>(CreateWidget(GetWorld(),OverlayWidgetSubClass));
-	if (MainMenuWidgetSubClass)
-		MainMenuWidget = Cast<UMainMenu>(CreateWidget(GetWorld(),MainMenuWidgetSubClass));		
+	OverlayWidget->AddToViewport(0);
 }
 
 void AGameHUD::BeginPlay()
