@@ -35,12 +35,21 @@ void UMainMenu::OnDisconnectBtnClicked()
 
 void UMainMenu::NativeConstruct()
 {
+	ENetMode NetMode = GetWorld()->GetNetMode();
+	if (NetMode==NM_ListenServer || NetMode==NM_Client)
+	{
+		DisconnectBtn->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		DisconnectBtn->SetVisibility(ESlateVisibility::Hidden);
+	}
 	auto GameInstance = GetGameInstance();
 	NetworkGI = Cast<UNetworkGameInstance>(GameInstance);
 	JoinGame->OnClicked.AddDynamic(this,&UMainMenu::OnJoinGameBtnClicked);
 	CreateGame->OnClicked.AddDynamic(this,&UMainMenu::OnCreateGameBtnClicked);
 	DisconnectBtn->OnClicked.AddDynamic(this,&UMainMenu::OnDisconnectBtnClicked);
-	auto controller = UGameplayStatics::GetPlayerController(GetWorld(),0);
+	auto controller = UGameplayStatics::GetPlayerController(GetWorld(),0);	
 	if (controller->IsPlayerController())
 	{
 		HUD  = Cast<ABaseHUD>(controller->GetHUD());		

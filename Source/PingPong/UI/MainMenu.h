@@ -18,6 +18,7 @@ class PINGPONG_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 private:
+	UPROPERTY()
 	UNetworkGameInstance* NetworkGI; 
 	UPROPERTY(meta=(BindWidget))
 	UButton* JoinGame;
