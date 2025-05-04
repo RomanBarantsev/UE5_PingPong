@@ -13,15 +13,11 @@
 
 void APingPongPlayerController::BeginPlay()
 {
-	/*FString PlatformName = UGameplayStatics::GetPlatformName();
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("Running on platform: %s"), *PlatformName));
-	UE_LOG(LogTemp, Warning, TEXT("Running on platform: %s"), *PlatformName);*/
-#if defined(UE_EDITOR) || defined(PLATFORM_WINDOWS)
-	SetVirtualJoystickVisibility(false);
-	ActivateTouchInterface(nullptr);	
-#endif
-
-
+	FString PlatformName = UGameplayStatics::GetPlatformName();
+	if (!PlatformName.Contains(TEXT("Android")))
+	{
+		SetVirtualJoystickVisibility(false);
+	}
 	if(IsLocalPlayerController())
 	{
 		AHUD* HUD = GetHUD();
@@ -98,7 +94,8 @@ void APingPongPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
 	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
-	InputComponent->BindAction("ScrollColor",EInputEvent::IE_Pressed,this, &APingPongPlayerController::ScrollColor);
+	//TODO need to fix it - due to compilation error  G:/Git/UE5_PingPong/Source/PingPong/PlayerControllers/PingPongPlayerController.cpp(101,18): error: no matching member function for call to 'BindAction'
+	//InputComponent->BindAction("ScrollColor",EInputEvent::IE_Pressed,this, &APingPongPlayerController::ScrollColor);
 	InputComponent->BindAxis("AndroidRotate", this,&APingPongPlayerController::RotatePlatform);	
 	InputComponent->bBlockInput = true;	
 }
@@ -218,14 +215,15 @@ void APingPongPlayerController::OpenMenu()
 	if (bShowMouseCursor)
 	{
 		SetShowMouseCursor(false);
-		PingPongHUD->SwitchUI(Widgets::MainMenu,1);		
+		PingPongHUD->SwitchUI(Widgets::MainMenu);	
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
 	}
 	else
 	{
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 		SetShowMouseCursor(true);
-		PingPongHUD->SwitchUI(Widgets::MainMenu,1);
+		PingPongHUD->SwitchUI(Widgets::MainMenu);
 	}
 }
 
