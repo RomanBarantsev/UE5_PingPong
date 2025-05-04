@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongGoal.h"
+#include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
@@ -42,6 +43,19 @@ void APingPongGameMode::Logout(AController* Exiting)
 	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
 	check(PingPongGameState);
 	PingPongGameState->GetPlayersControllers().Remove(PingPongPlayerController);
+	
+	if (IsNetMode(NM_ListenServer) || IsNetMode(NM_DedicatedServer) || Exiting)
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APingPongPlatform::StaticClass(), FoundActors);
+		for(AActor* Actor : FoundActors)
+		{
+			if (Actor->GetOwner() && Actor->GetOwner()->GetInstigatorController()==nullptr)
+			{
+				Actor->Destroy();
+			}
+		}
+	}	
 	Super::Logout(Exiting);
 }
 
