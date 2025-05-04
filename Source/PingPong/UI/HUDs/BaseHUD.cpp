@@ -8,7 +8,7 @@
 #include "PingPong/GameStates/PingPongGameState.h"
 
 
-void ABaseHUD::SwitchUI(Widgets UIName,int32 zOrder)
+void ABaseHUD::SwitchUI(Widgets UIName)
 {
 	if (UIWidgetsMap.Contains(UIName))
 	{
@@ -18,6 +18,7 @@ void ABaseHUD::SwitchUI(Widgets UIName,int32 zOrder)
 			if (widget->GetVisibility()==ESlateVisibility::Visible)
 			{
 				widget->SetVisibility(ESlateVisibility::Collapsed);
+				return;
 			}
 			else
 			{
@@ -50,7 +51,7 @@ void ABaseHUD::BeginPlay()
 	for (auto [type,widget] : UIWidgetsMap)
 	{
 		widget->SetVisibility(ESlateVisibility::Collapsed);
-		widget->AddToViewport(0);
+		widget->AddToViewport(1);
 		if (type==Widgets::MainMenu && GetWorld()->GetMapName()=="EntryMap")
 			widget->SetVisibility(ESlateVisibility::Visible);
 	}

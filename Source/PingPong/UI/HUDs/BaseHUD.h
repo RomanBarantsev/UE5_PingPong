@@ -28,7 +28,7 @@ class PINGPONG_API ABaseHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
-	virtual void SwitchUI(Widgets UIName,int32 zOrder);
+	virtual void SwitchUI(Widgets UIName);
 	TMap<Widgets,UUserWidget*> UIWidgetsMap;
 protected:
 	virtual void BeginPlay() override;	
