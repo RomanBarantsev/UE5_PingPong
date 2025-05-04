@@ -46,7 +46,7 @@ bool UNetworkGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FN
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("No OnlineSubsytem found!"));
+			UE_LOG(LogTemp, Error, TEXT("No OnlineSubsytem found!"));
 		}
 	}
 	return false;
@@ -92,7 +92,7 @@ void UNetworkGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasS
 
 void UNetworkGameInstance::OnStartOnlineGameComplete(FName SessionName, bool bWasSuccessful)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnStartSessionComplete %s, %d"), *SessionName.ToString(), bWasSuccessful));
+	UE_LOG(LogTemp, Error, TEXT("OnStartSessionComplete %s, %d"), *SessionName.ToString(), bWasSuccessful);
 	// Get the Online Subsystem so we can get the Session Interface
 	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
 	if (OnlineSub)
@@ -150,7 +150,7 @@ void UNetworkGameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, b
 
 void UNetworkGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OFindSessionsComplete bSuccess: %d"), bWasSuccessful));
+	UE_LOG(LogTemp, Error, TEXT("OFindSessionsComplete bSuccess: %d"), bWasSuccessful);
 	IOnlineSubsystem* const OnlineSub = IOnlineSubsystem::Get();
 	if (OnlineSub)
 	{
@@ -161,7 +161,7 @@ void UNetworkGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 			Sessions->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
 
 			// Just debugging the Number of Search results. Can be displayed in UMG or something later on
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Num Search Results: %d"), SessionSearch->SearchResults.Num()));
+			UE_LOG(LogTemp, Error, TEXT("Num Search Results: %d"), SessionSearch->SearchResults.Num());
 		
 			// If we have found at least 1 session, we just going to debug them. You could add them to a list of UMG Widgets, like it is done in the BP version!
 			if (SessionSearch->SearchResults.Num() > 0)
@@ -172,8 +172,8 @@ void UNetworkGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 				{
 					// OwningUserName is just the SessionName for now. I guess you can create your own Host Settings class and GameSession Class and add a proper GameServer Name here.
 					// This is something you can't do in Blueprint for example!
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Sessionname: %s "), SearchIdx+1, *(SessionSearch->SearchResults[SearchIdx].Session.OwningUserName)));
-					//JoinOnlineGame();
+					UE_LOG(LogTemp, Error, TEXT("Session Number: %d | Sessionname: %s "), SearchIdx+1, *(SessionSearch->SearchResults[SearchIdx].Session.OwningUserName));
+					JoinOnlineGame();
 				}
 			}
 		}
@@ -210,7 +210,7 @@ bool UNetworkGameInstance::JoinFoundSession(TSharedPtr<const FUniqueNetId> UserI
 
 void UNetworkGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSessionComplete %s, %d"), *SessionName.ToString(), static_cast<int32>(Result)));
+	UE_LOG(LogTemp, Error, TEXT("OnJoinSessionComplete %s, %d"), *SessionName.ToString(), static_cast<int32>(Result));
 
 	// Get the OnlineSubsystem we want to work with
 	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
@@ -245,7 +245,7 @@ void UNetworkGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessi
 
 void UNetworkGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnDestroySessionComplete %s, %d"), *SessionName.ToString(), bWasSuccessful));
+	UE_LOG(LogTemp, Error, TEXT("OnDestroySessionComplete %s, %d"), *SessionName.ToString(), bWasSuccessful);
 
 	// Get the OnlineSubsystem we want to work with
 	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
@@ -287,7 +287,7 @@ void UNetworkGameInstance::FindOnlineGames()
 void UNetworkGameInstance::JoinOnlineGame()
 {
 	ULocalPlayer* const Player = GetFirstGamePlayer();
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("JoinOnlineGame")));
+	UE_LOG(LogTemp, Error,TEXT("JoinOnlineGame"));
 	// Just a SearchResult where we can save the one we want to use, for the case we find more than one!
 	FOnlineSessionSearchResult SearchResult;
 
@@ -300,7 +300,7 @@ void UNetworkGameInstance::JoinOnlineGame()
 			if (SessionSearch->SearchResults[i].Session.OwningUserId != Player->GetPreferredUniqueNetId())
 			{
 				SearchResult = SessionSearch->SearchResults[i];
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OFindSessionsComplete bSuccess: %d"), SessionSearch->SearchResults[i].PingInMs));
+				UE_LOG(LogTemp, Error, TEXT("OFindSessionsComplete bSuccess: %d"), SessionSearch->SearchResults[i].PingInMs);
 				// Once we found sounce a Session that is not ours, just join it. Instead of using a for loop, you could
 				// use a widget where you click on and have a reference for the GameSession it represents which you can use
 				// here
