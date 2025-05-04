@@ -8,8 +8,10 @@
 #include "Components/Button.h"
 #include "HUDs/BaseHUD.h"
 #include "PingPong/GameInstance/NetworkGameInstance.h"
+#include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "MainMenu.generated.h"
 
+class UVerticalBox;
 /**
  * 
  */
@@ -20,15 +22,17 @@ class PINGPONG_API UMainMenu : public UUserWidget
 private:
 	UPROPERTY()
 	UNetworkGameInstance* NetworkGI; 
-	UPROPERTY(meta=(BindWidget))
-	UButton* JoinGame;
 	UFUNCTION()
 	void OnJoinGameBtnClicked();
 	UFUNCTION()
 	void OnCreateGameBtnClicked();
 	UFUNCTION()
 	void OnDisconnectBtnClicked();
+	UFUNCTION()
+	void OnResumeBtnClicked();
 	
+	UPROPERTY(meta=(BindWidget))
+	UButton* JoinGame;
 	UPROPERTY(meta=(BindWidget))
 	UButton* DisconnectBtn;
 	UPROPERTY(meta=(BindWidget))
@@ -38,9 +42,12 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UButton* Quit;
 	UPROPERTY(meta=(BindWidget))
+	UButton* ResumeGame;
+	UPROPERTY(meta=(BindWidget))
 	UBackgroundBlur* Blur;
 	UPROPERTY()
 	ABaseHUD* HUD;
-	virtual void NativeConstruct() override;
-	
+	UPROPERTY()
+	APingPongPlayerController* Controller;
+	virtual void NativeConstruct() override;	
 };
