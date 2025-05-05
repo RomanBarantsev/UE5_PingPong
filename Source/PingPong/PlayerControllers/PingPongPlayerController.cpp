@@ -9,7 +9,6 @@
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
 #include "PingPong/UI/OverlayWidget.h"
-#include "PingPong/UI/UIEvents.h"
 #include "PingPong/UI/HUDs/BaseHUD.h"
 
 void APingPongPlayerController::BeginPlay()
@@ -56,7 +55,6 @@ void APingPongPlayerController::Tick(float DeltaSeconds)
 
 APingPongPlayerController::APingPongPlayerController()
 {
-	FUIEventSystem::OnUIStatusChanged().AddUObject(this, &APingPongPlayerController::SetUIStatus);
 	bReplicates=true;
 }
 
@@ -292,11 +290,8 @@ void APingPongPlayerController::SetScoreText_Implementation(int32 PlayerId)
 
 void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 {
-	if(!HasAuthority())
-		return;
+	if(HasAuthority() && UKismetSystemLibrary::IsDedicatedServer(GetWorld())) return; 
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	if (!PingPongGameState)
-		return;
 	UIStatus=status;
 	switch (UIStatus)
 	{

@@ -3,16 +3,12 @@
 
 #include "OverlayWidget.h"
 
-#include "UIEvents.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 
 void UOverlayWidget::NativeConstruct()
 {
-	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
-	check(PingPongPlayerController);
-	
 	MenuBtn->SetVisibility(ESlateVisibility::Hidden);
 #ifdef PLATFORM_ANDROID
 	MenuBtn->SetVisibility(ESlateVisibility::Visible);	
@@ -20,9 +16,11 @@ void UOverlayWidget::NativeConstruct()
 	//TODO Make text blocks for dynamic creating with Slate
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
 	MenuBtn->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnMenuButtonPushed);
+	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
+	check(PingPongPlayerController);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
-	FUIEventSystem::OnUIStatusChanged().Broadcast(EUIStatus::UILoaded);
+	PingPongPlayerController->SetUIStatus(EUIStatus::UILoaded);
 	TextScorePlayer1->SetVisibility(ESlateVisibility::Hidden);
 	TextScorePlayer2->SetVisibility(ESlateVisibility::Hidden);
 	TextNamePlayer1->SetVisibility(ESlateVisibility::Hidden);
@@ -54,7 +52,7 @@ void UOverlayWidget::SetCountDownTime(int32 Time)
 
 void UOverlayWidget::OnReadyButtonPushed()
 {
-	FUIEventSystem::OnUIStatusChanged().Broadcast(EUIStatus::ReadyButtonPressed);
+	PingPongPlayerController->SetUIStatus(EUIStatus::ReadyButtonPressed);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -73,7 +71,7 @@ void UOverlayWidget::UpdateCountdown()
 	{
 		TimerText->SetVisibility(ESlateVisibility::Hidden);
 		GetWorld()->GetTimerManager().ClearTimer(CountDownTimerHandle);
-		FUIEventSystem::OnUIStatusChanged().Broadcast(EUIStatus::Started);
+		PingPongPlayerController->SetUIStatus(EUIStatus::Started);
 	}
 	if(CountdownTime>0)
 	{
