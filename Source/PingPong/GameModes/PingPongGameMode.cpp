@@ -43,7 +43,7 @@ void APingPongGameMode::Logout(AController* Exiting)
 	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
 	check(PingPongGameState);
 	PingPongGameState->GetPlayersControllers().Remove(PingPongPlayerController);
-	
+	PingPongGameState->PlayerDisconnected();
 	if (IsNetMode(NM_ListenServer) || IsNetMode(NM_DedicatedServer) || Exiting)
 	{
 		TArray<AActor*> FoundActors;

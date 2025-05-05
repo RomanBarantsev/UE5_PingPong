@@ -46,9 +46,10 @@ void APingPongGameState::AddMaxScore(int Score)
 void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME( APingPongGameState, ReadyPlayers );
-	DOREPLIFETIME( APingPongGameState, PlayerControllers );		
+	DOREPLIFETIME( APingPongGameState, ReadyPlayers );		
 	DOREPLIFETIME( APingPongGameState, LoadedPlayers );	
+	DOREPLIFETIME( APingPongGameState, StartedPlayers );	
+	DOREPLIFETIME( APingPongGameState, PlayerControllers );
 }
 
 int32 APingPongGameState::GetCountDownTime()
@@ -78,6 +79,14 @@ void APingPongGameState::IncreaseStartedPlayers_Implementation()
 	{
 		SetMatchState(MatchState::InProgress);
 	}
+}
+
+void APingPongGameState::PlayerDisconnected_Implementation()
+{
+	StartedPlayers=0;
+	LoadedPlayers--;
+	ReadyPlayers=0;
+	SetMatchState(MatchState::Aborted);
 }
 
 TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()

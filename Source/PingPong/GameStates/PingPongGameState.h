@@ -66,7 +66,7 @@ private:
 	int32 ReadyPlayers=0;
 	UPROPERTY(Replicated)
 	int32 LoadedPlayers;
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	int32 StartedPlayers;
 	UPROPERTY()
 	int32 CountDown = 3;
@@ -86,6 +86,8 @@ public:
 	void IncreaseLoadedPlayer();
 	UFUNCTION(Server,Reliable)
 	void IncreaseStartedPlayers();
+	UFUNCTION(Server,Reliable)
+	void PlayerDisconnected();
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
 	UFUNCTION(Client,Reliable)
 	void UpdatePlayersScore(int32 playerId, int32 Score);

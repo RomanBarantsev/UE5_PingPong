@@ -57,9 +57,9 @@ void AGameHUD::HandleMatchStateChange(FName NewState)
 		OverlayWidget->SetCountDownTime(GameState->GetCountDownTime());
 		OverlayWidget->AllPlayersReady();		
 	}
-	if(NewState==MatchState::InProgress)
+	if(NewState==MatchState::Aborted)
 	{
-		
+		OverlayWidget->ShowWaitingForPlayers();
 	}
 	if(NewState==MatchState::EnteringMap)
 	{

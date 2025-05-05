@@ -9,10 +9,11 @@
 
 void UOverlayWidget::NativeConstruct()
 {
-	MenuBtn->SetVisibility(ESlateVisibility::Hidden);
-#ifdef PLATFORM_ANDROID
-	MenuBtn->SetVisibility(ESlateVisibility::Visible);	
-#endif
+	FString PlatformName = UGameplayStatics::GetPlatformName();
+	if (!PlatformName.Contains(TEXT("Android")))
+	{
+		MenuBtn->SetVisibility(ESlateVisibility::Hidden);
+	}	
 	//TODO Make text blocks for dynamic creating with Slate
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
 	MenuBtn->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnMenuButtonPushed);
@@ -42,6 +43,7 @@ void UOverlayWidget::ShowWaitingForPlayers()
 {
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
+	WaitingPlayersText->SetVisibility(ESlateVisibility::Visible);
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(UGameplayStatics::GetPlayerController(GetWorld(),0));
 }
 
