@@ -10,15 +10,7 @@
 
 class APingPongPlayerState;
 class ABaseHUD;
-UENUM()
-enum class EUIStatus : uint8
-{
-	NONE,
-	UILoaded,
-	ReadyButtonPressed,
-	UIPaused,
-	Started
-};
+
 enum class EPlayersStatus;
 class APingPongGameState;
 /**
