@@ -70,8 +70,11 @@ protected:
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformRotate(float AxisValue);
 public:
-	UFUNCTION()
+	UFUNCTION(Client,Reliable,WithValidation)
 	void OpenMenu();
+	UFUNCTION(Server,Reliable,WithValidation)
+	void RequstPause(bool state);
+	
 protected:
 	UPROPERTY()
 	AGameHUD* PingPongHUD;
