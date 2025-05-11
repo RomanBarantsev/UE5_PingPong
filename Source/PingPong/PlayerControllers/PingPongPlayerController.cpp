@@ -130,6 +130,38 @@ void APingPongPlayerController::RotatePlatform(float AxisValue)
 	Server_PlatformRotate(AxisValue);
 }
 
+void APingPongPlayerController::RequstPause_Implementation(bool state)
+{
+	PingPongGameState->ServerPause(state);
+}
+
+bool APingPongPlayerController::RequstPause_Validate(bool state)
+{
+	return true;
+}
+
+void APingPongPlayerController::OpenMenu_Implementation()
+{
+	if (bShowMouseCursor)
+	{
+		SetShowMouseCursor(false);
+		PingPongHUD->SwitchUI(Widgets::MainMenu);		
+		RequstPause(false);
+	}
+	else
+	{
+		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
+		SetShowMouseCursor(true);
+		PingPongHUD->SwitchUI(Widgets::MainMenu);
+		RequstPause(true);
+	}
+}
+
+bool APingPongPlayerController::OpenMenu_Validate()
+{	
+	return true;
+}
+
 void APingPongPlayerController::Fire_Implementation()
 {
 	if(Platform)
@@ -208,23 +240,6 @@ void APingPongPlayerController::Server_PlatformRotate_Implementation(float AxisV
 bool APingPongPlayerController::Server_PlatformRotate_Validate(float AxisValue)
 {
 	return true;
-}
-
-void APingPongPlayerController::OpenMenu()
-{
-	if (bShowMouseCursor)
-	{
-		SetShowMouseCursor(false);
-		PingPongHUD->SwitchUI(Widgets::MainMenu);	
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
-	}
-	else
-	{
-		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
-		SetShowMouseCursor(true);
-		PingPongHUD->SwitchUI(Widgets::MainMenu);
-	}
 }
 
 void APingPongPlayerController::ScrollColorOnServer_Implementation(float Axis)

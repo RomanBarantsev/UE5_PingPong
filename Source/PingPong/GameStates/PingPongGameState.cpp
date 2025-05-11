@@ -2,6 +2,8 @@
 
 
 #include "PingPongGameState.h"
+
+#include "Engine/PostProcessVolume.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "PingPong/Actors/PingPongBall.h"
@@ -16,7 +18,7 @@ APingPongGameState::APingPongGameState()
 }
 
 void APingPongGameState::BeginPlay()
-{
+{	
 	if(HasAuthority())
 	{
 		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
@@ -87,6 +89,20 @@ void APingPongGameState::PlayerDisconnected_Implementation()
 	LoadedPlayers--;
 	ReadyPlayers=0;
 	SetMatchState(MatchState::Aborted);
+	
+}
+
+void APingPongGameState::ServerPause_Implementation(bool state)
+{
+	if (state)
+	{
+		
+		UGameplayStatics::SetGamePaused(GetWorld(),state);
+	}		
+	else
+	{
+		UGameplayStatics::SetGamePaused(GetWorld(),state);
+	}
 }
 
 TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
@@ -167,6 +183,7 @@ FName APingPongGameState::GetMatchState() const
 {
 	return AGameState::GetMatchState();
 }
+
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
 {

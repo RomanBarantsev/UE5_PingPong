@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
+class APostProcessVolume;
 class APingPongPlayerController;
 class APingPongGameMode;
 
@@ -88,6 +89,8 @@ public:
 	void IncreaseStartedPlayers();
 	UFUNCTION(Server,Reliable)
 	void PlayerDisconnected();
+	UFUNCTION(Server,Reliable)	
+	void ServerPause(bool state);
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
 	UFUNCTION(Client,Reliable)
 	void UpdatePlayersScore(int32 playerId, int32 Score);
@@ -125,7 +128,5 @@ public:
 	
 	UFUNCTION(NetMulticast,Reliable)
 	void SetMatchState(FName NewState);
-
-	FName GetMatchState() const;
-	
+	FName GetMatchState() const;	
 };
