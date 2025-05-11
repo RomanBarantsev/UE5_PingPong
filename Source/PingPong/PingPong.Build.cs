@@ -20,7 +20,9 @@ public class PingPong : ModuleRules
 			"OnlineSubsystem",
 			"OnlineSubsystemUtils",
 			"Sockets",
-			"Networking"
+			"Networking",
+			"SlateCore",
+			"Slate"
 		});
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
