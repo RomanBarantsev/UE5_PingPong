@@ -3,6 +3,7 @@
 
 #include "MainMenu.h"
 
+#include "MenuButton.h"
 #include "Components/VerticalBox.h"
 #include "HUDs/BaseHUD.h"
 #include "Kismet/GameplayStatics.h"
@@ -53,6 +54,21 @@ void UMainMenu::OnResumeBtnClicked()
 	Controller->OpenMenu();
 }
 
+void UMainMenu::OnSettingsBtnClicked()
+{
+	HUD->SwitchUI(Widgets::Settings);
+}
+
+void UMainMenu::OnMenuButtonPressed()
+{
+	
+}
+
+void UMainMenu::OnQuitButtonPressed()
+{
+	UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
+}
+
 void UMainMenu::NativeConstruct()
 {	
 	ENetMode NetMode = GetWorld()->GetNetMode();
@@ -72,10 +88,12 @@ void UMainMenu::NativeConstruct()
 	}
 	auto GameInstance = GetGameInstance();
 	NetworkGI = Cast<UNetworkGameInstance>(GameInstance);
-	JoinGame->OnClicked.AddDynamic(this,&UMainMenu::OnJoinGameBtnClicked);
-	CreateGame->OnClicked.AddDynamic(this,&UMainMenu::OnCreateGameBtnClicked);
-	DisconnectBtn->OnClicked.AddDynamic(this,&UMainMenu::OnDisconnectBtnClicked);
-	ResumeGame->OnClicked.AddDynamic(this,&UMainMenu::OnResumeBtnClicked);
+	JoinGame->OnButtonClicked.AddDynamic(this,&ThisClass::OnJoinGameBtnClicked);	
+	CreateGame->OnButtonClicked.AddDynamic(this,&ThisClass::OnCreateGameBtnClicked);
+	DisconnectBtn->OnButtonClicked.AddDynamic(this,&ThisClass::OnDisconnectBtnClicked);
+	ResumeGame->OnButtonClicked.AddDynamic(this,&ThisClass::OnResumeBtnClicked);
+	Settings->OnButtonClicked.AddDynamic(this,&ThisClass::OnSettingsBtnClicked);
+	Quit->OnButtonClicked.AddDynamic(this,&ThisClass::OnQuitButtonPressed);
 	auto controller = UGameplayStatics::GetPlayerController(GetWorld(),0);	
 	if (controller->IsPlayerController())
 	{
@@ -83,4 +101,15 @@ void UMainMenu::NativeConstruct()
 		HUD  = Cast<ABaseHUD>(controller->GetHUD());		
 	}
 	Super::NativeConstruct();	
+}
+
+void UMainMenu::NativePreConstruct()
+{
+	JoinGame->SetButtonText(TEXT("Join Game"));
+	CreateGame->SetButtonText(TEXT("Create Game"));
+	DisconnectBtn->SetButtonText(TEXT("Disconnect"));
+	ResumeGame->SetButtonText(TEXT("Resume Game"));
+	Settings->SetButtonText(TEXT("Settings"));
+	Quit->SetButtonText(TEXT("Quit"));
+	Super::NativePreConstruct();
 }

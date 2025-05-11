@@ -11,6 +11,7 @@
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "MainMenu.generated.h"
 
+class UMenuButton;
 class UVerticalBox;
 /**
  * 
@@ -30,24 +31,31 @@ private:
 	void OnDisconnectBtnClicked();
 	UFUNCTION()
 	void OnResumeBtnClicked();
+	UFUNCTION()
+	void OnSettingsBtnClicked();
+	UFUNCTION()
+	void OnMenuButtonPressed();	
+	UFUNCTION()
+	void OnQuitButtonPressed();
 	
 	UPROPERTY(meta=(BindWidget))
-	UButton* JoinGame;
+	UMenuButton* JoinGame;
 	UPROPERTY(meta=(BindWidget))
-	UButton* DisconnectBtn;
+	UMenuButton* DisconnectBtn;
 	UPROPERTY(meta=(BindWidget))
-	UButton* CreateGame;
+	UMenuButton* CreateGame;
 	UPROPERTY(meta=(BindWidget))
-	UButton* Settings;
+	UMenuButton* Settings;
 	UPROPERTY(meta=(BindWidget))
-	UButton* Quit;
+	UMenuButton* Quit;
 	UPROPERTY(meta=(BindWidget))
-	UButton* ResumeGame;
+	UMenuButton* ResumeGame;
 	UPROPERTY(meta=(BindWidget))
 	UBackgroundBlur* Blur;
 	UPROPERTY()
 	ABaseHUD* HUD;
 	UPROPERTY()
 	APingPongPlayerController* Controller;
-	virtual void NativeConstruct() override;	
+	virtual void NativeConstruct() override;
+	virtual void NativePreConstruct() override;
 };
