@@ -36,4 +36,9 @@ public:
     void SetButtonImage(UTexture2D* Texture);
 	UFUNCTION()
 	void SetButtonText(FString txt);
+
+private:
+	/** Style resource for text */
+	UPROPERTY(EditAnywhere, Category = "Appearance", meta = (DisplayName = "Style"))
+	FButtonStyle ButtonStyle;
 };

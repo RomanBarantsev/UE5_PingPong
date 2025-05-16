@@ -3,6 +3,8 @@
 
 #include "MenuButton.h"
 
+#include "FStyleSet.h"
+#include "PPSlateWidgetStyle.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
@@ -11,21 +13,14 @@
 
 void UMenuButton::NativePreConstruct()
 {
-	/*SizeBox = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(),TEXT("SizeBox"));
-	SizeBox->SetHeightOverride(480);
-	SizeBox->SetWidthOverride(480);
-	WidgetTree->RootWidget = SizeBox;*/
-	/*Button = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("Button"));
-	SizeBox->AddChild(Button);
-	Text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Text"));
-	Button->AddChild(Text);*/
-	Button->OnClicked.AddDynamic(this,&UMenuButton::HandleButtonClicked);
-	//SetButtonImage(LoadObject<UTexture2D>(nullptr, TEXT("/Game/PingPong/UI/IMG/2.2")));
+	auto SlateStyle  =  FStyleSet::Get().GetWidgetStyle<FPPSlateStyle>(FName("PPSlateWidgetStyle"));
+	Button->SetStyle(SlateStyle.ButtonStyle);
 	Super::NativePreConstruct();
 }
 
 void UMenuButton::NativeConstruct()
 {
+	Button->OnClicked.AddDynamic(this,&UMenuButton::HandleButtonClicked);
 	Super::NativeConstruct();
 }
 
@@ -36,7 +31,7 @@ void UMenuButton::HandleButtonClicked()
 
 void UMenuButton::SetButtonImage(UTexture2D* Texture)
 {
-	if (!Button || !Texture) return;
+	/*if (!Button || !Texture) return;
 	FSlateBrush Brush;
 	Brush.SetResourceObject(Texture);
 	Brush.ImageSize = FVector2D(480.f, 480.f); // Adjust based on your PNG
@@ -44,7 +39,7 @@ void UMenuButton::SetButtonImage(UTexture2D* Texture)
 	FButtonStyle ButtonStyle;
 	ButtonStyle.Normal = Brush;
 	Button->SetStyle(ButtonStyle);
-	Text->SetText(FText::FromString("Text"));
+	Text->SetText(FText::FromString("Text"));*/
 }
 
 void UMenuButton::SetButtonText(FString txt)
