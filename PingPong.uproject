@@ -12,7 +12,9 @@
 				"Engine",
 				"UMG",
 				"CoreUObject",
-				"GeometryCollectionEngine"
+				"GeometryCollectionEngine",
+				"Slate",
+				"SlateCore"
 			]
 		}
 	],
