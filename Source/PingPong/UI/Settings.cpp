@@ -2,12 +2,15 @@
 
 
 #include "Settings.h"
-
-#include "MenuAudio.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+
+void USettings::OnExitBtnPressed()
+{
+	this->SetVisibility(ESlateVisibility::Collapsed);
+}
 
 void USettings::NativeConstruct()
 {	
@@ -35,6 +38,7 @@ void USettings::NativeConstruct()
 
 	Sound->OnPressed.AddUniqueDynamic(this, &USettings::OnSoundBtnPushed);
 	Video->OnPressed.AddUniqueDynamic(this, &USettings::OnVideoBtnPushed);
+	Exit->OnPressed.AddUniqueDynamic(this, &USettings::OnExitBtnPressed);
 	Super::NativeConstruct();
 }
 

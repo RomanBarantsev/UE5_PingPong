@@ -22,6 +22,8 @@ class PINGPONG_API USettings : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
+	UFUNCTION()
+	void OnExitBtnPressed();
 	virtual void NativeConstruct() override;
 	UPROPERTY(meta = (BindWidget))
 	UGridPanel* GridPanel;
@@ -29,6 +31,8 @@ protected:
 	UButton* Sound;	
 	UPROPERTY(meta = (BindWidget))
 	UButton* Video;
+	UPROPERTY(meta = (BindWidget))
+	UButton* Exit;
 public:
 	UFUNCTION()
 	void OnVideoBtnPushed();
