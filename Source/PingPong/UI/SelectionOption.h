@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "SelectionOption.generated.h"
+
 USTRUCT(BlueprintType)
 struct FSelectionOption
 {
