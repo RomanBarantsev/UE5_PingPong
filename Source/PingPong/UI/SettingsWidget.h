@@ -51,6 +51,18 @@ protected:
 	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
 	TObjectPtr<USelectionBase> ShadingQuality;
 
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	TObjectPtr<USelectionBase> GlobalIllumination;
+
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	TObjectPtr<USelectionBase> PostProcessing;
+
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	TObjectPtr<USelectionBase> VisualEffectQuality;
+
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	TObjectPtr<USelectionBase> ShadowQuality;
+
 	UPROPERTY()
 	TArray<FIntPoint> Resolutions;
 };

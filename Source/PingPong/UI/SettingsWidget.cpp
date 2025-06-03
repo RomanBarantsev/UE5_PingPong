@@ -8,10 +8,19 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-struct FSelectionElement
-{
-	USelectionBase Widget;
-};
+namespace
+{	
+	typedef int32 (UGameUserSettings::*GetFunc)() const;
+	typedef void (UGameUserSettings::*SetFunc)(int);
+	struct FSelectionElement
+	{
+		USelectionBase* Widget;
+		GetFunc GetFunc;
+		SetFunc SetFunc;
+	
+	};
+}
+
 void USettingsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -20,10 +29,20 @@ void USettingsWidget::NativeConstruct()
 	InitializeSync();
 	InitializeFrameRate();
 	InitializeResolutionComboBox();
-	const FSelectionElement SelectionElement []
+	const FSelectionElement SelectionElement [] =
 	{
-		{ShadingQuality,GameUserSettings->GetShadingQuality(),GameUserSettings->GetShadingQuality()}
+		{ ShadowQuality, &UGameUserSettings::GetShadingQuality, &UGameUserSettings::SetShadingQuality }
 	};
+	for (const auto& [Widget, getFunc,setFunc] : SelectionElement)
+	{
+		const auto CurrentSelection = std::invoke(getFunc,GameUserSettings);
+		Widget->SetCurrentSelection(CurrentSelection);
+		Widget->OnSelectionChange.BindLambda([this,setFunc](int InSelection)
+		{
+			std::invoke(setFunc,GameUserSettings,InSelection);
+			GameUserSettings->ApplySettings(false);
+		}) ;
+	}
 }
 
 void USettingsWidget::OnResolutionChanged(FString InItemSelected, ESelectInfo::Type InSelectionType)
