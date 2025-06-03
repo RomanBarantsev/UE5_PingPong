@@ -6,7 +6,7 @@
 #include "SelectionOption.h"
 #include "Components/TextBlock.h"
 
-USelectionBase::USelectionBase()
+USelectionBase::USelectionBase(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
 {
 	CurrentSelection=0;
 	SetIsFocusable(true);

@@ -15,11 +15,12 @@ UCLASS(Blueprintable,BlueprintType)
 class PINGPONG_API USelectionBase : public UUserWidget
 {
 	GENERATED_BODY()
-	USelectionBase();
+
+	USelectionBase(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 	void Clear();
 	void AddOption(const FSelectionOption& InOption);
-	void SetCurrentSelection(int32 Index);
+
 
 	UFUNCTION(BlueprintCallable)
 	void SelectPrevious();
@@ -27,8 +28,6 @@ class PINGPONG_API USelectionBase : public UUserWidget
 	UFUNCTION(BlueprintCallable)
 	void SelectNext();
 
-	DECLARE_DELEGATE_OneParam(FOnSelectionChange, int);
-	FOnSelectionChange OnSelectionChange;
 
 	protected:
 	UFUNCTION()
@@ -43,4 +42,9 @@ class PINGPONG_API USelectionBase : public UUserWidget
 	TObjectPtr<UTextBlock> Label;
 
 	int CurrentSelection;
+public:
+	void SetCurrentSelection(int32 Index);
+	
+	DECLARE_DELEGATE_OneParam(FOnSelectionChange, int);
+	FOnSelectionChange OnSelectionChange;
 };
