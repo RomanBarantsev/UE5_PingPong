@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "SettingsWidget.generated.h"
+#include "VideoSettingsWidget.generated.h"
 
 
 class USelectionBase;
@@ -14,16 +14,17 @@ class UComboBoxString;
  * 
  */
 UCLASS()
-class PINGPONG_API USettingsWidget : public UUserWidget
+class PINGPONG_API UVideoSettingsWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	virtual void NativeConstruct() override;
 protected:
 	UPROPERTY()
 	TMap<FString, float> FrameRates{
-	{ TEXT("30"),30.0f},
-	{ TEXT("60"),60.0f},
-	{ TEXT("120"),120.0f}
+		{ TEXT("30"),30.0f},	
+		{ TEXT("60"),60.0f},
+		{ TEXT("120"),120.0f},
+		{ TEXT("240"),240.0f},
 	};
 	
 	UFUNCTION()

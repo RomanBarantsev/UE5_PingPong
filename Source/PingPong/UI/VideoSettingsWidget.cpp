@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SettingsWidget.h"
+#include "VideoSettingsWidget.h"
 #include "SelectionBase.h"
 #include "Components/CheckBox.h"
 #include "Components/ComboBoxString.h"
@@ -21,7 +21,7 @@ namespace
 	};
 }
 
-void USettingsWidget::NativeConstruct()
+void UVideoSettingsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	GameUserSettings = GEngine->GetGameUserSettings();
@@ -29,9 +29,14 @@ void USettingsWidget::NativeConstruct()
 	InitializeSync();
 	InitializeFrameRate();
 	InitializeResolutionComboBox();
+	check(ShadowQuality);
 	const FSelectionElement SelectionElement [] =
 	{
-		{ ShadowQuality, &UGameUserSettings::GetShadingQuality, &UGameUserSettings::SetShadingQuality }
+		{ ShadingQuality, &UGameUserSettings::GetShadingQuality, &UGameUserSettings::SetShadingQuality },
+		{ GlobalIllumination, &UGameUserSettings::GetGlobalIlluminationQuality, &UGameUserSettings::SetGlobalIlluminationQuality },
+		{ PostProcessing, &UGameUserSettings::GetPostProcessingQuality, &UGameUserSettings::SetPostProcessingQuality },
+		{ VisualEffectQuality, &UGameUserSettings::GetVisualEffectQuality, &UGameUserSettings::SetVisualEffectQuality },
+		{ ShadowQuality, &UGameUserSettings::GetShadowQuality, &UGameUserSettings::SetShadowQuality }
 	};
 	for (const auto& [Widget, getFunc,setFunc] : SelectionElement)
 	{
@@ -45,14 +50,14 @@ void USettingsWidget::NativeConstruct()
 	}
 }
 
-void USettingsWidget::OnResolutionChanged(FString InItemSelected, ESelectInfo::Type InSelectionType)
+void UVideoSettingsWidget::OnResolutionChanged(FString InItemSelected, ESelectInfo::Type InSelectionType)
 {
 	const auto SelectedResolution = Resolutions[ResolutionComboBox->GetSelectedIndex()];
 	GameUserSettings->SetScreenResolution(SelectedResolution);
 	GameUserSettings->ApplySettings(false);
 }
 
-void USettingsWidget::InitializeResolutionComboBox()
+void UVideoSettingsWidget::InitializeResolutionComboBox()
 {
 	Resolutions.Reset();
 	UKismetSystemLibrary::GetSupportedFullscreenResolutions(Resolutions);
@@ -73,25 +78,25 @@ void USettingsWidget::InitializeResolutionComboBox()
 	ResolutionComboBox->OnSelectionChanged.AddDynamic(this,&ThisClass::OnResolutionChanged);
 }
 
-void USettingsWidget::OnVSyncChanged(bool bIsChecked)
+void UVideoSettingsWidget::OnVSyncChanged(bool bIsChecked)
 {
 	GameUserSettings->SetVSyncEnabled(bIsChecked);
 	GameUserSettings->ApplySettings(false);
 }
 
-void USettingsWidget::InitializeSync()
+void UVideoSettingsWidget::InitializeSync()
 {
 	VSyncCheckBox->SetIsChecked(false);
 	VSyncCheckBox->SetIsChecked(GameUserSettings->IsVSyncEnabled());
 	VSyncCheckBox->OnCheckStateChanged.AddDynamic(this,&ThisClass::OnVSyncChanged);
 }
 
-void USettingsWidget::OnFrameRateChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
+void UVideoSettingsWidget::OnFrameRateChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
 {
 	GameUserSettings->SetFrameRateLimit(FrameRates[SelectedItem]);
 }
 
-void USettingsWidget::InitializeFrameRate()
+void UVideoSettingsWidget::InitializeFrameRate()
 {
 	FrameRateComboBox->ClearOptions();
 	for (const auto& framerate : FrameRates)
