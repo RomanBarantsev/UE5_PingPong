@@ -6,23 +6,36 @@
 #include "Sound/SoundClass.h"
 #include "Sound/SoundMix.h"
 
-void UAudioSettingsWidget::OnVolumeChanged(float X)
+void UAudioSettingsWidget::VolumeChanged(const float X, USoundClass* sClass) const
 {
 	UGameplayStatics::SetSoundMixClassOverride(
 		this,
 		MasterSoundMix,
-		MasterSound,
+		sClass,
 		X,
 		1.0f,  // pitch
 		0.0f   // fade-in time
-	);
+	);	
 	UGameplayStatics::PushSoundMixModifier(this, MasterSoundMix);
+	
 }
 
 void UAudioSettingsWidget::NativeConstruct()
 {
-	check(MasterSound);
-	check(MasterSoundMix);
-	VolumeSlider->OnValueChanged.AddDynamic(this,&ThisClass::OnVolumeChanged);
+	MasterSlider->AssociatedClass=MasterSound;
+	VoiceSlider->AssociatedClass=EnvironmentSound;
+	MusicSlider->AssociatedClass=MusicSound;
+	Sliders.Emplace(MasterSlider);
+	Sliders.Emplace(VoiceSlider);
+	Sliders.Emplace(MusicSlider);
+	for (const auto Slider : Sliders)
+	{
+		if (!Slider || !Slider->AssociatedClass) continue;
+		auto cl  = Slider->AssociatedClass;
+		Slider->OnCppMouseCaptureEnd.AddLambda([this](USoundClass* sClass, float Value)
+		{
+			VolumeChanged(Value,sClass);
+		});
+	}
 	Super::NativeConstruct();
 }

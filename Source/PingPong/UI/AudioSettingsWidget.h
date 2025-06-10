@@ -2,9 +2,12 @@
 
 #pragma once
 
+#include <vector>
+
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Slider.h"
+#include "SlateClasses/PPSlider.h"
 #include "AudioSettingsWidget.generated.h"
 
 /**
@@ -16,12 +19,22 @@ class PINGPONG_API UAudioSettingsWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UFUNCTION()
-	void OnVolumeChanged(float X);
+	void VolumeChanged(const float X,USoundClass* sClass) const;
 	virtual void NativeConstruct() override;
 	UPROPERTY(EditAnywhere)
 	USoundClass* MasterSound;
 	UPROPERTY(EditAnywhere)
+	USoundClass* EnvironmentSound;
+	UPROPERTY(EditAnywhere)
+	USoundClass* MusicSound;
+	UPROPERTY(EditAnywhere)
 	USoundMix* MasterSoundMix;
+	UPROPERTY()
+	TArray<UPPSlider*> Sliders;
 	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
-	TObjectPtr<USlider> VolumeSlider;	
+	TObjectPtr<UPPSlider> MasterSlider;	
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	TObjectPtr<UPPSlider> VoiceSlider;	
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	TObjectPtr<UPPSlider> MusicSlider;	
 };
