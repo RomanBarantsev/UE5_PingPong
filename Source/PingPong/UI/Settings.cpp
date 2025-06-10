@@ -12,6 +12,14 @@ void USettings::OnExitBtnPressed()
 	this->SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void USettings::OnGameBtnPushed()
+{
+	if (WidgetSwitcher && VideoSettingsWidget)
+	{
+		WidgetSwitcher->SetActiveWidget(GameSettingsWidget);
+	}
+}
+
 void USettings::NativeConstruct()
 {	
 	if (AudioSettingsSubClass)
@@ -35,9 +43,20 @@ void USettings::NativeConstruct()
 		UE_LOG(LogTemp, Warning, TEXT("No VideoSettingsSubClass in Settings Widget"));
 		UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 	}
+	if (GameSettingsSubClass)
+		{
+			GameSettingsWidget = CreateWidget<UUserWidget>(GetWorld(), GameSettingsSubClass); // ✅ Correct class
+			WidgetSwitcher->AddChild(GameSettingsWidget);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No GameSettingsSubClass in Settings Widget"));
+			UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
+		}
 
 	Sound->OnPressed.AddUniqueDynamic(this, &USettings::OnSoundBtnPushed);
 	Video->OnPressed.AddUniqueDynamic(this, &USettings::OnVideoBtnPushed);
+	Game->OnPressed.AddUniqueDynamic(this, &USettings::OnGameBtnPushed);
 	Exit->OnPressed.AddUniqueDynamic(this, &USettings::OnExitBtnPressed);
 	Super::NativeConstruct();
 }

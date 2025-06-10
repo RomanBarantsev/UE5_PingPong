@@ -24,6 +24,8 @@ class PINGPONG_API USettings : public UUserWidget
 protected:
 	UFUNCTION()
 	void OnExitBtnPressed();
+	UFUNCTION()
+	void OnGameBtnPushed();
 	virtual void NativeConstruct() override;
 	UPROPERTY(meta = (BindWidget))
 	UGridPanel* GridPanel;
@@ -31,6 +33,8 @@ protected:
 	UButton* Sound;	
 	UPROPERTY(meta = (BindWidget))
 	UButton* Video;
+	UPROPERTY(meta = (BindWidget))
+	UButton* Game;
 	UPROPERTY(meta = (BindWidget))
 	UButton* Exit;
 public:
@@ -46,8 +50,14 @@ protected:
 	TSubclassOf<UUserWidget> AudioSettingsSubClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> VideoSettingsSubClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> GameSettingsSubClass;
+	UPROPERTY(EditAnywhere)
+	TArray<UUserWidget*> Widgets;
 	UPROPERTY()
 	UUserWidget* AudioSettingsWidget;
 	UPROPERTY()
 	UUserWidget* VideoSettingsWidget;
+	UPROPERTY()
+	UUserWidget* GameSettingsWidget;
 };
