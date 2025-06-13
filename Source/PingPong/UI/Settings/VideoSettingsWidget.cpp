@@ -2,11 +2,11 @@
 
 
 #include "VideoSettingsWidget.h"
-#include "SelectionBase.h"
 #include "Components/CheckBox.h"
 #include "Components/ComboBoxString.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PingPong/UI/SelectionBase.h"
 
 namespace
 {	

@@ -6,8 +6,6 @@
 #include "ServerRow.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
-#include "Components/NativeWidgetHost.h"
-#include "HUDs/BaseHUD.h"
 #include "ServerBrowser.generated.h"
 
 

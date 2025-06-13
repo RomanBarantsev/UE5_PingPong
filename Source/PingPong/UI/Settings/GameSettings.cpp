@@ -3,8 +3,6 @@
 
 #include "GameSettings.h"
 
-#include "Kismet/GameplayStatics.h"
-
 void UGameSettings::TextCommited(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	APlayerController* PC = GetOwningPlayer();

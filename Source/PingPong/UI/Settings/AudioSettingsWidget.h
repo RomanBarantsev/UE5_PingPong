@@ -6,10 +6,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Slider.h"
-#include "SlateClasses/PPSlider.h"
 #include "AudioSettingsWidget.generated.h"
 
+class UPPSlider;
 /**
  * 
  */

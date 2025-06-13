@@ -3,8 +3,8 @@
 
 #include "AudioSettingsWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "PingPong/UI/SlateClasses/PPSlider.h"
 #include "Sound/SoundClass.h"
-#include "Sound/SoundMix.h"
 
 void UAudioSettingsWidget::VolumeChanged(const float X, USoundClass* sClass) const
 {
