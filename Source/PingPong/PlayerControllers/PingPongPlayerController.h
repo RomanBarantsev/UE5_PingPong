@@ -86,7 +86,7 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 PlayerId, float Score);
 	UFUNCTION(Client,Reliable)
-	void SetScoreText(int32 PlayerId);
+	void SetScoreText(int32 PlayerId,const FString& playerName);
 
 private:
 	int32 ModificationsCount;	

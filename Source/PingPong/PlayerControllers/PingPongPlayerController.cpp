@@ -297,10 +297,10 @@ void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float
 	PingPongHUD->GetOverlayWidget()->UpdateScore(PlayerId,Score);
 }
 
-void APingPongPlayerController::SetScoreText_Implementation(int32 PlayerId)
+void APingPongPlayerController::SetScoreText_Implementation(int32 PlayerId,const FString& playerName)
 {
 	
-	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(PlayerId);
+	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(PlayerId,playerName);
 }
 
 void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)

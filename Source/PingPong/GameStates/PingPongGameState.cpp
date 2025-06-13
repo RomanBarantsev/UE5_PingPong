@@ -203,7 +203,7 @@ void APingPongGameState::IncreaseReadyPlayer_Implementation()
 			for (auto PlayerControllerState : PlayerControllers)
 			{
 				APingPongPlayerState* PlayerState = PlayerControllerState->GetPlayerState<APingPongPlayerState>();
-				PlayerController->SetScoreText(PlayerState->GetPlayerId());	
+				PlayerController->SetScoreText(PlayerState->GetPlayerId(),PlayerState->GetName());	
 			}			
 		}
 		SetMatchState(MatchState::WaitingToStart);
