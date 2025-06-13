@@ -18,8 +18,7 @@ void UMenuButton::NativePreConstruct()
 	/*Button = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("Button"));
 	SizeBox->AddChild(Button);
 	Text = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("Text"));
-	Button->AddChild(Text);*/
-	Button->OnClicked.AddDynamic(this,&UMenuButton::HandleButtonClicked);
+	Button->AddChild(Text);*/	
 	//SetButtonImage(LoadObject<UTexture2D>(nullptr, TEXT("/Game/PingPong/UI/IMG/2.2")));
 	Super::NativePreConstruct();
 }
@@ -27,6 +26,7 @@ void UMenuButton::NativePreConstruct()
 void UMenuButton::NativeConstruct()
 {
 	Super::NativeConstruct();
+	Button->OnClicked.AddDynamic(this,&UMenuButton::HandleButtonClicked);
 }
 
 void UMenuButton::HandleButtonClicked()

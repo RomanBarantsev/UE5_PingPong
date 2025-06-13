@@ -34,8 +34,6 @@ private:
 	UFUNCTION()
 	void OnSettingsBtnClicked();
 	UFUNCTION()
-	void OnMenuButtonPressed();	
-	UFUNCTION()
 	void OnQuitButtonPressed();
 	
 	UPROPERTY(meta=(BindWidget))

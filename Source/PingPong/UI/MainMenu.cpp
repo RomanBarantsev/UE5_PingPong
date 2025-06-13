@@ -59,11 +59,6 @@ void UMainMenu::OnSettingsBtnClicked()
 	HUD->SwitchUI(Widgets::Settings);
 }
 
-void UMainMenu::OnMenuButtonPressed()
-{
-	
-}
-
 void UMainMenu::OnQuitButtonPressed()
 {
 	UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
