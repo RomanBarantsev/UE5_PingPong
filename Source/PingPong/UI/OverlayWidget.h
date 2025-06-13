@@ -7,8 +7,10 @@
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
 #include "OverlayWidget.generated.h"
 
+class UPlayerScore;
 enum class EPlayersStatus;
 class APingPongPlayerController;
 /**
@@ -19,17 +21,10 @@ class PINGPONG_API UOverlayWidget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock* TextScorePlayer1;
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock* TextScorePlayer2;
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock* TextNamePlayer1;
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock* TextNamePlayer2;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TimerText;
+	UPROPERTY(meta=(BindWidget))
+	UVerticalBox* PlayersScoreTable;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* WaitingPlayersText;
 	UPROPERTY(meta=(BindWidget))
@@ -42,11 +37,9 @@ protected:
 	UTextBlock* BallCost;	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* GameOverText;
-	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PlayerScoreWidget;
 	virtual void NativeConstruct() override;
-private:
-	UFUNCTION()
-	void SetScoreTextVisible();
 protected:
 	UFUNCTION()
 	void OnReadyButtonPushed();	
@@ -55,7 +48,7 @@ protected:
 	UPROPERTY()
 	APingPongPlayerController* PingPongPlayerController;
 	UPROPERTY()
-	TMap<int32,UTextBlock*> PlayersScoreMap;
+	TMap<int32,UPlayerScore*> PlayersScoreMap;
 public:	
 	UFUNCTION()
 	void ShowWaitingForPlayers();
@@ -68,7 +61,7 @@ public:
 	UFUNCTION()
 	void UpdateScore(int32 playerId, float Score);
 	UFUNCTION()
-	void SetPlayerScoreVisible(int32 PlayerId);
+	void SetPlayerScoreVisible(int32 PlayerId,FString playerName);
 	UFUNCTION()
 	void SetBallSquareColor(FLinearColor Color);
 	UFUNCTION()

@@ -3,9 +3,12 @@
 
 #include "OverlayWidget.h"
 
+#include "PlayerScore.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerStates/PingPongPlayerState.h"
 
 void UOverlayWidget::NativeConstruct()
 {
@@ -22,21 +25,9 @@ void UOverlayWidget::NativeConstruct()
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
 	PingPongPlayerController->SetUIStatus(EUIStatus::UILoaded);
-	TextScorePlayer1->SetVisibility(ESlateVisibility::Hidden);
-	TextScorePlayer2->SetVisibility(ESlateVisibility::Hidden);
-	TextNamePlayer1->SetVisibility(ESlateVisibility::Hidden);
-	TextNamePlayer2->SetVisibility(ESlateVisibility::Hidden);
 	GameOverText->SetVisibility(ESlateVisibility::Hidden);
 	ShowWaitingForPlayers();
 	Super::NativeConstruct();
-}
-
-void UOverlayWidget::SetScoreTextVisible()
-{
-	TextScorePlayer1->SetVisibility(ESlateVisibility::Visible);
-	TextScorePlayer2->SetVisibility(ESlateVisibility::Visible);
-	TextNamePlayer1->SetVisibility(ESlateVisibility::Visible);
-	TextNamePlayer2->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UOverlayWidget::ShowWaitingForPlayers()
@@ -85,29 +76,19 @@ void UOverlayWidget::UpdateCountdown()
 void UOverlayWidget::UpdateScore(int32 playerId, float Score)
 {
 	auto Result = PlayersScoreMap.FindRef(playerId);
-	if(Result==TextScorePlayer1)
-	{
-		Result->SetText(FText::AsNumber(Score));
-	}
-	if(Result==TextScorePlayer2)
-	{
-		Result->SetText(FText::AsNumber(Score));
-	}
-	
+		
 }
 
-void UOverlayWidget::SetPlayerScoreVisible(int32 PlayerId)
+void UOverlayWidget::SetPlayerScoreVisible(int32 PlayerId,FString playerName)
 {
-	SetScoreTextVisible();
-	if(PlayersScoreMap.Num()==0)
+	UUserWidget* score = CreateWidget<UUserWidget>(this,PlayerScoreWidget);
+	PlayersScoreTable->AddChild(score);
+	UPlayerScore* scoreWidget = Cast<UPlayerScore>(score);
+	PlayersScoreMap.Add(PlayerId,scoreWidget);
+	if (scoreWidget)
 	{
-		PlayersScoreMap.FindOrAdd(PlayerId,TextScorePlayer1);
-		TextNamePlayer1->SetText(FText::AsNumber(PlayerId));
-	}
-	else
-	{
-		PlayersScoreMap.FindOrAdd(PlayerId,TextScorePlayer2);
-		TextNamePlayer2->SetText(FText::AsNumber(PlayerId));
+		scoreWidget->SetPlayerName(playerName);
+		scoreWidget->SetPlayerScore(0);
 	}
 }
 
