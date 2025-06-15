@@ -4,6 +4,7 @@
 #include "PingPongPlayerController.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/GameMode.h"
+#include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
@@ -13,6 +14,7 @@
 
 void APingPongPlayerController::BeginPlay()
 {
+	
 	FString PlatformName = UGameplayStatics::GetPlatformName();
 	if (!PlatformName.Contains(TEXT("Android")))
 	{
@@ -42,14 +44,13 @@ void APingPongPlayerController::BeginPlay()
 }
 
 void APingPongPlayerController::Tick(float DeltaSeconds)
-{
+{	
 	Super::Tick(DeltaSeconds);
 	if(Platform)
 	{		
 		Platform->Server_Rotate(0);
 		if(!bIsMovingForward && !bIsMovingSides) Platform->Floating();
-	}
-	
+	}	
 }
 
 
@@ -265,6 +266,27 @@ bool APingPongPlayerController::ScrollColorOnServer_Validate(float Axis)
 	return true;
 }
 
+
+void APingPongPlayerController::AddNewPlayerToList_Implementation(int32 PlayerId, const FString& playerName)
+{
+	PlayerList.Add(PlayerId, playerName);
+	if (!PingPongHUD)
+		return;
+	if (auto overlay = PingPongHUD->GetOverlayWidget())
+		overlay->AddPlayerToScoreTable(PlayerId,playerName);
+}
+
+void APingPongPlayerController::RemovePlayerFromList_Implementation(int32 PlayerId)
+{
+	PlayerList.Remove(PlayerId);
+	PingPongHUD->GetOverlayWidget()->RemovePlayerFromScoreTable(PlayerId);
+}
+
+TMap<uint32, FString> APingPongPlayerController::GetPlayersInGame()
+{	
+	return PlayerList;
+}
+
 void APingPongPlayerController::ScrollColor(float Axis)
 {
 	
@@ -297,12 +319,6 @@ void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float
 	PingPongHUD->GetOverlayWidget()->UpdateScore(PlayerId,Score);
 }
 
-void APingPongPlayerController::SetScoreText_Implementation(int32 PlayerId,const FString& playerName)
-{
-	
-	PingPongHUD->GetOverlayWidget()->SetPlayerScoreVisible(PlayerId,playerName);
-}
-
 void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 {
 	if(HasAuthority() && UKismetSystemLibrary::IsDedicatedServer(GetWorld())) return; 
@@ -312,7 +328,7 @@ void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 	{
 	case EUIStatus::UILoaded: //UILoaded
 		{
-			PingPongGameState->IncreaseLoadedPlayer();
+			//PingPongGameState->IncreaseLoadedPlayer(nullptr);
 			break;
 		}
 	case EUIStatus::ReadyButtonPressed: //ReadyButtonPressed

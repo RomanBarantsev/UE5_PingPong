@@ -30,7 +30,7 @@ class PINGPONG_API APingPongPlayerController : public APlayerController
 	GENERATED_BODY()
 protected:
 	virtual void BeginPlay() override;
-	
+	TMap<uint32, FString> PlayerList;
 	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY()
 	FTransform StartTransform;
@@ -86,8 +86,11 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 PlayerId, float Score);
 	UFUNCTION(Client,Reliable)
-	void SetScoreText(int32 PlayerId,const FString& playerName);
-
+	void AddNewPlayerToList(int32 PlayerId,const FString& playerName);
+	UFUNCTION(Client,Reliable)
+	void RemovePlayerFromList(int32 PlayerId);	
+	UFUNCTION()
+	TMap<uint32,FString> GetPlayersInGame();
 private:
 	int32 ModificationsCount;	
 	UFUNCTION(Server,Reliable,WithValidation)
