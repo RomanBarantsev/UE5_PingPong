@@ -24,14 +24,14 @@ APingPongGameMode::APingPongGameMode()
 void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 {	
 	UWorld* world = GetWorld();
+	check(world);
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
 	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
 	check(PingPongGameState);
-	PingPongGameState->GetPlayersControllers().Add(PingPongPlayerController);
-	if(!world) return;
+	PingPongGameState->IncreaseLoadedPlayer(PingPongPlayerController);
 	APingPongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
-	SetClosestGoalOwner(Pawn);	
+	SetClosestGoalOwner(Pawn);
 	Super::PostLogin(NewPlayer);
 	
 }
@@ -42,8 +42,7 @@ void APingPongGameMode::Logout(AController* Exiting)
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(Exiting);
 	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
 	check(PingPongGameState);
-	PingPongGameState->GetPlayersControllers().Remove(PingPongPlayerController);
-	PingPongGameState->PlayerDisconnected();
+	PingPongGameState->DecreaseLoadedPlayer(Exiting);
 	if (IsNetMode(NM_ListenServer) || IsNetMode(NM_DedicatedServer) || Exiting)
 	{
 		TArray<AActor*> FoundActors;
