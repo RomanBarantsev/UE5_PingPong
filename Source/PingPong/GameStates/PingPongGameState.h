@@ -64,13 +64,13 @@ public:
 private:
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;	
 	UPROPERTY(Replicated)
-	int32 ReadyPlayers=0;
+	int32 ReadyPlayers{0};
 	UPROPERTY(Replicated)
 	int32 LoadedPlayers;
 	UPROPERTY(Replicated)
 	int32 StartedPlayers;
 	UPROPERTY()
-	int32 CountDown = 3;
+	int32 CountDown {3};
 public:
 	UFUNCTION()
 	int32 GetCountDownTime();
@@ -83,17 +83,17 @@ private:
 public:
 	UFUNCTION(Server,Reliable)
 	void IncreaseReadyPlayer();
+	UFUNCTION(Client,Reliable)
+	void IncreaseLoadedPlayer(APingPongPlayerController* PC);
 	UFUNCTION(Server,Reliable)
-	void IncreaseLoadedPlayer();
+	void DecreaseLoadedPlayer(AController* PC);
 	UFUNCTION(Server,Reliable)
 	void IncreaseStartedPlayers();
-	UFUNCTION(Server,Reliable)
-	void PlayerDisconnected();
 	UFUNCTION(Server,Reliable)	
 	void ServerPause(bool state);
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
 	UFUNCTION(Client,Reliable)
-	void UpdatePlayersScore(int32 playerId, int32 Score);
+	void UpdatePlayersScore(int32 playerId, int32 Score);	
 	
 private:
 	UFUNCTION()
@@ -121,8 +121,7 @@ public:
 	int32 GetBallSpeed(EBallModificators modificator);
 	UFUNCTION()
 	float GetBallModificationValue(EBallModificators modificator);
-	FBallModificatorsTable* GetModificationRow(EBallModificators Modificator);
-	
+	FBallModificatorsTable* GetModificationRow(EBallModificators Modificator);	
 	UPROPERTY(BlueprintAssignable, Category = "Match State")
 	FOnMatchStateChanged OnMatchStateChanged;
 	

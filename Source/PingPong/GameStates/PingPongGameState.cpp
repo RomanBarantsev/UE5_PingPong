@@ -59,20 +59,28 @@ int32 APingPongGameState::GetCountDownTime()
 	return CountDown;
 }
 
-void APingPongGameState::SetCountDownOnPlayerSide_Implementation()
-{
-	
-}
-
-void APingPongGameState::IncreaseLoadedPlayer_Implementation()
-{
+void APingPongGameState::IncreaseLoadedPlayer_Implementation(APingPongPlayerController* PC)
+{	
+	if (PC)
+		PlayerControllers.Add(PC);
 	LoadedPlayers++;
 	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 	if(LoadedPlayers==GameMode->GetPlayersCount())
 	{
 		SetMatchState(MatchState::EnteringMap);
 	}
+	for (auto PlayerController : GetPlayersControllers())
+	{		
+		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
+		PlayerController->AddNewPlayerToList(PlayerState->GetPlayerId(), PlayerState->GetPlayerName());
+	}
 }
+
+void APingPongGameState::SetCountDownOnPlayerSide_Implementation()
+{
+	
+}
+
 
 void APingPongGameState::IncreaseStartedPlayers_Implementation()
 {
@@ -81,15 +89,6 @@ void APingPongGameState::IncreaseStartedPlayers_Implementation()
 	{
 		SetMatchState(MatchState::InProgress);
 	}
-}
-
-void APingPongGameState::PlayerDisconnected_Implementation()
-{
-	StartedPlayers=0;
-	LoadedPlayers--;
-	ReadyPlayers=0;
-	SetMatchState(MatchState::Aborted);
-	
 }
 
 void APingPongGameState::ServerPause_Implementation(bool state)
@@ -102,6 +101,21 @@ void APingPongGameState::ServerPause_Implementation(bool state)
 	else
 	{
 		UGameplayStatics::SetGamePaused(GetWorld(),state);
+	}
+}
+
+void APingPongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
+{
+	if (PC)
+	{
+		APingPongPlayerController* PCCast = Cast<APingPongPlayerController>(PC);
+		PlayerControllers.Remove(PCCast);
+	}		
+	LoadedPlayers--;	
+	for (auto PlayerController : GetPlayersControllers())
+	{		
+		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
+		PlayerController->RemovePlayerFromList(PlayerState->GetPlayerId());	
 	}
 }
 
@@ -176,7 +190,7 @@ FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators
 void APingPongGameState::SetMatchState_Implementation(FName NewState)
 {
 	MatchState = NewState;
-	OnMatchStateChanged.Broadcast(NewState); 
+	OnMatchStateChanged.Broadcast(NewState);	
 }
 
 FName APingPongGameState::GetMatchState() const
@@ -197,15 +211,7 @@ void APingPongGameState::IncreaseReadyPlayer_Implementation()
 {
 	ReadyPlayers++;	
 	if(ReadyPlayers==GameMode->GetPlayersCount())
-	{
-		for (auto PlayerController : PlayerControllers)
-		{
-			for (auto PlayerControllerState : PlayerControllers)
-			{
-				APingPongPlayerState* PlayerState = PlayerControllerState->GetPlayerState<APingPongPlayerState>();
-				PlayerController->SetScoreText(PlayerState->GetPlayerId(),PlayerState->GetName());	
-			}			
-		}
+	{		
 		SetMatchState(MatchState::WaitingToStart);
 	}
 }
