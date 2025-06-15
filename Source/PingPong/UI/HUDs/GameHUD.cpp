@@ -11,7 +11,12 @@
 
 UOverlayWidget* AGameHUD::GetOverlayWidget()
 {
-	return OverlayWidget;
+	if (OverlayWidget)
+		return OverlayWidget;
+	else
+	{
+		return NULL;
+	}
 }
 
 UMainMenu* AGameHUD::GetMainMenuWidget()
