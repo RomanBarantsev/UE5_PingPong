@@ -86,7 +86,7 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 PlayerId, float Score);
 	UFUNCTION(Client,Reliable)
-	void AddNewPlayerToList(int32 PlayerId,const FString& playerName);
+	void AddNewPlayerToList(int32 PlayerId,const FString& PlayerName);
 	UFUNCTION(Client,Reliable)
 	void RemovePlayerFromList(int32 PlayerId);	
 	UFUNCTION()

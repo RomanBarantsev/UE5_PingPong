@@ -36,6 +36,14 @@ void APingPongPlayerController::BeginPlay()
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(PingPongGameState);
 	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::HandleMatchStateChange);
+	if (!HasAuthority())
+	{
+		auto array = PingPongGameState->PlayerArray;
+		for (auto pl : array)
+		{
+			PlayerList.Add(pl->GetPlayerId(),pl.GetName());
+		}
+	}	
 	//UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);	
 	//DisableInput(this);
 	ModificationsCount = PingPongGameState->GeBallModificatorsCount();	
@@ -269,6 +277,10 @@ bool APingPongPlayerController::ScrollColorOnServer_Validate(float Axis)
 
 void APingPongPlayerController::AddNewPlayerToList_Implementation(int32 PlayerId, const FString& playerName)
 {
+	if (PlayerList.Contains(PlayerId) && PlayerList[PlayerId]==playerName)
+	{
+		return;
+	}
 	PlayerList.Add(PlayerId, playerName);
 	if (!PingPongHUD)
 		return;
