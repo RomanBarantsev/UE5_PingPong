@@ -17,8 +17,6 @@ class PINGPONG_API UGameSettings : public UUserWidget
 	GENERATED_BODY()
 	UPROPERTY(meta = (BindWidget))
 	UEditableText* Nickname;
-	UPROPERTY()
-	APingPongPlayerState* PlayerState;
 protected:
 	UFUNCTION()
 	void TextCommited(const FText& Text, ETextCommit::Type CommitMethod);
