@@ -14,14 +14,13 @@ class UPong_GameSettings;
 UCLASS()
 class PINGPONG_API UPP_GameInstance : public UGameInstance
 {
+	GENERATED_BODY()
 	virtual void Init() override;
 	virtual void Shutdown() override;
 	UPROPERTY()
 	UPong_GameUserSettings* Pong_Settings;
 	UPROPERTY()
 	APlayerState* PlayerState;
-public:	
-	void LoadAudioSettings();
-	void LoadVideoSettings();	
-	GENERATED_BODY()
+	UPROPERTY()
+	UGameUserSettings* Settings;
 };
