@@ -5,6 +5,9 @@
 
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
+#include "Components/VerticalBox.h"
+#include "Kismet/GameplayStatics.h"
+#include "PingPong/GameInstance/Pong_GameInstance.h"
 
 void UServerBrowser::OnConnectPressed()
 {
@@ -13,15 +16,7 @@ void UServerBrowser::OnConnectPressed()
 
 void UServerBrowser::OnRefreshPressed()
 {
-	ClearServerList();
-	if (ServerRow.IsValid())
-	{
-		UClass* loadedClass = ServerRow.Get();
-		UServerRow* newInstance = CreateWidget<UServerRow>(this,loadedClass);
-		ServerList->AddChild(newInstance);
-	}
-	
-	
+	GameInstance->GetServersList();
 }
 
 void UServerBrowser::OnBackPressed()
@@ -29,14 +24,31 @@ void UServerBrowser::OnBackPressed()
 	this->SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void UServerBrowser::ServerListUpdated(const TArray<FServerInfo>& ServerInfos)
+{
+	ServerList->ClearChildren();
+	for (const auto& Server : ServerInfos)
+	{
+		auto Widget = CreateWidget<UServerRow>(GetWorld(), ServerRowClass);
+		Widget->SetServerName(Server.Name);
+		Widget->SetCurrentPlayers(Server.CurrentPlayers);
+		Widget->port=Server.Port;
+		Widget->IP=Server.IP;
+	}
+}
+
 void UServerBrowser::NativeConstruct()
 {
 	Super::NativeConstruct();
+	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
+	if (GI)
+	{
+		GameInstance = Cast<UPong_GameInstance>(GI);
+		if (GameInstance)
+		{
+			GameInstance->OnServerListReady.BindDynamic(this,&ThisClass::ServerListUpdated);
+		}
+	}
 	RefreshBtn->OnClicked.AddDynamic(this,&UServerBrowser::OnRefreshPressed);
 	BackButton->OnClicked.AddDynamic(this,&UServerBrowser::OnBackPressed);
-}
-
-void UServerBrowser::ClearServerList() const
-{
-	ServerList->ClearChildren();
 }
