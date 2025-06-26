@@ -7,7 +7,6 @@
 #include "Components/BackgroundBlur.h"
 #include "Components/Button.h"
 #include "HUDs/BaseHUD.h"
-#include "PingPong/GameInstance/LocalNetworkGameInstance.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "MainMenu.generated.h"
 
