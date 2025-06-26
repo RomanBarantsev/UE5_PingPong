@@ -14,14 +14,16 @@ UCLASS()
 class PINGPONG_API UServerRow : public UUserWidget
 {
 	GENERATED_BODY()
-	
-protected:	
+public:	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ServerNameTxt;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* PlayersTxt;
-	UPROPERTY(meta=(BindWidget))
-	UTextBlock* PingTxt;
-
+	UPROPERTY()
+	FString IP;
+	UPROPERTY()
+	int port;
+	void SetCurrentPlayers(int Players);
+	void SetServerName(FString Name);
 	virtual void NativeConstruct() override;
 };
