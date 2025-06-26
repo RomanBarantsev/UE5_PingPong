@@ -18,7 +18,7 @@ enum Widgets
 {
 	MainMenu,
 	Settings,
-	ServerList,
+	ServerBrowser,
 	Overlay
 };
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWidgetChanged,Widgets,widget);

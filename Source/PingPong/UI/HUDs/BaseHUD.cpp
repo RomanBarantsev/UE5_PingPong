@@ -41,7 +41,7 @@ void ABaseHUD::BeginPlay()
 	if (ServerBrowserWidgetSubClass)
 	{
 		UUserWidget* ServerBrowser = CreateWidget<UUserWidget>(GetWorld(),ServerBrowserWidgetSubClass);
-		UIWidgetsMap.Add(Widgets::ServerList,ServerBrowser);
+		UIWidgetsMap.Add(Widgets::ServerBrowser,ServerBrowser);
 	}
 	if (SettingsWidgetSubClass)
 	{
