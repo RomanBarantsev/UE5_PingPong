@@ -22,10 +22,7 @@ public class PingPong : ModuleRules
 			"Sockets",
 			"Networking",
 			"SlateCore",
-			"Slate",
-			"Json",
-			"JsonUtilities",
-			"HTTP"
+			"Slate"
 		});
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
