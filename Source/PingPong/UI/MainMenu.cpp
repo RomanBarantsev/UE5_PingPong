@@ -12,11 +12,19 @@
 
 void UMainMenu::OnJoinGameBtnClicked()
 {
+#ifdef UE_EDITOR
+	
+#else
 	HUD->SwitchUI(Widgets::ServerBrowser);
+#endif
+	
 }
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
+#ifdef UE_EDITOR
+	
+#else
 	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
 	if (GI)
 	{
@@ -30,6 +38,8 @@ void UMainMenu::OnCreateGameBtnClicked()
 			}			
 		}
 	}
+#endif
+	
 }
 
 void UMainMenu::OnDisconnectBtnClicked()
@@ -53,14 +63,15 @@ void UMainMenu::OnQuitButtonClicked()
 }
 
 void UMainMenu::NativeConstruct()
-{	
+{
+	DisconnectBtn->SetVisibility(ESlateVisibility::Visible);
+	ResumeGame->SetVisibility(ESlateVisibility::Visible);
+	//JoinGame->SetVisibility(ESlateVisibility::Collapsed);
+	//CreateGame->SetVisibility(ESlateVisibility::Collapsed);
 	ENetMode NetMode = GetWorld()->GetNetMode();
 	if (NetMode==NM_ListenServer || NetMode==NM_Client)
 	{
-		DisconnectBtn->SetVisibility(ESlateVisibility::Visible);
-		ResumeGame->SetVisibility(ESlateVisibility::Visible);
-		JoinGame->SetVisibility(ESlateVisibility::Collapsed);
-		CreateGame->SetVisibility(ESlateVisibility::Collapsed);
+		
 	}
 	else
 	{
