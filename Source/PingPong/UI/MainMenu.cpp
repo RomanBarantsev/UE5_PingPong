@@ -4,37 +4,49 @@
 #include "MainMenu.h"
 
 #include "MenuButton.h"
-#include "GameFramework/PlayerState.h"
+#include "Components/VerticalBox.h"
 #include "HUDs/BaseHUD.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/GameInstance/Pong_GameInstance.h"
+#include "PingPong/GameInstance/NetworkGameInstance.h"
 
+class UNetworkGameInstance;
 
 void UMainMenu::OnJoinGameBtnClicked()
 {
-	HUD->SwitchUI(Widgets::ServerBrowser);
+#ifdef UE_EDITOR
+		
+#else
+
+	if (NetworkGI)
+	{
+		NetworkGI->FindOnlineGames();
+	}	
+	//HUD->SwitchUI(Widgets::ServerList,1);
+#endif
 }
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
-	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
-	if (GI)
+#ifdef UE_EDITOR
+	
+#else	
+	if (NetworkGI)
 	{
-		UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
-		if (Pong_GameInstance)
-		{
-			auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
-			if (PS)
-			{
-				Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
-			}			
-		}
-	}
+		NetworkGI->StartOnlineGame();
+	}	
+#endif
 }
 
 void UMainMenu::OnDisconnectBtnClicked()
 {
-	
+#ifdef UE_EDITOR
+
+#else
+	if (NetworkGI)
+	{
+		NetworkGI->DestroySessionAndLeaveGame();
+	}
+#endif
 }
 
 void UMainMenu::OnResumeBtnClicked()
@@ -47,7 +59,7 @@ void UMainMenu::OnSettingsBtnClicked()
 	HUD->SwitchUI(Widgets::Settings);
 }
 
-void UMainMenu::OnQuitButtonClicked()
+void UMainMenu::OnQuitButtonPressed()
 {
 	UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
 }
@@ -70,12 +82,13 @@ void UMainMenu::NativeConstruct()
 		CreateGame->SetVisibility(ESlateVisibility::Visible);
 	}
 	auto GameInstance = GetGameInstance();
+	NetworkGI = Cast<UNetworkGameInstance>(GameInstance);
 	JoinGame->OnButtonClicked.AddDynamic(this,&ThisClass::OnJoinGameBtnClicked);	
 	CreateGame->OnButtonClicked.AddDynamic(this,&ThisClass::OnCreateGameBtnClicked);
 	DisconnectBtn->OnButtonClicked.AddDynamic(this,&ThisClass::OnDisconnectBtnClicked);
 	ResumeGame->OnButtonClicked.AddDynamic(this,&ThisClass::OnResumeBtnClicked);
 	Settings->OnButtonClicked.AddDynamic(this,&ThisClass::OnSettingsBtnClicked);
-	Quit->OnButtonClicked.AddDynamic(this,&ThisClass::OnQuitButtonClicked);
+	Quit->OnButtonClicked.AddDynamic(this,&ThisClass::OnQuitButtonPressed);
 	auto controller = UGameplayStatics::GetPlayerController(GetWorld(),0);	
 	if (controller->IsPlayerController())
 	{

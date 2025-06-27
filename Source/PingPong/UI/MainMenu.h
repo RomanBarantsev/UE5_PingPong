@@ -7,7 +7,7 @@
 #include "Components/BackgroundBlur.h"
 #include "Components/Button.h"
 #include "HUDs/BaseHUD.h"
-#include "PingPong/GameInstance/LocalNetworkGameInstance.h"
+#include "PingPong/GameInstance/NetworkGameInstance.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "MainMenu.generated.h"
 
@@ -21,6 +21,8 @@ class PINGPONG_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 private:
+	UPROPERTY()
+	UNetworkGameInstance* NetworkGI; 
 	UFUNCTION()
 	void OnJoinGameBtnClicked();
 	UFUNCTION()
@@ -32,7 +34,7 @@ private:
 	UFUNCTION()
 	void OnSettingsBtnClicked();
 	UFUNCTION()
-	void OnQuitButtonClicked();
+	void OnQuitButtonPressed();
 	
 	UPROPERTY(meta=(BindWidget))
 	UMenuButton* JoinGame;
