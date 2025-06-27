@@ -7,7 +7,6 @@
 #include "Components/TextBlock.h"
 #include "ServerRow.generated.h"
 
-class UButton;
 /**
  * 
  */
@@ -15,9 +14,7 @@ UCLASS()
 class PINGPONG_API UServerRow : public UUserWidget
 {
 	GENERATED_BODY()
-public:
-	UPROPERTY(meta=(BindWidget))
-	UButton* Button;
+public:	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ServerNameTxt;
 	UPROPERTY(meta=(BindWidget))
@@ -26,9 +23,7 @@ public:
 	FString IP;
 	UPROPERTY()
 	int port;
-	void SetCurrentPlayers(int Players,int maxPlayers);
+	void SetCurrentPlayers(int Players);
 	void SetServerName(FString Name);
-	UFUNCTION()
-	void OnButtonClicked();
 	virtual void NativeConstruct() override;
 };
