@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongGoal.h"
 #include "PingPong/Actors/PingPongPlatform.h"
+#include "PingPong/GameInstance/Pong_GameInstance.h"
 #include "PingPong/GameStates/PingPongGameState.h"
 #include "PingPong/Pawns/PingPongPlayerPawn.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
@@ -33,6 +34,15 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 	SetClosestGoalOwner(Pawn);
 	Super::PostLogin(NewPlayer);
+	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
+	if (GI)
+	{
+		auto Pong_GI = Cast<UPong_GameInstance>(GI);
+		if (Pong_GI)
+		{
+			Pong_GI->PlayersUpdate();
+		}
+	}
 	
 }
 
@@ -56,6 +66,23 @@ void APingPongGameMode::Logout(AController* Exiting)
 		}
 	}	
 	Super::Logout(Exiting);
+	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
+	if (GI)
+	{
+		auto Pong_GI = Cast<UPong_GameInstance>(GI);
+		if (Pong_GI)
+		{
+			if (GetNumPlayers()==0)
+			{
+				Pong_GI->HostShutdown();
+				FGenericPlatformMisc::RequestExit(false);
+			}
+			else
+			{
+				Pong_GI->PlayersUpdate();
+			}
+		}		
+	}
 }
 
 APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerController* PingPongPlayerController,
