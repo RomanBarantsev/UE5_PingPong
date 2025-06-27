@@ -69,16 +69,11 @@ void APingPongGameState::IncreaseLoadedPlayer_Implementation(APingPongPlayerCont
 	{
 		SetMatchState(MatchState::EnteringMap);
 	}
-	for (auto player : PlayerArray)
-	{
-		auto name = player->GetPlayerName();
-		auto ID = player->GetPlayerId();
-		for (auto PlayerController : PlayerControllers)
-		{		
-			PlayerController->AddNewPlayerToList(ID,name);
-		}
-	}	
-	
+	for (auto PlayerController : GetPlayersControllers())
+	{		
+		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
+		PlayerController->AddNewPlayerToList(PlayerState->GetPlayerId(), PlayerState->GetPlayerName());
+	}
 }
 
 void APingPongGameState::SetCountDownOnPlayerSide_Implementation()
@@ -114,15 +109,14 @@ void APingPongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
 	if (PC)
 	{
 		APingPongPlayerController* PCCast = Cast<APingPongPlayerController>(PC);
-		for (auto PlayerController : GetPlayersControllers())
-		{		
-			APingPongPlayerState* PlayerState = PCCast->GetPlayerState<APingPongPlayerState>();
-			PlayerController->RemovePlayerFromList(PlayerState->GetPlayerId());	
-		}
-		PlayerControllers.Remove(PCCast);		
+		PlayerControllers.Remove(PCCast);
 	}		
 	LoadedPlayers--;	
-	
+	for (auto PlayerController : GetPlayersControllers())
+	{		
+		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
+		PlayerController->RemovePlayerFromList(PlayerState->GetPlayerId());	
+	}
 }
 
 TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
