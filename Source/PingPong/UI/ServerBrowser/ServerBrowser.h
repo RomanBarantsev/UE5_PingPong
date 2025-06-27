@@ -9,11 +9,6 @@
 #include "ServerBrowser.generated.h"
 
 
-DECLARE_DELEGATE_TwoParams(OnServerChoosed,int32,FString)
-
-struct FServerInfo;
-class UPong_GameInstance;
-class UVerticalBox;
 /**
  * 
  */
@@ -23,6 +18,9 @@ class PINGPONG_API UServerBrowser : public UUserWidget
 	GENERATED_BODY()
 	
 protected:
+	UPROPERTY(meta=(BindWidget))
+	class UScrollBox* ServerList;
+
 	UPROPERTY(meta=(BindWidget))
 	UButton* RefreshBtn;
 	UPROPERTY(meta=(BindWidget))
@@ -35,15 +33,12 @@ protected:
 	void OnRefreshPressed();
 	UFUNCTION()
 	void OnBackPressed();
-	OnServerChoosed OnServerChoosedClicked;
 private:
-	UFUNCTION()
-	void ServerListUpdated(const TArray<FServerInfo>& ServerInfos);
 	virtual void NativeConstruct() override;
+	
+	UFUNCTION()
+	void ClearServerList() const;
+
 	UPROPERTY()
-	UPong_GameInstance* GameInstance;
-	UPROPERTY(meta=(BindWidget))
-	UVerticalBox* ServerList;
-	UPROPERTY(EditAnywhere,meta=(BindWidget))
-	TSubclassOf<UServerRow> ServerRowClass;
+	TSoftClassPtr<UServerRow> ServerRow;
 };
