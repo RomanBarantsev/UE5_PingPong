@@ -8,7 +8,9 @@
 #include "Components/Button.h"
 #include "ServerBrowser.generated.h"
 
-class UScrollBox;
+
+DECLARE_DELEGATE_TwoParams(OnServerChoosed,int32,FString)
+
 struct FServerInfo;
 class UPong_GameInstance;
 class UVerticalBox;
@@ -24,6 +26,8 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UButton* RefreshBtn;
 	UPROPERTY(meta=(BindWidget))
+	UButton* ConnectBtn;
+	UPROPERTY(meta=(BindWidget))
 	UButton* BackButton;
 	UFUNCTION()
 	void OnConnectPressed();
@@ -31,14 +35,15 @@ protected:
 	void OnRefreshPressed();
 	UFUNCTION()
 	void OnBackPressed();
-private:	
+	OnServerChoosed OnServerChoosedClicked;
+private:
 	UFUNCTION()
 	void ServerListUpdated(const TArray<FServerInfo>& ServerInfos);
 	virtual void NativeConstruct() override;
 	UPROPERTY()
 	UPong_GameInstance* GameInstance;
 	UPROPERTY(meta=(BindWidget))
-	UScrollBox* ServerList;
-	UPROPERTY(EditAnywhere)
+	UVerticalBox* ServerList;
+	UPROPERTY(EditAnywhere,meta=(BindWidget))
 	TSubclassOf<UServerRow> ServerRowClass;
 };

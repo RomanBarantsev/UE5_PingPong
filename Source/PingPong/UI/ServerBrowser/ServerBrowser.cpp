@@ -29,12 +29,11 @@ void UServerBrowser::ServerListUpdated(const TArray<FServerInfo>& ServerInfos)
 	ServerList->ClearChildren();
 	for (const auto& Server : ServerInfos)
 	{
-		auto Widget = CreateWidget<UServerRow>(this, ServerRowClass);
+		auto Widget = CreateWidget<UServerRow>(GetWorld(), ServerRowClass);
 		Widget->SetServerName(Server.Name);
-		Widget->SetCurrentPlayers(Server.CurrentPlayers,Server.MaxPlayers);
+		Widget->SetCurrentPlayers(Server.CurrentPlayers);
 		Widget->port=Server.Port;
 		Widget->IP=Server.IP;
-		ServerList->AddChild(Widget);
 	}
 }
 
