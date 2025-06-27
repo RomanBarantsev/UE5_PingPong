@@ -56,7 +56,6 @@ protected:
 private:	
 	UPROPERTY(Replicated)
 	TArray<APingPongPlayerController*> PlayerControllers;
-
 	int ScoreToEnd=51;
 public:
 	UFUNCTION(Category="Score")
