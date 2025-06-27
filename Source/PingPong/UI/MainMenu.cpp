@@ -2,9 +2,7 @@
 
 
 #include "MainMenu.h"
-
 #include "MenuButton.h"
-#include "Components/VerticalBox.h"
 #include "HUDs/BaseHUD.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/GameInstance/NetworkGameInstance.h"
@@ -21,7 +19,7 @@ void UMainMenu::OnJoinGameBtnClicked()
 	{
 		NetworkGI->FindOnlineGames();
 	}	
-	//HUD->SwitchUI(Widgets::ServerList,1);
+	HUD->SwitchUI(Widgets::ServerBrowser);
 #endif
 }
 
@@ -30,10 +28,19 @@ void UMainMenu::OnCreateGameBtnClicked()
 #ifdef UE_EDITOR
 	
 #else	
-	if (NetworkGI)
+	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
+	if (GI)
 	{
-		NetworkGI->StartOnlineGame();
-	}	
+		UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
+		if (Pong_GameInstance)
+		{
+			auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
+			if (PS)
+			{
+				Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
+			}			
+		}
+	}
 #endif
 }
 
