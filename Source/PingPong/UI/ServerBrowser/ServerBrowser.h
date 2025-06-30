@@ -9,6 +9,8 @@
 #include "ServerBrowser.generated.h"
 
 
+struct FServerInfo;
+class UPong_GameInstance;
 /**
  * 
  */
@@ -19,7 +21,7 @@ class PINGPONG_API UServerBrowser : public UUserWidget
 	
 protected:
 	UPROPERTY(meta=(BindWidget))
-	class UScrollBox* ServerList;
+	class UVerticalBox* ServerList;
 
 	UPROPERTY(meta=(BindWidget))
 	UButton* RefreshBtn;
@@ -34,11 +36,12 @@ protected:
 	UFUNCTION()
 	void OnBackPressed();
 private:
-	virtual void NativeConstruct() override;
-	
 	UFUNCTION()
-	void ClearServerList() const;
+	void OnServerListReady(const TArray<FServerInfo>& Servers);
+	virtual void NativeConstruct() override;	
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UServerRow> ServerRowSubClass;
 	UPROPERTY()
-	TSoftClassPtr<UServerRow> ServerRow;
+	UPong_GameInstance* PongGameInstance;
 };

@@ -3,31 +3,23 @@
 
 #include "MainMenu.h"
 #include "MenuButton.h"
+#include "GameFramework/PlayerState.h"
 #include "HUDs/BaseHUD.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/GameInstance/NetworkGameInstance.h"
-
-class UNetworkGameInstance;
+#include "PingPong/GameInstance/Pong_GameInstance.h"
 
 void UMainMenu::OnJoinGameBtnClicked()
 {
-#ifdef UE_EDITOR
-		
-#else
-
 	if (NetworkGI)
 	{
 		NetworkGI->FindOnlineGames();
 	}	
-	HUD->SwitchUI(Widgets::ServerBrowser);
-#endif
+	HUD->SwitchUI(Widgets::ServerList);
 }
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
-#ifdef UE_EDITOR
-	
-#else	
 	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
 	if (GI)
 	{
@@ -41,19 +33,11 @@ void UMainMenu::OnCreateGameBtnClicked()
 			}			
 		}
 	}
-#endif
 }
 
 void UMainMenu::OnDisconnectBtnClicked()
 {
-#ifdef UE_EDITOR
 
-#else
-	if (NetworkGI)
-	{
-		NetworkGI->DestroySessionAndLeaveGame();
-	}
-#endif
 }
 
 void UMainMenu::OnResumeBtnClicked()
