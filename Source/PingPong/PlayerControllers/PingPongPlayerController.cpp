@@ -27,9 +27,8 @@ void APingPongPlayerController::BeginPlay()
 		{
 			PingPongHUD = Cast<AGameHUD>(HUD);
 		}
-		check(PingPongHUD);		
 	}
-	if(!PingPongPlayerState)
+	if(!PingPongGameState)
 	{
 		PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));	
 	}
