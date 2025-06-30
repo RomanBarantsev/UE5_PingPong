@@ -26,7 +26,7 @@ public:
 	FString IP;
 	UPROPERTY()
 	int Port;
-	void SetCurrentPlayers(int Players,int maxPlayer);
+	void SetCurrentPlayers(int Players,int maxPlayers);
 	void SetServerName(FString Name);
 	UFUNCTION()
 	void OnButtonClicked();

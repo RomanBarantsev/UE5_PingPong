@@ -6,9 +6,10 @@
 #include "Components/Button.h"
 #include "Engine/Canvas.h"
 
-void UServerRow::SetCurrentPlayers(int Players,int maxPlayer)
+void UServerRow::SetCurrentPlayers(int Players,int maxPlayers)
 {
-	PlayersTxt->SetText(FText::AsNumber(Players));
+	FText text = (FText::FromString(FString::FromInt(Players)+"/"+FString::FromInt(maxPlayers)));
+	PlayersTxt->SetText(text);
 }
 
 void UServerRow::SetServerName(FString Name)
@@ -18,7 +19,12 @@ void UServerRow::SetServerName(FString Name)
 
 void UServerRow::OnButtonClicked()
 {
-	
+	auto PC = GetOwningPlayer();
+	if (PC)
+	{
+		const FString URL = FString::Printf(TEXT("%s:%d"), *IP, Port);
+		PC->ClientTravel(URL,TRAVEL_Absolute);
+	}
 }
 
 void UServerRow::NativeConstruct()
