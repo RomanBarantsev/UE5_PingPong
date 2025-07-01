@@ -82,8 +82,9 @@ void UOverlayWidget::UpdateCountdown()
 
 void UOverlayWidget::UpdateScore(int32 playerId, float Score)
 {
-	auto Result = PlayersScoreMap.FindRef(playerId);
-		
+	UPlayerScore* PlayerScoreWidget = PlayersScoreMap.FindRef(playerId);
+	if (PlayerScoreWidget)
+		PlayerScoreWidget->SetPlayerScore(Score);
 }
 
 void UOverlayWidget::UpdatePlayerList()
@@ -100,13 +101,14 @@ void UOverlayWidget::UpdatePlayerList()
 			{
 				if (!PS)
 					return;
-				UUserWidget* score = CreateWidget<UUserWidget>(this,PlayerScoreWidget);	
+				UUserWidget* score = CreateWidget<UUserWidget>(this,PlayerScoreWidgetSub);	
 				UPlayerScore* scoreWidget = Cast<UPlayerScore>(score);
 				if (scoreWidget)
 				{
 					auto name = PS->GetPlayerName();
 					scoreWidget->SetPlayerName(name);
 					scoreWidget->SetPlayerScore(0);
+					PlayersScoreMap.Add(PS->GetPlayerId(),scoreWidget);
 					PlayersScoreTable->AddChild(score);
 				}	
 			}

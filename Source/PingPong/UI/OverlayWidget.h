@@ -40,7 +40,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* GameOverText;
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> PlayerScoreWidget;
+	TSubclassOf<UUserWidget> PlayerScoreWidgetSub;
 	UFUNCTION()
 	void OnExitGamePushed();
 	virtual void NativeConstruct() override;
