@@ -44,7 +44,8 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 			Pong_GI->PlayersUpdate();
 		}
 	}
-#endif	
+#endif
+	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
 void APingPongGameMode::Logout(AController* Exiting)
@@ -86,7 +87,7 @@ void APingPongGameMode::Logout(AController* Exiting)
 		}		
 	}
 #endif
-	
+	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
 APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerController* PingPongPlayerController,
