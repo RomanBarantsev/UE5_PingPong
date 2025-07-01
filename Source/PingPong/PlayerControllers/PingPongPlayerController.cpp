@@ -312,7 +312,7 @@ void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
 	{
 	case EUIStatus::UILoaded: //UILoaded
 		{
-			//PingPongGameState->IncreaseLoadedPlayer(nullptr);
+			PingPongGameState->IncreaseLoadedPlayer();
 			break;
 		}
 	case EUIStatus::ReadyButtonPressed: //ReadyButtonPressed

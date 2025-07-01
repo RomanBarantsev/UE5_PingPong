@@ -34,6 +34,11 @@ void APingPongGameState::BeginPlay()
 	CalculateEnumBallModifications();
 }
 
+void APingPongGameState::AddController(APingPongPlayerController* PC)
+{
+	PlayerControllers.Add(PC);
+}
+
 void APingPongGameState::OnrepPlayerStatesUpdated()
 {
 	if (!HasAuthority())
@@ -81,13 +86,9 @@ int32 APingPongGameState::GetCountDownTime()
 	return CountDown;
 }
 
-void APingPongGameState::IncreaseLoadedPlayer_Implementation(APingPongPlayerController* PC)
-{	
-	if (PC)
-	{
-		PlayerControllers.Add(PC);
-		return;
-	}		
+void APingPongGameState::IncreaseLoadedPlayer_Implementation()
+{
+	
 	LoadedPlayers++;
 	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 	if(LoadedPlayers==GameMode->GetPlayersCount())

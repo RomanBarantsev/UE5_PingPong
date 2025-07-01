@@ -57,6 +57,9 @@ protected:
 private:	
 	UPROPERTY(Replicated)
 	TArray<APingPongPlayerController*> PlayerControllers;
+public:
+	UFUNCTION()
+	void AddController(APingPongPlayerController* PC);
 	
 	UFUNCTION()
 	void OnrepPlayerStatesUpdated();
@@ -93,7 +96,7 @@ public:
 	UFUNCTION(Server,Reliable)
 	void IncreaseReadyPlayer();
 	UFUNCTION(Client,Reliable)
-	void IncreaseLoadedPlayer(APingPongPlayerController* PC);
+	void IncreaseLoadedPlayer();
 	UFUNCTION(Server,Reliable)
 	void DecreaseLoadedPlayer(AController* PC);
 	UFUNCTION(Server,Reliable)

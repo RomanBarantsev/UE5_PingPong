@@ -29,7 +29,7 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
 	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
 	check(PingPongGameState);
-	PingPongGameState->IncreaseLoadedPlayer(PingPongPlayerController);
+	PingPongGameState->AddController(PingPongPlayerController);
 	APingPongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 	SetClosestGoalOwner(Pawn);
