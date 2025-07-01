@@ -35,8 +35,8 @@ void APingPongPlayerController::BeginPlay()
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(PingPongGameState);
 	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::HandleMatchStateChange);
-	//UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);	
-	//DisableInput(this);
+	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);	
+	DisableInput(this);
 	ModificationsCount = PingPongGameState->GeBallModificatorsCount();	
 	Super::BeginPlay();
 	SetShowMouseCursor(false);
@@ -285,6 +285,7 @@ void APingPongPlayerController::HandleMatchStateChange(FName NewState)
 	if(NewState==MatchState::WaitingPostMatch)
 	{
 		DisableInput(this);
+		SetShowMouseCursor(true);
 	}
 	if(NewState==MatchState::InProgress)
 	{
