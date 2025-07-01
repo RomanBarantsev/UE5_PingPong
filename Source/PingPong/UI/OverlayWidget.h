@@ -61,9 +61,7 @@ public:
 	UFUNCTION()
 	void UpdateScore(int32 playerId, float Score);
 	UFUNCTION()
-	void AddPlayerToScoreTable(int32 PlayerId,FString playerName);
-	UFUNCTION()
-	void RemovePlayerFromScoreTable(int32 PlayerId);
+	void UpdatePlayerList();
 	UFUNCTION()
 	void SetBallSquareColor(FLinearColor Color);
 	UFUNCTION()

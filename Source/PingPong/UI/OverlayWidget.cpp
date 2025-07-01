@@ -26,14 +26,7 @@ void UOverlayWidget::NativeConstruct()
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
 	PingPongPlayerController->SetUIStatus(EUIStatus::UILoaded);
 	GameOverText->SetVisibility(ESlateVisibility::Hidden);
-	ShowWaitingForPlayers();
-	auto Players = PingPongPlayerController->GetPlayersInGame();
-	if (Players.Num() == 0)
-		return;
-	for (const auto& [PlayerId,PlayerName] : Players)
-	{
-		AddPlayerToScoreTable(PlayerId, PlayerName);
-	}
+	ShowWaitingForPlayers();	
 	Super::NativeConstruct();
 }
 
@@ -86,24 +79,32 @@ void UOverlayWidget::UpdateScore(int32 playerId, float Score)
 		
 }
 
-void UOverlayWidget::AddPlayerToScoreTable(int32 PlayerId, FString playerName)
+void UOverlayWidget::UpdatePlayerList()
 {
-	UUserWidget* score = CreateWidget<UUserWidget>(this,PlayerScoreWidget);	
-	UPlayerScore* scoreWidget = Cast<UPlayerScore>(score);
-	PlayersScoreMap.Emplace(PlayerId,scoreWidget);
-	if (scoreWidget)
+	PlayersScoreTable->ClearChildren();
+	auto GS = UGameplayStatics::GetGameState(GetWorld());
+	if (GS)
 	{
-		scoreWidget->SetPlayerName(playerName);
-		scoreWidget->SetPlayerScore(0);
-		PlayersScoreTable->AddChild(score);
-	}	
-}
-
-void UOverlayWidget::RemovePlayerFromScoreTable(int32 PlayerId)
-{
-	
-	PlayersScoreTable->RemoveChild(PlayersScoreMap[PlayerId]);
-	PlayersScoreMap.Remove(PlayerId);
+		APingPongGameState* PongGS = Cast<APingPongGameState>(GS);
+		if (PongGS)
+		{
+			auto PSs = PongGS->PlayerStates;
+			for (auto PS : PSs)
+			{
+				if (!PS)
+					return;
+				UUserWidget* score = CreateWidget<UUserWidget>(this,PlayerScoreWidget);	
+				UPlayerScore* scoreWidget = Cast<UPlayerScore>(score);
+				if (scoreWidget)
+				{
+					auto name = PS->GetPlayerName();
+					scoreWidget->SetPlayerName(name);
+					scoreWidget->SetPlayerScore(0);
+					PlayersScoreTable->AddChild(score);
+				}	
+			}
+		}
+	}
 }
 
 void UOverlayWidget::SetBallSquareColor(FLinearColor Color)
