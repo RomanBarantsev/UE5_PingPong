@@ -10,6 +10,11 @@
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
 
+void UOverlayWidget::OnExitGamePushed()
+{
+	UGameplayStatics::OpenLevel(GetWorld(),"EntryMap",true);
+}
+
 void UOverlayWidget::NativeConstruct()
 {
 	FString PlatformName = UGameplayStatics::GetPlatformName();
@@ -20,12 +25,14 @@ void UOverlayWidget::NativeConstruct()
 	//TODO Make text blocks for dynamic creating with Slate
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
 	MenuBtn->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnMenuButtonPushed);
+	ExitGame->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnExitGamePushed);
 	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
 	check(PingPongPlayerController);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
 	PingPongPlayerController->SetUIStatus(EUIStatus::UILoaded);
 	GameOverText->SetVisibility(ESlateVisibility::Hidden);
+	ExitGame->SetVisibility(ESlateVisibility::Hidden);
 	ShowWaitingForPlayers();	
 	Super::NativeConstruct();
 }
@@ -120,7 +127,7 @@ void UOverlayWidget::SetBallShotCostText(int32 score)
 void UOverlayWidget::ShowGameOverText()
 {
 	GameOverText->SetVisibility(ESlateVisibility::Visible);
-	
+	ExitGame->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UOverlayWidget::AllPlayersConnected()

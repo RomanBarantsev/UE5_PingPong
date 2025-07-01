@@ -32,6 +32,8 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UButton* MenuBtn;
 	UPROPERTY(meta=(BindWidget))
+	UButton* ExitGame;
+	UPROPERTY(meta=(BindWidget))
 	UBorder* BallColor;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* BallCost;	
@@ -39,6 +41,8 @@ protected:
 	UTextBlock* GameOverText;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PlayerScoreWidget;
+	UFUNCTION()
+	void OnExitGamePushed();
 	virtual void NativeConstruct() override;
 protected:
 	UFUNCTION()
