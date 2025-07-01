@@ -3,27 +3,24 @@
 
 #include "PingPongGameState.h"
 
-#include "Engine/PostProcessVolume.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Blueprint/WidgetTree.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
-#include "PingPong/Actors/PingPongBall.h"
 #include "PingPong/GameModes/PingPongGameMode.h"
 #include "PingPong/PlayerControllers/PingPongPlayerController.h"
 #include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/UI/OverlayWidget.h"
 
 
 APingPongGameState::APingPongGameState()
 {
-	bReplicates=true;
+	bReplicates=true;	
 }
 
 void APingPongGameState::BeginPlay()
 {	
-	if(HasAuthority())
-	{
-		GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
-		check(GameMode);
-	}	
+	
 	Super::BeginPlay();
 	if(BallModificatorsDataTable)
 	{
@@ -35,6 +32,30 @@ void APingPongGameState::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("No Ball Modificators DataTable"));
 	}
 	CalculateEnumBallModifications();
+}
+
+void APingPongGameState::OnrepPlayerStatesUpdated()
+{
+	if (!HasAuthority())
+	{
+		TArray<UUserWidget*> foundWidgets;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(),foundWidgets,UOverlayWidget::StaticClass());
+		for (auto FoundWidget : foundWidgets)
+		{
+			auto OverlayWidget = Cast<UOverlayWidget>(FoundWidget);
+			if (OverlayWidget)
+			{
+				OverlayWidget->UpdatePlayerList();
+			}
+		}
+		UE_LOG(LogTemp, Warning, TEXT("OnrepPlayerStatesUpdated"));
+	}
+	
+}
+
+void APingPongGameState::HandlePlayerStatesUpdated()
+{
+	PlayerStates=PlayerArray;
 }
 
 void APingPongGameState::AddMaxScore(int Score)
@@ -52,6 +73,7 @@ void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME( APingPongGameState, LoadedPlayers );	
 	DOREPLIFETIME( APingPongGameState, StartedPlayers );	
 	DOREPLIFETIME( APingPongGameState, PlayerControllers );
+	DOREPLIFETIME( APingPongGameState, PlayerStates );
 }
 
 int32 APingPongGameState::GetCountDownTime()
@@ -72,7 +94,6 @@ void APingPongGameState::IncreaseLoadedPlayer_Implementation(APingPongPlayerCont
 	for (auto PlayerController : GetPlayersControllers())
 	{		
 		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
-		PlayerController->AddNewPlayerToList(PlayerState->GetPlayerId(), PlayerState->GetPlayerName());
 	}
 }
 
@@ -115,7 +136,6 @@ void APingPongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
 	for (auto PlayerController : GetPlayersControllers())
 	{		
 		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
-		PlayerController->RemovePlayerFromList(PlayerState->GetPlayerId());	
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "PingPongGameState.generated.h"
 
+class APingPongPlayerState;
 class APostProcessVolume;
 class APingPongPlayerController;
 class APingPongGameMode;
@@ -56,7 +57,15 @@ protected:
 private:	
 	UPROPERTY(Replicated)
 	TArray<APingPongPlayerController*> PlayerControllers;
-
+	
+	UFUNCTION()
+	void OnrepPlayerStatesUpdated();
+public:
+	UFUNCTION()
+	void HandlePlayerStatesUpdated();
+	UPROPERTY(ReplicatedUsing="OnrepPlayerStatesUpdated");
+	TArray<APlayerState*> PlayerStates;
+	
 	int ScoreToEnd=51;
 public:
 	UFUNCTION(Category="Score")
