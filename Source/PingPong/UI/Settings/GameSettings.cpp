@@ -37,6 +37,7 @@ void UGameSettings::NativeConstruct()
 		}		
 	}
 	auto PS =GetOwningPlayerState(true);
-	Nickname->SetText(FText::FromString(PS->GetPlayerName()));
+	if (PS)
+		Nickname->SetText(FText::FromString(PS->GetPlayerName()));
 	Super::NativeConstruct();
 }
