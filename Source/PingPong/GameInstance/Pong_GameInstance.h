@@ -29,7 +29,7 @@ class IHttpRequest;
  * 
  */
 UCLASS()
-class PINGPONG_API UPong_GameInstance : public UNetworkGameInstance
+class PINGPONG_API UPong_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:

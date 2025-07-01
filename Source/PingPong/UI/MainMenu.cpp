@@ -11,31 +11,15 @@
 
 void UMainMenu::OnJoinGameBtnClicked()
 {
-#ifdef UE_EDITOR
-	auto GI = GetGameInstance();
-	NetworkGI = Cast<UNetworkGameInstance>(GI);
-	if (NetworkGI)
-	{
-		NetworkGI->FindOnlineGames();
-	}
-#else
-	if (NetworkGI)
-	{
-		NetworkGI->FindOnlineGames();
-	}	
+#ifdef UE_EDITOR	
+#else	
 	HUD->SwitchUI(Widgets::ServerList);
 #endif	
 }
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
-#ifdef UE_EDITOR
-	auto GI = GetGameInstance();
-	NetworkGI = Cast<UNetworkGameInstance>(GI);
-	if (NetworkGI)
-	{
-		NetworkGI->StartOnlineGame();
-	}
+#ifdef UE_EDITOR	
 #else
 	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
 	if (GI)
