@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "Pong_GameInstance.generated.h"
 
+class UPong_GameUserSettings;
+
 USTRUCT()
 struct FServerInfo
 {
@@ -38,4 +40,14 @@ public:
 	void HostShutdown();
 public:
 	FOnServerListReady OnServerListReady;
+
+private:
+	UPROPERTY()
+	UPong_GameUserSettings* Pong_Settings;
+	UPROPERTY()
+	APlayerState* PlayerState;
+	UPROPERTY()
+	UGameUserSettings* Settings;
+	virtual void Init() override;
+	virtual void Shutdown() override;
 };

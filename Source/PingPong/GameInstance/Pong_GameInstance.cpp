@@ -7,10 +7,11 @@
 #include "HttpModule.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "PingPong/Pong_GameUserSettings.h"
 
 
 void UPong_GameInstance::OnServerListGet(TSharedPtr<IHttpRequest> HttpRequest, TSharedPtr<IHttpResponse> HttpResponse,
-	bool bArg)
+                                         bool bArg)
 {
 	if (!bArg) return;
 	TSharedPtr<FJsonObject> Root;
@@ -127,4 +128,27 @@ void UPong_GameInstance::HostShutdown()
 	Request->SetURL(Url);
 	Request->SetVerb("GET");
 	Request->ProcessRequest();
+}
+
+void UPong_GameInstance::Init()
+{
+	Settings = GEngine->GameUserSettings;
+	if (Settings)
+	{
+		Settings->LoadConfig();	
+		Pong_Settings = Cast<UPong_GameUserSettings>(Settings);
+		check(Pong_Settings);	
+	}
+	else
+	{
+		UKismetSystemLibrary::QuitGame(GetWorld(),GetPrimaryPlayerController(),EQuitPreference::Quit,true);
+		UKismetSystemLibrary::LogString(TEXT("No Settings class in GameInstance class"), true);
+	}
+	Super::Init();
+}
+
+void UPong_GameInstance::Shutdown()
+{
+	Settings->SaveConfig();	
+	Super::Shutdown();
 }
