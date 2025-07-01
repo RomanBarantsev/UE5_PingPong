@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include <vector>
-
-#include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "CoreMinimal.h"
 #include "AudioSettingsWidget.generated.h"
 
+class UPong_GameUserSettings;
+class UAudioVolumeSettingsDataAsset;
 class UPPSlider;
 /**
  * 
@@ -20,14 +20,10 @@ protected:
 	UFUNCTION()
 	void VolumeChanged(const float X,USoundClass* sClass) const;
 	virtual void NativeConstruct() override;
-	UPROPERTY(EditAnywhere)
-	USoundClass* MasterSound;
-	UPROPERTY(EditAnywhere)
-	USoundClass* EnvironmentSound;
-	UPROPERTY(EditAnywhere)
-	USoundClass* MusicSound;
-	UPROPERTY(EditAnywhere)
-	USoundMix* MasterSoundMix;
+	UPROPERTY()
+	UPong_GameUserSettings* Pong_GameUserSettings;
+	UPROPERTY(EditDefaultsOnly, Category="Audio")
+	UAudioVolumeSettingsDataAsset* VolumeData;
 	UPROPERTY()
 	TArray<UPPSlider*> Sliders;
 	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
