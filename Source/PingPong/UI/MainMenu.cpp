@@ -11,30 +11,30 @@
 
 void UMainMenu::OnJoinGameBtnClicked()
 {
-#ifdef UE_EDITOR	
-#else	
-	HUD->SwitchUI(Widgets::ServerList);
-#endif	
+	if (!GIsEditor && !GIsPlayInEditorWorld && !IsRunningDedicatedServer() && IsRunningGame())
+	{
+		HUD->SwitchUI(Widgets::ServerList);
+	}
 }
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
-#ifdef UE_EDITOR	
-#else
-	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
-	if (GI)
+	if (!GIsEditor && !GIsPlayInEditorWorld && !IsRunningDedicatedServer() && IsRunningGame())
 	{
-		UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
-		if (Pong_GameInstance)
+		auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
+		if (GI)
 		{
-			auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
-			if (PS)
+			UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
+			if (Pong_GameInstance)
 			{
-				Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
-			}			
+				auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
+				if (PS)
+				{
+					Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
+				}			
+			}
 		}
 	}
-#endif	
 }
 
 void UMainMenu::OnDisconnectBtnClicked()
@@ -58,7 +58,10 @@ void UMainMenu::OnQuitButtonPressed()
 }
 
 void UMainMenu::NativeConstruct()
-{	
+{
+#ifdef UE_EDITOR
+	bIsEditor=true;
+#endif	
 	ENetMode NetMode = GetWorld()->GetNetMode();
 	if (NetMode==NM_ListenServer || NetMode==NM_Client)
 	{

@@ -56,4 +56,7 @@ private:
 	APingPongPlayerController* Controller;
 	virtual void NativeConstruct() override;
 	virtual void NativePreConstruct() override;
+public:
+	UPROPERTY(BlueprintReadOnly, Category = "Game")
+	bool bIsEditor=false;
 };
