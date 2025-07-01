@@ -85,10 +85,6 @@ public:
 	void SetUIStatus(EUIStatus status);
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 PlayerId, float Score);
-	UFUNCTION(Client,Reliable)
-	void AddNewPlayerToList(int32 PlayerId,const FString& playerName);
-	UFUNCTION(Client,Reliable)
-	void RemovePlayerFromList(int32 PlayerId);	
 	UFUNCTION()
 	TMap<uint32,FString> GetPlayersInGame();
 private:

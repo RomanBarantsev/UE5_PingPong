@@ -266,21 +266,6 @@ bool APingPongPlayerController::ScrollColorOnServer_Validate(float Axis)
 }
 
 
-void APingPongPlayerController::AddNewPlayerToList_Implementation(int32 PlayerId, const FString& playerName)
-{
-	PlayerList.Add(PlayerId, playerName);
-	if (!PingPongHUD)
-		return;
-	if (auto overlay = PingPongHUD->GetOverlayWidget())
-		overlay->AddPlayerToScoreTable(PlayerId,playerName);
-}
-
-void APingPongPlayerController::RemovePlayerFromList_Implementation(int32 PlayerId)
-{
-	PlayerList.Remove(PlayerId);
-	PingPongHUD->GetOverlayWidget()->RemovePlayerFromScoreTable(PlayerId);
-}
-
 TMap<uint32, FString> APingPongPlayerController::GetPlayersInGame()
 {	
 	return PlayerList;
