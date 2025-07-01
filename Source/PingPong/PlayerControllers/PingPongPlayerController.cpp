@@ -36,10 +36,17 @@ void APingPongPlayerController::BeginPlay()
 	check(PingPongGameState);
 	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::HandleMatchStateChange);
 	UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);	
-	DisableInput(this);
 	ModificationsCount = PingPongGameState->GeBallModificatorsCount();	
 	Super::BeginPlay();
-	SetShowMouseCursor(false);
+	if (!PlatformName.Contains(TEXT("Android")))
+	{
+		SetShowMouseCursor(true);
+	}
+	else
+	{
+		SetShowMouseCursor(false);
+	}
+	
 }
 
 void APingPongPlayerController::Tick(float DeltaSeconds)
@@ -108,7 +115,8 @@ void APingPongPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LeftRight", this,&APingPongPlayerController::MoveRight);
 	InputComponent->BindAxis("ForwardBackward", this,&APingPongPlayerController::MoveForward);
 	InputComponent->BindAxis("ScrollColor",this, &APingPongPlayerController::ScrollColor);
-	InputComponent->BindAxis("MouseX", this,&APingPongPlayerController::RotatePlatform);InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
+	InputComponent->BindAxis("MouseX", this,&APingPongPlayerController::RotatePlatform);
+	InputComponent->BindAction("Menu",EInputEvent::IE_Pressed,this, &APingPongPlayerController::OpenMenu);
 	InputComponent->BindAction("Fire",EInputEvent::IE_Pressed,this, &APingPongPlayerController::Fire);
 	
 }
@@ -116,12 +124,16 @@ void APingPongPlayerController::SetupInputComponent()
 
 
 void APingPongPlayerController::MoveRight(float AxisValue)
-{	
+{
+	if (bBlockMovement)
+		return;
 	Server_PlatformMoveRight(AxisValue);
 }
 
 void APingPongPlayerController::MoveForward(float AxisValue)
 {
+	if (bBlockMovement)
+		return;
 	Server_PlatformMoveForward(AxisValue);
 }
 
@@ -282,14 +294,14 @@ void APingPongPlayerController::ScrollColor(float Axis)
 
 void APingPongPlayerController::HandleMatchStateChange(FName NewState)
 {
-	if(NewState==MatchState::WaitingPostMatch)
-	{
-		DisableInput(this);
-		SetShowMouseCursor(true);
-	}
+	
 	if(NewState==MatchState::InProgress)
 	{
-		EnableInput(this);
+		bBlockMovement=false;
+	}
+	if(NewState==MatchState::WaitingPostMatch)
+	{
+		bBlockMovement=true;
 	}
 }
 

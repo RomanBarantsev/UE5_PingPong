@@ -55,6 +55,8 @@ public:
 	virtual void SetupInputComponent() override;
 
 protected:
+	UPROPERTY()
+	bool bBlockMovement=true;
 	UFUNCTION()
 	void MoveRight(float AxisValue);
 	UFUNCTION()
