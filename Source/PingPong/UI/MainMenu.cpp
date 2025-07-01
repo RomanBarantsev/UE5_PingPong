@@ -12,6 +12,12 @@
 void UMainMenu::OnJoinGameBtnClicked()
 {
 #ifdef UE_EDITOR
+	auto GI = GetGameInstance();
+	NetworkGI = Cast<UNetworkGameInstance>(GI);
+	if (NetworkGI)
+	{
+		NetworkGI->FindOnlineGames();
+	}
 #else
 	if (NetworkGI)
 	{
@@ -24,6 +30,12 @@ void UMainMenu::OnJoinGameBtnClicked()
 void UMainMenu::OnCreateGameBtnClicked()
 {
 #ifdef UE_EDITOR
+	auto GI = GetGameInstance();
+	NetworkGI = Cast<UNetworkGameInstance>(GI);
+	if (NetworkGI)
+	{
+		NetworkGI->StartOnlineGame();
+	}
 #else
 	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
 	if (GI)
@@ -43,7 +55,7 @@ void UMainMenu::OnCreateGameBtnClicked()
 
 void UMainMenu::OnDisconnectBtnClicked()
 {
-
+	NetworkGI->DestroySessionAndLeaveGame();
 }
 
 void UMainMenu::OnResumeBtnClicked()

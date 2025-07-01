@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NetworkGameInstance.h"
 #include "Engine/GameInstance.h"
 #include "Pong_GameInstance.generated.h"
 
@@ -28,7 +29,7 @@ class IHttpRequest;
  * 
  */
 UCLASS()
-class PINGPONG_API UPong_GameInstance : public UGameInstance
+class PINGPONG_API UPong_GameInstance : public UNetworkGameInstance
 {
 	GENERATED_BODY()
 public:
