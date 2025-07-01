@@ -84,7 +84,10 @@ int32 APingPongGameState::GetCountDownTime()
 void APingPongGameState::IncreaseLoadedPlayer_Implementation(APingPongPlayerController* PC)
 {	
 	if (PC)
+	{
 		PlayerControllers.Add(PC);
+		return;
+	}		
 	LoadedPlayers++;
 	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 	if(LoadedPlayers==GameMode->GetPlayersCount())
