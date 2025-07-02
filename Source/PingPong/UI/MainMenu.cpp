@@ -11,28 +11,22 @@
 
 void UMainMenu::OnJoinGameBtnClicked()
 {
-	if (!GIsEditor && !GIsPlayInEditorWorld && !IsRunningDedicatedServer() && IsRunningGame())
-	{
-		HUD->SwitchUI(Widgets::ServerList);
-	}
+	HUD->SwitchUI(Widgets::ServerList);
 }
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
-	if (!GIsEditor && !GIsPlayInEditorWorld && !IsRunningDedicatedServer() && IsRunningGame())
+	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
+	if (GI)
 	{
-		auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
-		if (GI)
+		UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
+		if (Pong_GameInstance)
 		{
-			UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
-			if (Pong_GameInstance)
+			auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
+			if (PS)
 			{
-				auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
-				if (PS)
-				{
-					Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
-				}			
-			}
+				Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
+			}			
 		}
 	}
 }
@@ -102,5 +96,7 @@ void UMainMenu::NativePreConstruct()
 	ResumeGame->SetButtonText(TEXT("Resume Game"));
 	Settings->SetButtonText(TEXT("Settings"));
 	Quit->SetButtonText(TEXT("Quit"));
+	JoinLocalGame->SetButtonText(TEXT("Join Local Game"));
+	CreateLocalGame->SetButtonText(TEXT("Create Local Game"));
 	Super::NativePreConstruct();
 }
