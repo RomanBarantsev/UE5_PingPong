@@ -57,12 +57,27 @@ APingPongBall::APingPongBall()
 	bReplicates=true;	
 }
 
+void APingPongBall::MatchStateChanged(FName NewState)
+{
+	if (NewState==MatchState::InProgress)
+	{
+		double rand = UKismetMathLibrary::RandomFloatInRange(0,90);
+		RotateBallTo(FRotator(rand,rand,rand));
+		StartMove();
+	}
+	if (NewState==MatchState::WaitingPostMatch)
+	{
+		StopMove();
+	}
+}
+
 // Called when the game starts or when spawned
 void APingPongBall::BeginPlay()
 {
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));	
+	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::MatchStateChanged);
 	Super::BeginPlay();
 }
 
