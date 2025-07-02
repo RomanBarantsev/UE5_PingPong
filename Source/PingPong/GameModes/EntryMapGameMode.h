@@ -13,5 +13,5 @@ UCLASS()
 class PINGPONG_API AEntryMapGameMode : public AGameMode
 {
 	GENERATED_BODY()
-	
+	AEntryMapGameMode();
 };
