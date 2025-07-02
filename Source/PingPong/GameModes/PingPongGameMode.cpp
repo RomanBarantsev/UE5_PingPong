@@ -34,15 +34,18 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 	SetClosestGoalOwner(Pawn);
 	Super::PostLogin(NewPlayer);
-	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
-	if (GI)
+	if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
 	{
-		auto Pong_GI = Cast<UPong_GameInstance>(GI);
-		if (Pong_GI)
+		auto GI = UGameplayStatics::GetGameInstance(GetWorld());
+		if (GI)
 		{
-			Pong_GI->PlayersUpdate();
+			auto Pong_GI = Cast<UPong_GameInstance>(GI);
+			if (Pong_GI)
+			{
+				Pong_GI->PlayersUpdate();
+			}
 		}
-	}
+	}	
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
@@ -66,23 +69,28 @@ void APingPongGameMode::Logout(AController* Exiting)
 		}
 	}	
 	Super::Logout(Exiting);
-	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
-	if (GI)
+	if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
 	{
-		auto Pong_GI = Cast<UPong_GameInstance>(GI);
-		if (Pong_GI)
+		auto GI = UGameplayStatics::GetGameInstance(GetWorld());
+		if (GI)
 		{
-			if (GetNumPlayers()==0)
+			auto Pong_GI = Cast<UPong_GameInstance>(GI);
+			if (Pong_GI)
 			{
-				Pong_GI->HostShutdown();
-				FGenericPlatformMisc::RequestExit(false);
-			}
-			else
-			{
-				Pong_GI->PlayersUpdate();
-			}
-		}		
+				if (GetNumPlayers()==0)
+				{
+					Pong_GI->HostShutdown();
+					FGenericPlatformMisc::RequestExit(false);
+				}
+				else
+				{
+					Pong_GI->PlayersUpdate();
+				}
+			}		
+		}
 	}
+	
+	
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
