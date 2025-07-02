@@ -6,8 +6,8 @@
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPong/UI/MainMenu.h"
 #include "PingPong/UI/OverlayWidget.h"
+#include "PingPong/UI/MainMenu/MainMenu.h"
 
 UOverlayWidget* AGameHUD::GetOverlayWidget()
 {
