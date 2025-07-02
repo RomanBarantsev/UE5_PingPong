@@ -34,7 +34,6 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 	SetClosestGoalOwner(Pawn);
 	Super::PostLogin(NewPlayer);
-#if defined(UE_SERVER) && !defined(UE_EDITOR)
 	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
 	if (GI)
 	{
@@ -44,7 +43,6 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 			Pong_GI->PlayersUpdate();
 		}
 	}
-#endif
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
@@ -68,7 +66,6 @@ void APingPongGameMode::Logout(AController* Exiting)
 		}
 	}	
 	Super::Logout(Exiting);
-#if defined(UE_SERVER) && !defined(UE_EDITOR)
 	auto GI = UGameplayStatics::GetGameInstance(GetWorld());
 	if (GI)
 	{
@@ -86,7 +83,6 @@ void APingPongGameMode::Logout(AController* Exiting)
 			}
 		}		
 	}
-#endif
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
