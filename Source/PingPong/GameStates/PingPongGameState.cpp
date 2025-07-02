@@ -213,6 +213,7 @@ FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators
 
 void APingPongGameState::SetMatchState_Implementation(FName NewState)
 {
+	UE_LOG(LogTemp, Display, TEXT("SetMatch	State_Implementation"));
 	MatchState = NewState;
 	OnMatchStateChanged.Broadcast(NewState);	
 }
