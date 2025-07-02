@@ -114,6 +114,7 @@ void APingPongGameState::IncreaseStartedPlayers_Implementation()
 	{
 		SetMatchState(MatchState::InProgress);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("STARTED_PLAYERS++"));
 }
 
 void APingPongGameState::ServerPause_Implementation(bool state)
