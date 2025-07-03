@@ -4,7 +4,6 @@
 #include "PingPongPlayerController.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/GameMode.h"
-#include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PingPongGameState.h"
@@ -13,8 +12,7 @@
 #include "PingPong/UI/HUDs/BaseHUD.h"
 
 void APingPongPlayerController::BeginPlay()
-{
-	
+{	
 	FString PlatformName = UGameplayStatics::GetPlatformName();
 	if (!PlatformName.Contains(TEXT("Android")))
 	{
@@ -278,6 +276,40 @@ bool APingPongPlayerController::ScrollColorOnServer_Validate(float Axis)
 }
 
 
+void APingPongPlayerController::SetUIStatus(EUIStatus status)
+{
+	if(HasAuthority() && UKismetSystemLibrary::IsDedicatedServer(GetWorld())) return; 
+	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	UIStatus=status;
+	switch (UIStatus)
+	{
+	case EUIStatus::UILoaded: //UILoaded
+		{			
+			ServerIncreaseUILoaded();			
+			break;
+		}
+	case EUIStatus::ReadyButtonPressed: //ReadyButtonPressed
+		{
+			ServerIncreaseReadyPlayers();
+			break;
+		}
+	case EUIStatus::UIPaused: //UIPaused
+		{
+				
+			break;
+		}
+	case EUIStatus::Started:
+		{
+			//ServerIncreaseStartedPlayers();
+			break;
+		}
+	default:
+		{
+				
+		}
+	}
+}
+
 TMap<uint32, FString> APingPongPlayerController::GetPlayersInGame()
 {	
 	return PlayerList;
@@ -305,6 +337,48 @@ void APingPongPlayerController::HandleMatchStateChange(FName NewState)
 	}
 }
 
+void APingPongPlayerController::ServerIncreaseStartedPlayers_Implementation()
+{
+	APingPongGameState* MyGS = GetWorld()->GetGameState<APingPongGameState>();
+	if (MyGS)
+	{
+		MyGS->IncreaseStartedPlayers();
+	}
+}
+
+bool APingPongPlayerController::ServerIncreaseStartedPlayers_Validate()
+{
+	return true;
+}
+
+void APingPongPlayerController::ServerIncreaseReadyPlayers_Implementation()
+{
+	APingPongGameState* MyGS = GetWorld()->GetGameState<APingPongGameState>();
+	if (MyGS)
+	{
+		MyGS->IncreaseReadyPlayer();
+	}
+}
+
+bool APingPongPlayerController::ServerIncreaseReadyPlayers_Validate()
+{
+	return true;
+}
+
+void APingPongPlayerController::ServerIncreaseUILoaded_Implementation()
+{	
+	APingPongGameState* MyGS = GetWorld()->GetGameState<APingPongGameState>();
+	if (MyGS)
+	{
+		MyGS->IncreaseLoadedPlayer();
+	}
+}
+
+bool APingPongPlayerController::ServerIncreaseUILoaded_Validate()
+{
+	return true;
+}
+
 void APingPongPlayerController::SetColorAndPriceUI_Implementation(FLinearColor Color,int32 Price)
 {
 	PingPongHUD->GetOverlayWidget()->SetBallSquareColor(Color);
@@ -316,36 +390,3 @@ void APingPongPlayerController::SetNewScore_Implementation(int32 PlayerId, float
 	PingPongHUD->GetOverlayWidget()->UpdateScore(PlayerId,Score);
 }
 
-void APingPongPlayerController::SetUIStatus_Implementation(EUIStatus status)
-{
-	if(HasAuthority() && UKismetSystemLibrary::IsDedicatedServer(GetWorld())) return; 
-	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	UIStatus=status;
-	switch (UIStatus)
-	{
-	case EUIStatus::UILoaded: //UILoaded
-		{
-			PingPongGameState->IncreaseLoadedPlayer();
-			break;
-		}
-	case EUIStatus::ReadyButtonPressed: //ReadyButtonPressed
-		{
-			PingPongGameState->IncreaseReadyPlayer();
-			break;
-		}
-	case EUIStatus::UIPaused: //UIPaused
-		{
-				
-			break;
-		}
-	case EUIStatus::Started:
-		{
-			PingPongGameState->IncreaseStartedPlayers();
-			break;
-		}
-	default:
-		{
-				
-		}
-	}
-}

@@ -95,12 +95,12 @@ private:
 public:
 	UFUNCTION(Server,Reliable)
 	void IncreaseReadyPlayer();
-	UFUNCTION(Client,Reliable)
+	UFUNCTION(Server,Reliable)
 	void IncreaseLoadedPlayer();
 	UFUNCTION(Server,Reliable)
-	void DecreaseLoadedPlayer(AController* PC);
-	UFUNCTION(Server,Reliable)
 	void IncreaseStartedPlayers();
+	UFUNCTION(Server,Reliable)
+	void DecreaseLoadedPlayer(AController* PC);
 	UFUNCTION(Server,Reliable)	
 	void ServerPause(bool state);
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
@@ -139,5 +139,5 @@ public:
 	
 	UFUNCTION(NetMulticast,Reliable)
 	void SetMatchState(FName NewState);
-	FName GetMatchState() const;	
+	FName GetMatchState() const;
 };

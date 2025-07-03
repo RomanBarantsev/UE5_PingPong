@@ -83,7 +83,8 @@ protected:
 	EUIStatus UIStatus;
 	
 public:
-	UFUNCTION(Server,Reliable)
+	
+	UFUNCTION()
 	void SetUIStatus(EUIStatus status);
 	UFUNCTION(Client,Reliable)
 	void SetNewScore(int32 PlayerId, float Score);
@@ -104,4 +105,11 @@ private:
 	
 	UFUNCTION()
 	void HandleMatchStateChange(FName NewState);
+	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerIncreaseUILoaded();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerIncreaseReadyPlayers();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerIncreaseStartedPlayers();
 };

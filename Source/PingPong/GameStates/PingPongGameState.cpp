@@ -86,18 +86,25 @@ int32 APingPongGameState::GetCountDownTime()
 	return CountDown;
 }
 
+void APingPongGameState::IncreaseReadyPlayer_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("READY"));
+	ReadyPlayers++;
+	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
+	if(ReadyPlayers==GameMode->GetPlayersCount())
+	{
+		SetMatchState(MatchState::WaitingToStart);
+	}
+}
+
 void APingPongGameState::IncreaseLoadedPlayer_Implementation()
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("INCREASE"));
 	LoadedPlayers++;
 	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
-	if(LoadedPlayers==GameMode->GetPlayersCount())
-	{
-		SetMatchState(MatchState::EnteringMap);
-	}
-	for (auto PlayerController : GetPlayersControllers())
+	if(PlayerStates.Num()==GameMode->GetPlayersCount())
 	{		
-		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
+		SetMatchState(MatchState::EnteringMap);
 	}
 }
 
@@ -114,7 +121,6 @@ void APingPongGameState::IncreaseStartedPlayers_Implementation()
 	{
 		SetMatchState(MatchState::InProgress);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("STARTED_PLAYERS++"));
 }
 
 void APingPongGameState::ServerPause_Implementation(bool state)
@@ -232,15 +238,3 @@ void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32
 		PlayerController->SetNewScore(playerId,Score);
 	}
 }
-
-void APingPongGameState::IncreaseReadyPlayer_Implementation()
-{
-	ReadyPlayers++;	
-	if(ReadyPlayers==GameMode->GetPlayersCount())
-	{		
-		SetMatchState(MatchState::WaitingToStart);
-	}
-}
-
-
-
