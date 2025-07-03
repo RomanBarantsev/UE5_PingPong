@@ -79,8 +79,9 @@ void APingPongGameMode::Logout(AController* Exiting)
 			{
 				if (GetNumPlayers()==0)
 				{
-					Pong_GI->HostShutdown();
-					FGenericPlatformMisc::RequestExit(false);
+					Pong_GI->PlayersUpdate();
+					//Pong_GI->HostShutdown();
+					//FGenericPlatformMisc::RequestExit(false);
 				}
 				else
 				{
