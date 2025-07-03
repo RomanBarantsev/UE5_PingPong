@@ -116,7 +116,9 @@ void APingPongGameState::SetCountDownOnPlayerSide_Implementation()
 
 void APingPongGameState::IncreaseStartedPlayers_Implementation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("STARTED++"));
 	StartedPlayers++;
+	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
 	if(StartedPlayers==GameMode->GetPlayersCount())
 	{
 		SetMatchState(MatchState::InProgress);

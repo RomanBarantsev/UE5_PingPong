@@ -300,7 +300,7 @@ void APingPongPlayerController::SetUIStatus(EUIStatus status)
 		}
 	case EUIStatus::Started:
 		{
-			//ServerIncreaseStartedPlayers();
+			ServerIncreaseStartedPlayers();
 			break;
 		}
 	default:
