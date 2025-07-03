@@ -74,6 +74,7 @@ void APingPongBall::MatchStateChanged(FName NewState)
 // Called when the game starts or when spawned
 void APingPongBall::BeginPlay()
 {
+	bReplicates=true;
 	SetReplicateMovement(true);	
 	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -95,6 +96,11 @@ void APingPongBall::StartMove()
 void APingPongBall::StopMove()
 {
 	Server_StopMove();
+}
+
+void APingPongBall::RotateBallTo(FRotator Rotator)
+{
+	SetActorRotation(Rotator);
 }
 
 void APingPongBall::SetBallOwner(FHitResult HitResult)
@@ -261,6 +267,16 @@ bool APingPongBall::IncreaseBallSpeed_Validate()
 	return true;
 }
 
+void APingPongBall::Server_StartMove()
+{
+	isMoving = true;
+	MoveSpeed=MinBallSpeed;
+	FVector Impulse;
+	Impulse = FVector(BodyMesh->GetForwardVector());
+	BodyMesh->AddImpulse(Impulse);	
+	IncreaseBallSpeed();
+}
+
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -280,10 +296,6 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 	}
 }
 
-void APingPongBall::RotateBallTo_Implementation(FRotator Rotator)
-{
-	SetActorRotation(Rotator);
-}
 void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
 {
 	UWorld * world = GetWorld();
@@ -300,21 +312,6 @@ void APingPongBall::Server_StopMove_Implementation()
 }
 
 bool APingPongBall::Server_StopMove_Validate()
-{
-	return true;
-}
-
-void APingPongBall::Server_StartMove_Implementation()
-{
-	isMoving = true;
-	MoveSpeed=MinBallSpeed;
-	FVector Impulse;
-	Impulse = FVector(BodyMesh->GetForwardVector());
-	BodyMesh->AddImpulse(Impulse);	
-	IncreaseBallSpeed();
-}
-
-bool APingPongBall::Server_StartMove_Validate()
 {
 	return true;
 }

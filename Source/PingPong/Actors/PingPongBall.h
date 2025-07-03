@@ -56,7 +56,7 @@ protected:
 	bool isMoving = false;
 	
 protected:
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION()
 	void Server_StartMove();
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_StopMove();
@@ -76,7 +76,7 @@ public:
 	void StopMove();
 	
 public:
-	UFUNCTION(Server, Reliable)
+	UFUNCTION()
 	void RotateBallTo(FRotator Rotator=FRotator::ZeroRotator);
 protected:
 	UPROPERTY()
