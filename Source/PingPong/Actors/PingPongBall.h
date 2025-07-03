@@ -60,7 +60,7 @@ protected:
 	void Server_StartMove();
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_StopMove();
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION()
 	void IncreaseBallSpeed();
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect(FVector location);

@@ -254,19 +254,6 @@ bool APingPongBall::SetModification_Validate(EBallModificators mod)
 	return true;
 }
 
-void APingPongBall::IncreaseBallSpeed_Implementation()
-{
-	if(MoveSpeed<MaxBallSpeed)
-		MoveSpeed+=IncreaseSpeedStep;
-	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
-	BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
-}
-
-bool APingPongBall::IncreaseBallSpeed_Validate()
-{
-	return true;
-}
-
 void APingPongBall::Server_StartMove()
 {
 	isMoving = true;
@@ -275,6 +262,14 @@ void APingPongBall::Server_StartMove()
 	Impulse = FVector(BodyMesh->GetForwardVector());
 	BodyMesh->AddImpulse(Impulse);	
 	IncreaseBallSpeed();
+}
+
+void APingPongBall::IncreaseBallSpeed()
+{
+	if(MoveSpeed<MaxBallSpeed)
+		MoveSpeed+=IncreaseSpeedStep;
+	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
+	BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
 }
 
 void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
