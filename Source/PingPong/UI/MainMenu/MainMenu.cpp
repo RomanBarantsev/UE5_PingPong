@@ -32,7 +32,7 @@ void UMainMenu::OnCreateGameBtnClicked()
 
 void UMainMenu::OnDisconnectBtnClicked()
 {
-	NetworkGI->DestroySessionAndLeaveGame();
+	UGameplayStatics::OpenLevel(GetWorld(), "EntryMap");
 }
 
 void UMainMenu::OnResumeBtnClicked()
