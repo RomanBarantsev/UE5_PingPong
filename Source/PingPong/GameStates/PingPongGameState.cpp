@@ -132,8 +132,9 @@ void APingPongGameState::ServerPause_Implementation(bool state)
 }
 
 void APingPongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
-{	
-	LoadedPlayers--;
+{
+	//TODO make reconnect possible.
+	SetMatchState(MatchState::WaitingPostMatch);
 }
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
