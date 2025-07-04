@@ -34,11 +34,6 @@ void APingPongGameState::BeginPlay()
 	CalculateEnumBallModifications();
 }
 
-void APingPongGameState::AddController(APingPongPlayerController* PC)
-{
-	PlayerControllers.Add(PC);
-}
-
 void APingPongGameState::OnrepPlayerStatesUpdated()
 {
 	if (!HasAuthority())
@@ -76,7 +71,6 @@ void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME( APingPongGameState, ReadyPlayers );		
 	DOREPLIFETIME( APingPongGameState, LoadedPlayers );	
 	DOREPLIFETIME( APingPongGameState, StartedPlayers );	
-	DOREPLIFETIME( APingPongGameState, PlayerControllers );
 	DOREPLIFETIME( APingPongGameState, PlayerStates );
 }
 
@@ -138,22 +132,8 @@ void APingPongGameState::ServerPause_Implementation(bool state)
 }
 
 void APingPongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
-{
-	if (PC)
-	{
-		APingPongPlayerController* PCCast = Cast<APingPongPlayerController>(PC);
-		PlayerControllers.Remove(PCCast);
-	}		
-	LoadedPlayers--;	
-	for (auto PlayerController : GetPlayersControllers())
-	{		
-		APingPongPlayerState* PlayerState = PlayerController->GetPlayerState<APingPongPlayerState>();
-	}
-}
-
-TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
-{
-	return PlayerControllers;
+{	
+	LoadedPlayers--;
 }
 
 void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)

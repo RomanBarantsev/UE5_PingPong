@@ -29,7 +29,6 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
 	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
 	check(PingPongGameState);
-	PingPongGameState->AddController(PingPongPlayerController);
 	APingPongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 	SetClosestGoalOwner(Pawn);
@@ -139,7 +138,7 @@ void APingPongGameMode::SetPawnRotationAndLocation_Implementation(APingPongPlaye
 {
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(), foundActors);
-	APlayerStart* startPos=Cast<APlayerStart>(foundActors[PingPongGameState->GetPlayersControllers().Num()-1]);	
+	APlayerStart* startPos=Cast<APlayerStart>(foundActors[UGameplayStatics::GetNumPlayerControllers(GetWorld())-1]);	
 	if(startPos && PingPongPlayerPawn)
 	{
 		PingPongPlayerPawn->SetActorLocation(startPos->GetActorLocation());

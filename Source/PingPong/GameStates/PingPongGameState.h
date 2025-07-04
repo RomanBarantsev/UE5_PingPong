@@ -53,14 +53,7 @@ class PINGPONG_API APingPongGameState : public AGameState
 	
 protected:
 	APingPongGameState();
-	virtual void BeginPlay() override;
-private:	
-	UPROPERTY(Replicated)
-	TArray<APingPongPlayerController*> PlayerControllers;
-public:
-	UFUNCTION()
-	void AddController(APingPongPlayerController* PC);
-	
+	virtual void BeginPlay() override;	
 	UFUNCTION()
 	void OnrepPlayerStatesUpdated();
 public:
@@ -103,7 +96,6 @@ public:
 	void DecreaseLoadedPlayer(AController* PC);
 	UFUNCTION(Server,Reliable)	
 	void ServerPause(bool state);
-	TArray<APingPongPlayerController*>& GetPlayersControllers();
 	UFUNCTION(NetMulticast,Reliable)
 	void UpdatePlayersScore(int32 playerId, int32 Score);	
 	
