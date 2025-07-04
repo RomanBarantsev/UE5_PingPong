@@ -54,8 +54,7 @@ void APingPongGameState::OnrepPlayerStatesUpdated()
 			}
 		}
 		UE_LOG(LogTemp, Warning, TEXT("OnrepPlayerStatesUpdated"));
-	}
-	
+	}	
 }
 
 void APingPongGameState::HandlePlayerStatesUpdated()
@@ -157,6 +156,24 @@ TArray<APingPongPlayerController*>& APingPongGameState::GetPlayersControllers()
 	return PlayerControllers;
 }
 
+void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
+{
+	if (!HasAuthority())
+	{
+		TArray<UUserWidget*> foundWidgets;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(),foundWidgets,UOverlayWidget::StaticClass());
+		for (auto FoundWidget : foundWidgets)
+		{
+			auto OverlayWidget = Cast<UOverlayWidget>(FoundWidget);
+			if (OverlayWidget)
+			{
+				OverlayWidget->UpdateScore(playerId, Score);
+			}
+		}
+		UE_LOG(LogTemp, Warning, TEXT("OnrepPlayerStatesUpdated"));
+	}
+}
+
 void APingPongGameState::CalculateEnumBallModifications()
 {
 	const UEnum* EnumPtr = StaticEnum<EBallModificators>();
@@ -232,11 +249,3 @@ FName APingPongGameState::GetMatchState() const
 	return AGameState::GetMatchState();
 }
 
-
-void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
-{
-	for (auto PlayerController : PlayerControllers)
-	{
-		PlayerController->SetNewScore(playerId,Score);
-	}
-}

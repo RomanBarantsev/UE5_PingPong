@@ -69,7 +69,7 @@ public:
 	UPROPERTY(ReplicatedUsing="OnrepPlayerStatesUpdated");
 	TArray<APlayerState*> PlayerStates;
 	
-	int ScoreToEnd=51;
+	int ScoreToEnd=100;
 public:
 	UFUNCTION(Category="Score")
 	void AddMaxScore(int Score);
@@ -104,7 +104,7 @@ public:
 	UFUNCTION(Server,Reliable)	
 	void ServerPause(bool state);
 	TArray<APingPongPlayerController*>& GetPlayersControllers();
-	UFUNCTION(Client,Reliable)
+	UFUNCTION(NetMulticast,Reliable)
 	void UpdatePlayersScore(int32 playerId, int32 Score);	
 	
 private:
