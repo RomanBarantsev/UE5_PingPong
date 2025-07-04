@@ -3,12 +3,14 @@
 
 #include "PongGameMode.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameFramework/SpectatorPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PongGoal.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameInstance/Pong_GameInstance.h"
 #include "PingPong/GameStates/PongGameState.h"
 #include "PingPong/Pawns/PongPlayerPawn.h"
+#include "PingPong/Pawns/PongSpectatorPawn.h"
 #include "PingPong/PlayerControllers/PongPlayerController.h"
 #include "PingPong/PlayerStates/PongPlayerState.h"
 #include "PingPong/UI/HUDs/BaseHUD.h"
@@ -26,26 +28,36 @@ void APongGameMode::PostLogin(APlayerController* NewPlayer)
 {	
 	UWorld* world = GetWorld();
 	check(world);
-	APongPlayerController* PingPongPlayerController = Cast<APongPlayerController>(NewPlayer);
 	PingPongGameState = Cast<APongGameState>( GetGameState<APongGameState>());
 	check(PingPongGameState);
-	APongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
-	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
-	SetClosestGoalOwner(Pawn);
-	Super::PostLogin(NewPlayer);
-	if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
+	if (PingPongGameState->PlayerStates.Num()==PlayersCount)
 	{
-		auto GI = UGameplayStatics::GetGameInstance(GetWorld());
-		if (GI)
+		auto NewwPawn = GetWorld()->SpawnActor<ASpectatorPawn>(APongSpectatorPawn::StaticClass());
+		NewwPawn->SetActorLocation(FVector::Zero());
+		NewwPawn->SetActorRotation(FRotator(0, 0, 0));
+		NewPlayer->Possess(NewwPawn);
+	}
+	else
+	{
+		APongPlayerController* PingPongPlayerController = Cast<APongPlayerController>(NewPlayer);
+		APongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
+		SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
+		SetClosestGoalOwner(Pawn);
+		Super::PostLogin(NewPlayer);
+		if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
 		{
-			auto Pong_GI = Cast<UPong_GameInstance>(GI);
-			if (Pong_GI)
+			auto GI = UGameplayStatics::GetGameInstance(GetWorld());
+			if (GI)
 			{
-				Pong_GI->PlayersUpdate();
+				auto Pong_GI = Cast<UPong_GameInstance>(GI);
+				if (Pong_GI)
+				{
+					Pong_GI->PlayersUpdate();
+				}
 			}
-		}
+		}	
+		PingPongGameState->HandlePlayerStatesUpdated();
 	}	
-	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
 void APongGameMode::Logout(AController* Exiting)
