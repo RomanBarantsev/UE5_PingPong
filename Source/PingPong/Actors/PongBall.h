@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GeometryCollection/Facades/CollectionBoundsFacade.h"
-#include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPongBall.generated.h"
+#include "PingPong/GameStates/PongGameState.h"
+#include "PongBall.generated.h"
 
 class ABallGCActor;
 class AGeometryCollectionActor;
@@ -14,18 +14,18 @@ class UGeometryCollection;
 class UGeometryCollectionComponent;
 class USoundCue;
 class APingPongPlatform;
-class APingPongGameMode;
-class APingPongGameState;
+class APongGameMode;
+class APongGameState;
 class USphereComponent;
 
 UCLASS(Abstract)
-class PINGPONG_API APingPongBall : public AActor
+class PINGPONG_API APongBall : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APingPongBall();
+	APongBall();
 
 protected:
 	UFUNCTION()
@@ -80,9 +80,9 @@ public:
 	void RotateBallTo(FRotator Rotator=FRotator::ZeroRotator);
 protected:
 	UPROPERTY()
-	APingPongGameState* PingPongGameState;
+	APongGameState* PingPongGameState;
 UPROPERTY()
-	APingPongGameMode* PingPongGameMode;
+	APongGameMode* PingPongGameMode;
 	UPROPERTY()
 	TArray<AActor*> PlatformActors;
 

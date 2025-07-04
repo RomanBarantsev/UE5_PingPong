@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPongPlayerState.generated.h"
+#include "PingPong/GameStates/PongGameState.h"
+#include "PongPlayerState.generated.h"
 
-class APingPongGameState;
+class APongGameState;
 /**
  * 
  */
 UCLASS()
-class PINGPONG_API APingPongPlayerState : public APlayerState
+class PINGPONG_API APongPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 protected:
@@ -20,7 +20,7 @@ protected:
 	bool PlayerReady=false;
 	int ShootBalls = 0;
 	UPROPERTY()
-	APingPongGameState* GameState;
+	APongGameState* GameState;
 	int8 maxModificator=0;
 	int8 Modificator=0;
 

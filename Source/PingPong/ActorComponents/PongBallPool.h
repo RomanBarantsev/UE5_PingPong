@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "PingPong/Actors/PingPongBall.h"
-#include "PingPongBallPool.generated.h"
+#include "PingPong/Actors/PongBall.h"
+#include "PongBallPool.generated.h"
 
 
 class APingPongBallModificated;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PINGPONG_API UPingPongBallPool : public UActorComponent
+class PINGPONG_API UPongBallPool : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UPingPongBallPool();
+	UPongBallPool();
 
 protected:
 	// Called when the game starts
@@ -33,14 +33,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	int32 PoolSize = 5;
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<APingPongBall> BallClass;
+	TSubclassOf<APongBall> BallClass;
 	UPROPERTY()
-	TArray<APingPongBall*> BallsPool;
+	TArray<APongBall*> BallsPool;
 public:
 	UFUNCTION(Server,Reliable,WithValidation)
-	void ReleaseBall(APingPongBall* PingPongBall);
+	void ReleaseBall(APongBall* PingPongBall);
 	UFUNCTION(Server,Reliable)	
-	void AddBallToPool(APingPongBall* Ball);
+	void AddBallToPool(APongBall* Ball);
 	UFUNCTION(Server,Reliable)
 	void SpawnBallOnServer(AActor* Owner, FTransform spawnTransform,EBallModificators modification);
 };

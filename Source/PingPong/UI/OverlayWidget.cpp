@@ -7,8 +7,8 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/GameSession.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 
 void UOverlayWidget::OnExitGamePushed()
 {
@@ -26,7 +26,7 @@ void UOverlayWidget::NativeConstruct()
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
 	MenuBtn->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnMenuButtonPushed);
 	ExitGame->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnExitGamePushed);
-	PingPongPlayerController = Cast<APingPongPlayerController>(GetOwningPlayer());
+	PingPongPlayerController = Cast<APongPlayerController>(GetOwningPlayer());
 	check(PingPongPlayerController);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
@@ -93,7 +93,7 @@ void UOverlayWidget::UpdatePlayerList()
 	auto GS = UGameplayStatics::GetGameState(GetWorld());
 	if (GS)
 	{
-		APingPongGameState* PongGS = Cast<APingPongGameState>(GS);
+		APongGameState* PongGS = Cast<APongGameState>(GS);
 		if (PongGS)
 		{
 			auto PSs = PongGS->PlayerStates;
@@ -132,6 +132,7 @@ void UOverlayWidget::ShowGameOverText()
 	ExitGame->SetVisibility(ESlateVisibility::Visible);
 	WaitingPlayersText->SetVisibility(ESlateVisibility::Collapsed);
 	ReadyButton->SetVisibility(ESlateVisibility::Collapsed);
+	TimerText->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UOverlayWidget::AllPlayersConnected()

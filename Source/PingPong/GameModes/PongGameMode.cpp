@@ -1,35 +1,35 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "PingPongGameMode.h"
+#include "PongGameMode.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/Actors/PingPongGoal.h"
+#include "PingPong/Actors/PongGoal.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameInstance/Pong_GameInstance.h"
-#include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPong/Pawns/PingPongPlayerPawn.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/GameStates/PongGameState.h"
+#include "PingPong/Pawns/PongPlayerPawn.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 #include "PingPong/UI/HUDs/BaseHUD.h"
 
-APingPongGameMode::APingPongGameMode()
+APongGameMode::APongGameMode()
 {
-	DefaultPawnClass = APingPongPlayerPawn::StaticClass();
-	PlayerControllerClass = APingPongPlayerController::StaticClass();
+	DefaultPawnClass = APongPlayerPawn::StaticClass();
+	PlayerControllerClass = APongPlayerController::StaticClass();
 	HUDClass = ABaseHUD::StaticClass();
-	GameStateClass = APingPongGameState::StaticClass();
-	PlayerStateClass = APingPongPlayerState::StaticClass();
+	GameStateClass = APongGameState::StaticClass();
+	PlayerStateClass = APongPlayerState::StaticClass();
 }
 
-void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
+void APongGameMode::PostLogin(APlayerController* NewPlayer)
 {	
 	UWorld* world = GetWorld();
 	check(world);
-	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(NewPlayer);
-	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
+	APongPlayerController* PingPongPlayerController = Cast<APongPlayerController>(NewPlayer);
+	PingPongGameState = Cast<APongGameState>( GetGameState<APongGameState>());
 	check(PingPongGameState);
-	APingPongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
+	APongPlayerPawn* Pawn = CreatePawnForController( PingPongPlayerController,world);
 	SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 	SetClosestGoalOwner(Pawn);
 	Super::PostLogin(NewPlayer);
@@ -48,11 +48,11 @@ void APingPongGameMode::PostLogin(APlayerController* NewPlayer)
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
-void APingPongGameMode::Logout(AController* Exiting)
+void APongGameMode::Logout(AController* Exiting)
 {
 	//TODO client which reconnect after close window is desync, and platform stays in level. Some bug need to fix. 
-	APingPongPlayerController* PingPongPlayerController = Cast<APingPongPlayerController>(Exiting);
-	PingPongGameState = Cast<APingPongGameState>( GetGameState<APingPongGameState>());
+	APongPlayerController* PingPongPlayerController = Cast<APongPlayerController>(Exiting);
+	PingPongGameState = Cast<APongGameState>( GetGameState<APongGameState>());
 	check(PingPongGameState);
 	PingPongGameState->DecreaseLoadedPlayer(Exiting);
 	if (IsNetMode(NM_ListenServer) || IsNetMode(NM_DedicatedServer) || Exiting)
@@ -94,28 +94,28 @@ void APingPongGameMode::Logout(AController* Exiting)
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
-APingPongPlayerPawn* APingPongGameMode::CreatePawnForController(APingPongPlayerController* PingPongPlayerController,
+APongPlayerPawn* APongGameMode::CreatePawnForController(APongPlayerController* PingPongPlayerController,
                                                                 UWorld* World)
 {
-	APingPongPlayerPawn* newPawn = Cast<APingPongPlayerPawn>(PingPongPlayerController->GetPawn());
+	APongPlayerPawn* newPawn = Cast<APongPlayerPawn>(PingPongPlayerController->GetPawn());
 	if(!newPawn)
 	{
-		newPawn = World->SpawnActor<APingPongPlayerPawn>(DefaultPawnClass);
+		newPawn = World->SpawnActor<APongPlayerPawn>(DefaultPawnClass);
 		return newPawn;
 	}
 	return nullptr;	
 }
 
-void APingPongGameMode::SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerPawn)
+void APongGameMode::SetClosestGoalOwner(APongPlayerPawn* PingPongPlayerPawn)
 {
 	if(!HasAuthority()) return;
 	TArray<AActor*> foundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APingPongGoal::StaticClass(),foundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APongGoal::StaticClass(),foundActors);
 	float lastDistance=20000.0f;
-	APingPongGoal* ClosestGoal=nullptr;
+	APongGoal* ClosestGoal=nullptr;
 	for (auto FoundActor : foundActors)
 	{
-		APingPongGoal* PongGoal = Cast<APingPongGoal>(FoundActor);
+		APongGoal* PongGoal = Cast<APongGoal>(FoundActor);
 		if(!PongGoal) continue;
 		float distance = FVector::Dist2D(PingPongPlayerPawn->GetActorLocation(),PongGoal->GetActorLocation());
 		if(distance<lastDistance)
@@ -127,14 +127,14 @@ void APingPongGameMode::SetClosestGoalOwner(APingPongPlayerPawn* PingPongPlayerP
 	ClosestGoal->SetOwner(PingPongPlayerPawn);
 }
 
-int APingPongGameMode::GetPlayersCount() const
+int APongGameMode::GetPlayersCount() const
 {
 	return PlayersCount;
 }
 
 
-void APingPongGameMode::SetPawnRotationAndLocation_Implementation(APingPongPlayerPawn* PingPongPlayerPawn,
-                                                                  APingPongPlayerController* PingPongPlayerController)
+void APongGameMode::SetPawnRotationAndLocation_Implementation(APongPlayerPawn* PingPongPlayerPawn,
+                                                                  APongPlayerController* PingPongPlayerController)
 {
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(), foundActors);

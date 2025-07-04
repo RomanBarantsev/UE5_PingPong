@@ -5,7 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/GameStates/PongGameState.h"
 #include "PingPong/UI/OverlayWidget.h"
 #include "PingPong/UI/MainMenu/MainMenu.h"
 
@@ -38,7 +38,7 @@ void AGameHUD::BeginPlay()
 	Super::BeginPlay();
 	if(!GameState)
 	{		
-		GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(this));
+		GameState = Cast<APongGameState>(UGameplayStatics::GetGameState(this));
 		if (GameState)
 			GameState->OnMatchStateChanged.AddDynamic(this,&AGameHUD::HandleMatchStateChange);
 	}

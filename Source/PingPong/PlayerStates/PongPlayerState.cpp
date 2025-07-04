@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongPlayerState.h"
+#include "PongPlayerState.h"
 #include <Kismet/GameplayStatics.h>
 
-#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/GameStates/PongGameState.h"
 
-void APingPongPlayerState::BeginPlay()
+void APongPlayerState::BeginPlay()
 {
-	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	GameState = Cast<APongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(GameState);
 	#if WITH_EDITOR
 	SetScore(50);
@@ -18,7 +18,7 @@ void APingPongPlayerState::BeginPlay()
 	maxModificator = GameState->GeBallModificatorsCount()-1;
 }
 
-void APingPongPlayerState::NextModificator()
+void APongPlayerState::NextModificator()
 {
 	if(Modificator==maxModificator)
 	{
@@ -28,7 +28,7 @@ void APingPongPlayerState::NextModificator()
 	Modificator++;
 }
 
-void APingPongPlayerState::PrevModificator()
+void APongPlayerState::PrevModificator()
 {
 	if(Modificator==0)
 	{
@@ -38,7 +38,7 @@ void APingPongPlayerState::PrevModificator()
 	Modificator--;
 }
 
-EBallModificators APingPongPlayerState::GetModificator()
+EBallModificators APongPlayerState::GetModificator()
 {
 	return GameState->GetModifcation(Modificator);
 }

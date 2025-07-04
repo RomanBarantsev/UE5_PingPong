@@ -4,7 +4,7 @@
 #include "PlatformModificator.h"
 
 #include "PingPong/Actors/PingPongPlatform.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
 
 // Sets default values for this component's properties
 UPlatformModificator::UPlatformModificator()

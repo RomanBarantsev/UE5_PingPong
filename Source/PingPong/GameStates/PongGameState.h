@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/GameState.h"
-#include "PingPongGameState.generated.h"
+#include "PongGameState.generated.h"
 
-class APingPongPlayerState;
+class APongPlayerState;
 class APostProcessVolume;
-class APingPongPlayerController;
-class APingPongGameMode;
+class APongPlayerController;
+class APongGameMode;
 
 UENUM()
 enum class EBallModificators : int8	
@@ -47,12 +47,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName, NewStat
  * 
  */
 UCLASS()
-class PINGPONG_API APingPongGameState : public AGameState
+class PINGPONG_API APongGameState : public AGameState
 {
 	GENERATED_BODY()
 	
 protected:
-	APingPongGameState();
+	APongGameState();
 	virtual void BeginPlay() override;	
 	UFUNCTION()
 	void OnrepPlayerStatesUpdated();
@@ -84,7 +84,7 @@ private:
 	UFUNCTION(Client,Reliable)
 	void SetCountDownOnPlayerSide();
 	UPROPERTY()
-	const APingPongGameMode* GameMode;
+	const APongGameMode* GameMode;
 public:
 	UFUNCTION(Server,Reliable)
 	void IncreaseReadyPlayer();

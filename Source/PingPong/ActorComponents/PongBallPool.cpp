@@ -1,18 +1,18 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongBallPool.h"
+#include "PongBallPool.h"
 
 #include <Engine/World.h>
 #include <Net/UnrealNetwork.h>
 
 #include "DiffResults.h"
-#include "../Actors/PingPongBall.h"
+#include "../Actors/PongBall.h"
 #include "Kismet/GameplayStatics.h"
 
 
 // Sets default values for this component's properties
-UPingPongBallPool::UPingPongBallPool()
+UPongBallPool::UPongBallPool()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -23,7 +23,7 @@ UPingPongBallPool::UPingPongBallPool()
 
 
 // Called when the game starts
-void UPingPongBallPool::BeginPlay()
+void UPongBallPool::BeginPlay()
 {
 	Super::BeginPlay();
 	SetIsReplicated(true);
@@ -32,7 +32,7 @@ void UPingPongBallPool::BeginPlay()
 
 
 // Called every frame
-void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
+void UPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
                                       FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -40,9 +40,9 @@ void UPingPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 
-void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransform spawnTransform,EBallModificators modification)
+void UPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransform spawnTransform,EBallModificators modification)
 {
-	APingPongBall* PingPongBall=nullptr;
+	APongBall* PingPongBall=nullptr;
 	for (const auto& Ball : BallsPool)
 	{
 		if(Ball->IsHidden())
@@ -54,7 +54,7 @@ void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransfo
 	{
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner=Owner;
-		PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+		PingPongBall = GetWorld()->SpawnActor<APongBall>(BallClass,spawnParams);
 		AddBallToPool(PingPongBall);
 	}
 	PingPongBall->SetModification(modification);
@@ -66,17 +66,17 @@ void UPingPongBallPool::SpawnBallOnServer_Implementation(AActor* Owner, FTransfo
 	PingPongBall->StartMove();
 }
 
-bool UPingPongBallPool::ReleaseBall_Validate(APingPongBall* PingPongBall)
+bool UPongBallPool::ReleaseBall_Validate(APongBall* PingPongBall)
 {
 	return true;
 }
 
-void UPingPongBallPool::AddBallToPool_Implementation(APingPongBall* Ball)
+void UPongBallPool::AddBallToPool_Implementation(APongBall* Ball)
 {
 	BallsPool.Add(Ball);
 }
 
-void UPingPongBallPool::ReleaseBall_Implementation(APingPongBall* PingPongBall)
+void UPongBallPool::ReleaseBall_Implementation(APongBall* PingPongBall)
 {
 	PingPongBall->SetActorEnableCollision(false);
 	PingPongBall->SetHidden(true);
@@ -84,13 +84,13 @@ void UPingPongBallPool::ReleaseBall_Implementation(APingPongBall* PingPongBall)
 	PingPongBall->SetActorLocation(FVector::Zero());
 }
 
-void UPingPongBallPool::FillPool_Implementation()
+void UPongBallPool::FillPool_Implementation()
 {
 	for(int i=0;i<PoolSize;i++)
 	{
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner=GetOwner();
-		APingPongBall* PingPongBall = GetWorld()->SpawnActor<APingPongBall>(BallClass,spawnParams);
+		APongBall* PingPongBall = GetWorld()->SpawnActor<APongBall>(BallClass,spawnParams);
 		PingPongBall->SetActorHiddenInGame(true);
 		PingPongBall->SetActorRotation(FRotator::ZeroRotator);
 		PingPongBall->SetActorLocation(FVector::Zero());

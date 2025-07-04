@@ -3,9 +3,9 @@
 
 #include "EntryMapGameMode.h"
 
-#include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/GameStates/PongGameState.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 #include "PingPong/UI/HUDs/BaseHUD.h"
 
 AEntryMapGameMode::AEntryMapGameMode()

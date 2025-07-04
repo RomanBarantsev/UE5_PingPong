@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongGoal.h"
+#include "PongGoal.h"
 
 #include <string>
 
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/Pawns/PingPongPlayerPawn.h"
+#include "PingPong/Pawns/PongPlayerPawn.h"
 
 
 // Sets default values
-APingPongGoal::APingPongGoal()
+APongGoal::APongGoal()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
@@ -39,7 +39,7 @@ APingPongGoal::APingPongGoal()
 }
 
 // Called when the game starts or when spawned
-void APingPongGoal::BeginPlay()
+void APongGoal::BeginPlay()
 {
 	Super::BeginPlay();
 	if(!DynamicMaterial)
@@ -54,8 +54,8 @@ void APingPongGoal::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,FString{"No Dynamic Material for Goal is found"});
 	}
-	UpdateBrightnessTrack.BindDynamic(this, &APingPongGoal::UpdateLightBrightness);
-	UpdateColorTrack.BindDynamic(this, &APingPongGoal::UpdateLightColor);
+	UpdateBrightnessTrack.BindDynamic(this, &APongGoal::UpdateLightBrightness);
+	UpdateColorTrack.BindDynamic(this, &APongGoal::UpdateLightColor);
 	//If we have a float curve, bind it's graph to our update function
 	if (LightBoxFloatCurve)
 	{
@@ -76,23 +76,23 @@ void APingPongGoal::BeginPlay()
 }
 
 // Called every frame
-void APingPongGoal::Tick(float DeltaTime)
+void APongGoal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
 }
 
-void APingPongGoal::UpdateLightBrightness_Implementation(float BrightnessOutput)
+void APongGoal::UpdateLightBrightness_Implementation(float BrightnessOutput)
 {
 	DynamicMaterial->SetScalarParameterValue(TEXT("Opacity"),BrightnessOutput);
 }
 
-void APingPongGoal::UpdateLightColor(FLinearColor ColorOutput)
+void APongGoal::UpdateLightColor(FLinearColor ColorOutput)
 {
 	
 }
 
-void APingPongGoal::LightUpLightBox_Implementation()
+void APongGoal::LightUpLightBox_Implementation()
 {
 	LightTimelineComp->PlayFromStart();
 }

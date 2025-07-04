@@ -81,7 +81,7 @@ void UMainMenu::NativeConstruct()
 	auto controller = UGameplayStatics::GetPlayerController(GetWorld(),0);	
 	if (controller->IsPlayerController())
 	{
-		Controller = Cast<APingPongPlayerController>(controller);
+		Controller = Cast<APongPlayerController>(controller);
 		HUD  = Cast<ABaseHUD>(controller->GetHUD());		
 	}
 	Super::NativeConstruct();	

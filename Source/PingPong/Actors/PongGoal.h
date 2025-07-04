@@ -7,17 +7,17 @@
 #include "Components/TimelineComponent.h"
 #include "Curves/CurveEvaluation.h"
 #include "GameFramework/Actor.h"
-#include "PingPongGoal.generated.h"
+#include "PongGoal.generated.h"
 
-class APingPongPlayerPawn;
+class APongPlayerPawn;
 UCLASS()
-class PINGPONG_API APingPongGoal : public AActor
+class PINGPONG_API APongGoal : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APingPongGoal();
+	APongGoal();
 
 protected:
 	// Called when the game starts or when spawned

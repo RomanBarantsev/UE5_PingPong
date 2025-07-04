@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/EditableText.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 #include "GameSettings.generated.h"
 
 /**

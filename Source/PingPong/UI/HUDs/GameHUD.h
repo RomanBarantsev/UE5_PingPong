@@ -27,7 +27,7 @@ private:
 	UPROPERTY()
 	UMainMenu* MainMenuWidget;
 	UPROPERTY()
-	APingPongGameState* GameState;
+	APongGameState* GameState;
 	UFUNCTION()
 	void CreateWidgets();
 	virtual void BeginPlay() override;

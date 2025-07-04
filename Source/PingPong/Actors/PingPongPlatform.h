@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PingPong/ActorComponents/PingPongBallPool.h"
+#include "PingPong/ActorComponents/PongBallPool.h"
 #include "PingPong/ActorComponents/PlatformModificator.h"
 #include "PingPongPlatform.generated.h"
 
-class APingPongPlayerController;
+class APongPlayerController;
 class UBoxComponent;
 class UArrowComponent;
 
@@ -41,7 +41,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UPlatformModificator* PlatformModificator;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UPingPongBallPool* BallsPoolComponent;
+	UPongBallPool* BallsPoolComponent;
 	
 
 protected:
@@ -72,7 +72,7 @@ public:
 	float RotateAngle=45;
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<APingPongBall> BallClass;
+	TSubclassOf<APongBall> BallClass;
 	
 protected:
 	float InitialZ=0;
@@ -103,5 +103,5 @@ public:
 
 private:
 	UPROPERTY()
-	APingPongGameState* GameState;
+	APongGameState* GameState;
 };

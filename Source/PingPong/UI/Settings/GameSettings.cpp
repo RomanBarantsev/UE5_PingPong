@@ -5,7 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Pong_GameUserSettings.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
 
 void UGameSettings::TextCommited(const FText& Text, ETextCommit::Type CommitMethod)
 {

@@ -5,17 +5,17 @@
 #include "CoreMinimal.h"
 #include "Components/Widget.h"
 #include "GameFramework/Pawn.h"
-#include "PingPongPlayerPawn.generated.h"
+#include "PongPlayerPawn.generated.h"
 
 class UMainScreenWidget;
 UCLASS()
-class PINGPONG_API APingPongPlayerPawn : public APawn
+class PINGPONG_API APongPlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	APingPongPlayerPawn();
+	APongPlayerPawn();
 
 public:	
 	// Called every frame

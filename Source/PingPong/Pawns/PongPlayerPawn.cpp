@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongPlayerPawn.h"
+#include "PongPlayerPawn.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 
 // Sets default values
-APingPongPlayerPawn::APingPongPlayerPawn()
+APongPlayerPawn::APongPlayerPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,13 +25,13 @@ APingPongPlayerPawn::APingPongPlayerPawn()
 }
 
 // Called every frame
-void APingPongPlayerPawn::Tick(float DeltaTime)
+void APongPlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
 }
 
 // Called to bind functionality to input
-void APingPongPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APongPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	

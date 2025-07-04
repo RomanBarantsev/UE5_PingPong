@@ -12,7 +12,7 @@
 
 class UPlayerScore;
 enum class EPlayersStatus;
-class APingPongPlayerController;
+class APongPlayerController;
 /**
  * 
  */
@@ -50,7 +50,7 @@ protected:
 	UFUNCTION()
 	void OnMenuButtonPushed();	
 	UPROPERTY()
-	APingPongPlayerController* PingPongPlayerController;
+	APongPlayerController* PingPongPlayerController;
 	UPROPERTY()
 	TMap<int32,UPlayerScore*> PlayersScoreMap;
 public:	

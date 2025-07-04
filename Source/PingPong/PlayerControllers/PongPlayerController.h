@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/GameStates/PongGameState.h"
 #include "PingPong/UI/HUDs/GameHUD.h"
-#include "PingPongPlayerController.generated.h"
+#include "PongPlayerController.generated.h"
 
-class APingPongPlayerState;
+class APongPlayerState;
 class ABaseHUD;
 UENUM()
 enum class EUIStatus : uint8
@@ -20,12 +20,12 @@ enum class EUIStatus : uint8
 	Started
 };
 enum class EPlayersStatus;
-class APingPongGameState;
+class APongGameState;
 /**
  * 
  */
 UCLASS()
-class PINGPONG_API APingPongPlayerController : public APlayerController
+class PINGPONG_API APongPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 protected:
@@ -35,16 +35,16 @@ protected:
 	UPROPERTY()
 	FTransform StartTransform;
 	UPROPERTY()
-	APingPongGameState* PingPongGameState;
+	APongGameState* PingPongGameState;
 	UPROPERTY()
-	APingPongPlayerState* PingPongPlayerState;
+	APongPlayerState* PingPongPlayerState;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
 	TSubclassOf<class APingPongPlatform> PlatformClass;
 	UPROPERTY()
 	class APingPongPlatform* Platform;
 
 public:
-	APingPongPlayerController();
+	APongPlayerController();
 	UFUNCTION()
 	void SetStartTransform(FTransform NewStartTransform);
 	UFUNCTION(Server,Reliable,WithValidation)

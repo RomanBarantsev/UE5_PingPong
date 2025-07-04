@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongBall.h"
+#include "PongBall.h"
 
 #include "BallGCActor.h"
-#include "PingPongGoal.h"
+#include "PongGoal.h"
 #include "PingPongPlatform.h"
 #include "Components/AudioComponent.h"
 #include "GeometryCollection/GeometryCollectionActor.h"
@@ -14,14 +14,14 @@
 #include "Math/Quat.h"
 #include "Math/Vector.h"
 #include "PingPong/ActorComponents/PlatformModificator.h"
-#include "PingPong/GameModes/PingPongGameMode.h"
-#include "PingPong/GameStates/PingPongGameState.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/GameModes/PongGameMode.h"
+#include "PingPong/GameStates/PongGameState.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "GeometryCollection/GeometryCollectionSizeSpecificUtility.h"
 
 // Sets default values
-APingPongBall::APingPongBall()
+APongBall::APongBall()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -53,11 +53,11 @@ APingPongBall::APingPongBall()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,FString{"No MeshAsset is found for ball"});
 	}
-	BodyMesh->OnComponentHit.AddDynamic(this,&APingPongBall::OnHit);
+	BodyMesh->OnComponentHit.AddDynamic(this,&APongBall::OnHit);
 	bReplicates=true;	
 }
 
-void APingPongBall::MatchStateChanged(FName NewState)
+void APongBall::MatchStateChanged(FName NewState)
 {
 	if (NewState==MatchState::InProgress)
 	{
@@ -72,38 +72,38 @@ void APingPongBall::MatchStateChanged(FName NewState)
 }
 
 // Called when the game starts or when spawned
-void APingPongBall::BeginPlay()
+void APongBall::BeginPlay()
 {
 	bReplicates=true;
 	SetReplicateMovement(true);	
-	PingPongGameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	PingPongGameMode = Cast<APingPongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	PingPongGameState = Cast<APongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	PingPongGameMode = Cast<APongGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	PingPongGameState->OnMatchStateChanged.AddDynamic(this,&ThisClass::MatchStateChanged);
 	Super::BeginPlay();
 }
 
 // Called every frame
-void APingPongBall::Tick(float DeltaTime)
+void APongBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void APingPongBall::StartMove()
+void APongBall::StartMove()
 {
 	Server_StartMove();
 }
 
-void APingPongBall::StopMove()
+void APongBall::StopMove()
 {
 	Server_StopMove();
 }
 
-void APingPongBall::RotateBallTo(FRotator Rotator)
+void APongBall::RotateBallTo(FRotator Rotator)
 {
 	SetActorRotation(Rotator);
 }
 
-void APingPongBall::SetBallOwner(FHitResult HitResult)
+void APongBall::SetBallOwner(FHitResult HitResult)
 {
 	if(Cast<APingPongPlatform>(HitResult.GetActor()))
 	{		
@@ -112,9 +112,9 @@ void APingPongBall::SetBallOwner(FHitResult HitResult)
 	}	
 }
 
-void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
+void APongBall::CheckGoal_Implementation(FHitResult HitResult)
 {
-	APingPongGoal* PingPongGoal = Cast<APingPongGoal>(HitResult.GetActor());
+	APongGoal* PingPongGoal = Cast<APongGoal>(HitResult.GetActor());
 	if(PingPongGoal)
 	{		
 		AActor* GoalOwner = PingPongGoal->GetOwner();
@@ -132,21 +132,21 @@ void APingPongBall::CheckGoal_Implementation(FHitResult HitResult)
 	}
 }
 
-void APingPongBall::AddScoreToPlayer_Implementation(AActor* Player)
+void APongBall::AddScoreToPlayer_Implementation(AActor* Player)
 {
-	APingPongPlayerState* PingPongPlayerState=GetOwner()->GetInstigatorController()->GetPlayerState<APingPongPlayerState>();
+	APongPlayerState* PingPongPlayerState=GetOwner()->GetInstigatorController()->GetPlayerState<APongPlayerState>();
 	check(PingPongPlayerState);			
 	PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+PingPongGameState->GetModificatorPoints(Modificator));
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 	PingPongGameState->AddMaxScore(PingPongPlayerState->GetScore());
 }
 
-void APingPongBall::SetSpeed(float Speed)
+void APongBall::SetSpeed(float Speed)
 {
 	MoveSpeed=Speed;
 }
 
-void APingPongBall::ReturnToPool()
+void APongBall::ReturnToPool()
 {
 	SpawnChaosBall();
 	StopMove();
@@ -154,7 +154,7 @@ void APingPongBall::ReturnToPool()
 	SetActorHiddenInGame(true);
 }
 
-void APingPongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector normalImpulse, const FHitResult& Hit)
+void APongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector normalImpulse, const FHitResult& Hit)
 {
 	if (IsHidden())
 		return;
@@ -166,7 +166,7 @@ void APingPongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 }
 
 
-void APingPongBall::SpawnChaosBall_Implementation()
+void APongBall::SpawnChaosBall_Implementation()
 {
 	FActorSpawnParameters params;
 	params.Owner = this;
@@ -179,17 +179,17 @@ void APingPongBall::SpawnChaosBall_Implementation()
 	SpawnedGeometryActor->GetGeometryCollectionComponent()->Activate(true);
 }
 
-void APingPongBall::PlayHitPlatformSound_Implementation()
+void APongBall::PlayHitPlatformSound_Implementation()
 {
 	HitPlatformSound->Play();
 }
 
-void APingPongBall::PlayHitWallSound_Implementation()
+void APongBall::PlayHitWallSound_Implementation()
 {
 	HitWallSound->Play();
 }
 
-void APingPongBall::SetColor_Implementation()
+void APongBall::SetColor_Implementation()
 {
 	if(!DynamicMaterial)
 	{
@@ -200,7 +200,7 @@ void APingPongBall::SetColor_Implementation()
 	DynamicMaterial->SetVectorParameterValue(TEXT("color"),BallColor);
 }
 
-void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
+void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 {
 	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
 	{
@@ -241,7 +241,7 @@ void APingPongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult
 	}	
 }
 
-void APingPongBall::SetModification_Implementation(EBallModificators mod)
+void APongBall::SetModification_Implementation(EBallModificators mod)
 {
 	Modificator=mod;	
 	BallColor = PingPongGameState->GetModificatorColor(mod);
@@ -249,12 +249,12 @@ void APingPongBall::SetModification_Implementation(EBallModificators mod)
 	SetColor();
 }
 
-bool APingPongBall::SetModification_Validate(EBallModificators mod)
+bool APongBall::SetModification_Validate(EBallModificators mod)
 {
 	return true;
 }
 
-void APingPongBall::Server_StartMove()
+void APongBall::Server_StartMove()
 {
 	isMoving = true;
 	MoveSpeed=MinBallSpeed;
@@ -264,7 +264,7 @@ void APingPongBall::Server_StartMove()
 	IncreaseBallSpeed();
 }
 
-void APingPongBall::IncreaseBallSpeed()
+void APongBall::IncreaseBallSpeed()
 {
 	if(MoveSpeed<MaxBallSpeed)
 		MoveSpeed+=IncreaseSpeedStep;
@@ -272,14 +272,14 @@ void APingPongBall::IncreaseBallSpeed()
 	BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
 }
 
-void APingPongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void APongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(APingPongBall,isMoving);
-	DOREPLIFETIME(APingPongBall,BallColor);
+	DOREPLIFETIME(APongBall,isMoving);
+	DOREPLIFETIME(APongBall,BallColor);
 }
 
-void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
+void APongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 {	
 	SetBallOwner(hitResult);
 	if(!hitResult.GetActor()->GetOwner())
@@ -291,7 +291,7 @@ void APingPongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 	}
 }
 
-void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
+void APongBall::Multicast_HitEffect_Implementation(FVector location)
 {
 	UWorld * world = GetWorld();
 	if(world && HitEffect)
@@ -300,13 +300,13 @@ void APingPongBall::Multicast_HitEffect_Implementation(FVector location)
 	}
 }
 
-void APingPongBall::Server_StopMove_Implementation()
+void APongBall::Server_StopMove_Implementation()
 {
 	BodyMesh->SetPhysicsLinearVelocity(FVector::Zero());
 	isMoving = false;
 }
 
-bool APingPongBall::Server_StopMove_Validate()
+bool APongBall::Server_StopMove_Validate()
 {
 	return true;
 }

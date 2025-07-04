@@ -1,24 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongGameState.h"
+#include "PongGameState.h"
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
-#include "PingPong/GameModes/PingPongGameMode.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/GameModes/PongGameMode.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 #include "PingPong/UI/OverlayWidget.h"
 
 
-APingPongGameState::APingPongGameState()
+APongGameState::APongGameState()
 {
 	bReplicates=true;	
 }
 
-void APingPongGameState::BeginPlay()
+void APongGameState::BeginPlay()
 {	
 	
 	Super::BeginPlay();
@@ -34,7 +34,7 @@ void APingPongGameState::BeginPlay()
 	CalculateEnumBallModifications();
 }
 
-void APingPongGameState::OnrepPlayerStatesUpdated()
+void APongGameState::OnrepPlayerStatesUpdated()
 {
 	if (!HasAuthority())
 	{
@@ -52,12 +52,12 @@ void APingPongGameState::OnrepPlayerStatesUpdated()
 	}	
 }
 
-void APingPongGameState::HandlePlayerStatesUpdated()
+void APongGameState::HandlePlayerStatesUpdated()
 {
 	PlayerStates=PlayerArray;
 }
 
-void APingPongGameState::AddMaxScore(int Score)
+void APongGameState::AddMaxScore(int Score)
 {
 	if (Score>=ScoreToEnd)
 	{
@@ -65,60 +65,60 @@ void APingPongGameState::AddMaxScore(int Score)
 	}
 }
 
-void APingPongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void APongGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME( APingPongGameState, ReadyPlayers );		
-	DOREPLIFETIME( APingPongGameState, LoadedPlayers );	
-	DOREPLIFETIME( APingPongGameState, StartedPlayers );	
-	DOREPLIFETIME( APingPongGameState, PlayerStates );
+	DOREPLIFETIME( APongGameState, ReadyPlayers );		
+	DOREPLIFETIME( APongGameState, LoadedPlayers );	
+	DOREPLIFETIME( APongGameState, StartedPlayers );	
+	DOREPLIFETIME( APongGameState, PlayerStates );
 }
 
-int32 APingPongGameState::GetCountDownTime()
+int32 APongGameState::GetCountDownTime()
 {
 	return CountDown;
 }
 
-void APingPongGameState::IncreaseReadyPlayer_Implementation()
+void APongGameState::IncreaseReadyPlayer_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("READY"));
 	ReadyPlayers++;
-	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
+	GameMode = Cast<APongGameMode>(GetDefaultGameMode());
 	if(ReadyPlayers==GameMode->GetPlayersCount())
 	{
 		SetMatchState(MatchState::WaitingToStart);
 	}
 }
 
-void APingPongGameState::IncreaseLoadedPlayer_Implementation()
+void APongGameState::IncreaseLoadedPlayer_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("INCREASE"));
 	LoadedPlayers++;
-	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
+	GameMode = Cast<APongGameMode>(GetDefaultGameMode());
 	if(PlayerStates.Num()==GameMode->GetPlayersCount())
 	{		
 		SetMatchState(MatchState::EnteringMap);
 	}
 }
 
-void APingPongGameState::SetCountDownOnPlayerSide_Implementation()
+void APongGameState::SetCountDownOnPlayerSide_Implementation()
 {
 	
 }
 
 
-void APingPongGameState::IncreaseStartedPlayers_Implementation()
+void APongGameState::IncreaseStartedPlayers_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("STARTED++"));
 	StartedPlayers++;
-	GameMode = Cast<APingPongGameMode>(GetDefaultGameMode());
+	GameMode = Cast<APongGameMode>(GetDefaultGameMode());
 	if(StartedPlayers==GameMode->GetPlayersCount())
 	{
 		SetMatchState(MatchState::InProgress);
 	}
 }
 
-void APingPongGameState::ServerPause_Implementation(bool state)
+void APongGameState::ServerPause_Implementation(bool state)
 {
 	if (state)
 	{
@@ -131,13 +131,13 @@ void APingPongGameState::ServerPause_Implementation(bool state)
 	}
 }
 
-void APingPongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
+void APongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
 {
 	//TODO make reconnect possible.
 	SetMatchState(MatchState::WaitingPostMatch);
 }
 
-void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
+void APongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
 {
 	if (!HasAuthority())
 	{
@@ -155,7 +155,7 @@ void APingPongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32
 	}
 }
 
-void APingPongGameState::CalculateEnumBallModifications()
+void APongGameState::CalculateEnumBallModifications()
 {
 	const UEnum* EnumPtr = StaticEnum<EBallModificators>();
 	EBallModificatorsCount = EnumPtr ? EnumPtr->NumEnums() - 1 : 0;
@@ -165,47 +165,47 @@ void APingPongGameState::CalculateEnumBallModifications()
 	}
 }
 
-int32 APingPongGameState::GeBallModificatorsCount()
+int32 APongGameState::GeBallModificatorsCount()
 {
 	return EBallModificatorsCount;
 }
 
-EBallModificators APingPongGameState::GetModifcation(int8 mod)
+EBallModificators APongGameState::GetModifcation(int8 mod)
 {
 	return ModificationMap[mod];
 }
 
-FLinearColor APingPongGameState::GetModificatorColor(EBallModificators modificator)
+FLinearColor APongGameState::GetModificatorColor(EBallModificators modificator)
 {		
 	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->Color;
 }
 
-int32 APingPongGameState::GetModificatorPoints(EBallModificators modificator)
+int32 APongGameState::GetModificatorPoints(EBallModificators modificator)
 {
 	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->Points;
 }
 
-int32 APingPongGameState::GetShotCost(EBallModificators modificator)
+int32 APongGameState::GetShotCost(EBallModificators modificator)
 {
 	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->ShotCost;
 }
 
-int32 APingPongGameState::GetBallSpeed(EBallModificators modificator)
+int32 APongGameState::GetBallSpeed(EBallModificators modificator)
 {
 	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->Speed;
 }
 
-float APingPongGameState::GetBallModificationValue(EBallModificators modificator)
+float APongGameState::GetBallModificationValue(EBallModificators modificator)
 {
 	FBallModificatorsTable* RowMod = GetModificationRow(modificator);
 	return RowMod->ModificatorValue;
 }
 
-FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators Modificator)
+FBallModificatorsTable* APongGameState::GetModificationRow(EBallModificators Modificator)
 {
 	for(const auto& RowName : BallModificatorsRowNames)
 	{
@@ -218,14 +218,14 @@ FBallModificatorsTable* APingPongGameState::GetModificationRow(EBallModificators
 	return nullptr;
 }
 
-void APingPongGameState::SetMatchState_Implementation(FName NewState)
+void APongGameState::SetMatchState_Implementation(FName NewState)
 {
 	UE_LOG(LogTemp, Display, TEXT("SetMatch	State_Implementation"));
 	MatchState = NewState;
 	OnMatchStateChanged.Broadcast(NewState);	
 }
 
-FName APingPongGameState::GetMatchState() const
+FName APongGameState::GetMatchState() const
 {
 	return AGameState::GetMatchState();
 }

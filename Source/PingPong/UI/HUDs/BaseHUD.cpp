@@ -5,7 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/GameStates/PingPongGameState.h"
+#include "PingPong/GameStates/PongGameState.h"
 
 
 void ABaseHUD::SwitchUI(Widgets UIName)

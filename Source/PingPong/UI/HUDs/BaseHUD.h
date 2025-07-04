@@ -7,7 +7,7 @@
 #include "UObject/Interface.h"
 #include "BaseHUD.generated.h"
 
-class APingPongGameState;
+class APongGameState;
 class UMainMenu;
 class UOverlayWidget;
 /**

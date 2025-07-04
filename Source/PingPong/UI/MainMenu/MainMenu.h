@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/BackgroundBlur.h"
 #include "PingPong/GameInstance/NetworkGameInstance.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
 #include "MainMenu.generated.h"
 
 class UMenuButton;
@@ -55,7 +55,7 @@ private:
 	UPROPERTY()
 	ABaseHUD* HUD;
 	UPROPERTY()
-	APingPongPlayerController* Controller;
+	APongPlayerController* Controller;
 	virtual void NativeConstruct() override;
 	virtual void NativePreConstruct() override;
 public:

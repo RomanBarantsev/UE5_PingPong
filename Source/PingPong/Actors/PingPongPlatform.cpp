@@ -8,8 +8,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 #include "Components/AudioComponent.h"
-#include "PingPong/PlayerControllers/PingPongPlayerController.h"
-#include "PingPong/PlayerStates/PingPongPlayerState.h"
+#include "PingPong/PlayerControllers/PongPlayerController.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 
 // Sets default values
 APingPongPlatform::APingPongPlatform()
@@ -31,7 +31,7 @@ APingPongPlatform::APingPongPlatform()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 	AudioComponent->SetAutoActivate(true);
 	PlatformModificator = CreateDefaultSubobject<UPlatformModificator>(TEXT("Platform Modificator"));
-	BallsPoolComponent = CreateDefaultSubobject<UPingPongBallPool>(TEXT("BallsPoll"));
+	BallsPoolComponent = CreateDefaultSubobject<UPongBallPool>(TEXT("BallsPoll"));
 	BallsPoolComponent->SetIsReplicated(true);
 	bReplicates=true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>LoadedBodyMeshRoot(TEXT("/Script/Engine.StaticMesh'/ControlRig/Controls/ControlRig_Circle_1mm.ControlRig_Circle_1mm'"));
@@ -45,7 +45,7 @@ void APingPongPlatform::BeginPlay()
 	StartRotatePos = BodyMesh->GetComponentRotation().Yaw;
 	SetReplicateMovement(true);
 	InitialZ=GetActorLocation().Z;
-	GameState = Cast<APingPongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	GameState = Cast<APongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(GameState);
 	FVector Origin,BoxExtended;
 	GetActorBounds(false,Origin,BoxExtended,false);
@@ -106,7 +106,7 @@ void APingPongPlatform::SetSpeedMultiplier(int32 Multiplier)
 
 bool APingPongPlatform::CheckScore(EBallModificators Modificator)
 {
-	APingPongPlayerState* PlayerState = Cast<APingPongPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	APongPlayerState* PlayerState = Cast<APongPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	check(PlayerState);
 	if(PlayerState->GetScore()-GameState->GetShotCost(Modificator)>0)
 	{
