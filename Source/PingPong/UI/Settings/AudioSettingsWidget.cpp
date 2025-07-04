@@ -3,7 +3,7 @@
 
 #include "AudioSettingsWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/Pong_GameUserSettings.h"
+#include "PingPong/Settings/Pong_GameUserSettings.h"
 #include "PingPong/Settings/Audio/AudioVolumeSettingsDataAsset.h"
 #include "PingPong/UI/SlateClasses/PPSlider.h"
 #include "Sound/SoundClass.h"

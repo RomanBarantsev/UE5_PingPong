@@ -2,8 +2,7 @@
 
 
 #include "Pong_GameUserSettings.h"
-
-#include "Settings/Audio/AudioVolumeSettingsDataAsset.h"
+#include "Audio/AudioVolumeSettingsDataAsset.h"
 
 UPong_GameUserSettings::UPong_GameUserSettings()
 {

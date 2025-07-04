@@ -7,7 +7,7 @@
 #include "HttpModule.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/Pong_GameUserSettings.h"
+#include "PingPong/Settings/Pong_GameUserSettings.h"
 
 
 void UPong_GameInstance::OnServerListGet(TSharedPtr<IHttpRequest> HttpRequest, TSharedPtr<IHttpResponse> HttpResponse,
