@@ -40,6 +40,10 @@ struct FBallModificatorsTable :public FTableRowBase
 	float Speed=800;
 	UPROPERTY(EditAnywhere)
 	float ModificatorValue=0;
+	UPROPERTY(EditAnywhere)
+	bool isUseByPlayer=true;
+	UPROPERTY(EditAnywhere)
+	FString Note{"Explanation"};
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMatchStateChanged, FName, NewState);
