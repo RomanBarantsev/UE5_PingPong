@@ -24,9 +24,20 @@ void APongSpectatorPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void APongSpectatorPawn::MoveUp(float X)
+{
+	AddMovementInput(GetActorUpVector(), X);
+}
+
+void APongSpectatorPawn::Menu(float X)
+{
+	
+}
+
 // Called to bind functionality to input
 void APongSpectatorPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	PlayerInputComponent->BindAxis("MoveUp", this, &APongSpectatorPawn::MoveUp);
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 

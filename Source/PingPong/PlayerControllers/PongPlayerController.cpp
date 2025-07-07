@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PingPongPlatform.h"
 #include "PingPong/GameStates/PongGameState.h"
+#include "PingPong/Pawns/PongPlayerPawn.h"
+#include "PingPong/Pawns/PongSpectatorPawn.h"
 #include "PingPong/PlayerStates/PongPlayerState.h"
 #include "PingPong/UI/OverlayWidget.h"
 #include "PingPong/UI/HUDs/BaseHUD.h"
@@ -123,21 +125,48 @@ void APongPlayerController::SetupInputComponent()
 
 void APongPlayerController::MoveRight(float AxisValue)
 {
-	if (bBlockMovement)
-		return;
-	Server_PlatformMoveRight(AxisValue);
+	if (APongSpectatorPawn* SpecPawn = Cast<APongSpectatorPawn>(GetPawn()))
+	{
+		// Spectator movement logic
+		SpecPawn->AddMovementInput(FVector::RightVector, AxisValue);
+	}
+	else if (APongPlayerPawn* GamePawn = Cast<APongPlayerPawn>(GetPawn()))
+	{
+		// Game pawn logic
+		if (bBlockMovement)
+			return;
+		Server_PlatformMoveRight(AxisValue);
+	}	
+	
 }
 
 void APongPlayerController::MoveForward(float AxisValue)
 {
-	if (bBlockMovement)
-		return;
-	Server_PlatformMoveForward(AxisValue);
+	if (APongSpectatorPawn* SpecPawn = Cast<APongSpectatorPawn>(GetPawn()))
+	{
+		// Spectator movement logic
+		SpecPawn->AddMovementInput(FVector::ForwardVector, AxisValue);
+	}
+	else if (APongPlayerPawn* GamePawn = Cast<APongPlayerPawn>(GetPawn()))
+	{
+		// Game pawn logic
+		if (bBlockMovement)
+			return;
+		Server_PlatformMoveForward(AxisValue);
+	}	
 }
 
 void APongPlayerController::RotatePlatform(float AxisValue)
 {
-	Server_PlatformRotate(AxisValue);
+	if (APongSpectatorPawn* SpecPawn = Cast<APongSpectatorPawn>(GetPawn()))
+	{
+		// Spectator movement logic
+		SpecPawn->AddControllerYawInput(AxisValue);
+	}
+	else if (APongPlayerPawn* GamePawn = Cast<APongPlayerPawn>(GetPawn()))
+	{
+		Server_PlatformRotate(AxisValue);
+	}	
 }
 
 void APongPlayerController::RequstPause_Implementation(bool state)
@@ -152,6 +181,9 @@ bool APongPlayerController::RequstPause_Validate(bool state)
 
 void APongPlayerController::OpenMenu_Implementation()
 {
+	AHUD* HUD = GetHUD();
+	AGameHUD* LocalHUD = HUD ? Cast<AGameHUD>(HUD) : nullptr;
+	if (!LocalHUD) return;
 	if (bShowMouseCursor)
 	{
 		SetShowMouseCursor(false);
