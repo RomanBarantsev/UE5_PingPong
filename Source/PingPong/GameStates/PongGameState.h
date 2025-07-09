@@ -20,7 +20,6 @@ enum class EBallModificators : int8
 	Shrink UMETA(DisplayName="Shrink"),
 	Expand UMETA(DisplayName="Expand"),
 	ReverseControl UMETA(DisplayName="ReverseControl"),
-	LightsOff UMETA(DisplayName="LightsOff"),
 	None UMETA(DisplayName="None")	
 };
 
