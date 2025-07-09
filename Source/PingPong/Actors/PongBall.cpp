@@ -88,6 +88,11 @@ void APongBall::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void APongBall::SetOwningPlaform(APingPongPlatform* Platform)
+{
+	OwningPlatform = Platform;
+}
+
 void APongBall::StartMove()
 {
 	Server_StartMove();
@@ -214,7 +219,7 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 		{
 			if(Modificator==EBallModificators::Fast)
 			{
-				PlatformModificator->SetSpeedOfPlatform(PingPongGameState->GetBallModificationValue(EBallModificators::Fast));
+				OwningPlatform->GetPlatformModificator()->SetSpeedOfPlatform(PingPongGameState->GetBallModificationValue(EBallModificators::Fast));				
 			}
 			if(Modificator==EBallModificators::Slow)
 			{
@@ -222,19 +227,15 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 			}
 			if(Modificator==EBallModificators::Shrink)
 			{
-				PlatformModificator->SetPlatformSize();
+				PlatformModificator->SetPlatformSize(PingPongGameState->GetBallModificationValue(EBallModificators::Expand));
 			}
 			if(Modificator==EBallModificators::Expand)
 			{
-				PlatformModificator->SetPlatformSize();
+				OwningPlatform->GetPlatformModificator()->SetPlatformSize(PingPongGameState->GetBallModificationValue(EBallModificators::Expand));
 			}
 			if(Modificator==EBallModificators::ReverseControl)
 			{
 				PlatformModificator->SetReverseControl();
-			}
-			if(Modificator==EBallModificators::LightsOff)
-			{
-				
 			}
 			SetModification(EBallModificators::None);	
 		}

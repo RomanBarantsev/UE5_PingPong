@@ -69,7 +69,11 @@ protected:
 	virtual void OnBallHitAnything(FHitResult hitResult);
 	UPROPERTY()
 	APingPongPlatform* LastTouchedPlatform;
+	UPROPERTY()
+	APingPongPlatform* OwningPlatform;
 public:
+	UFUNCTION()
+	void SetOwningPlaform(APingPongPlatform* Platform);
 	UFUNCTION(BlueprintCallable)
 	void StartMove();
 	UFUNCTION(BlueprintCallable)
