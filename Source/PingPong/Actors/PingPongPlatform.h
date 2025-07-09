@@ -47,6 +47,9 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 2000;
+	float MoveSpeedMax{0};
+	float MoveSpeedMin {0};
+	float MoveSpeedMultiplier=2;
 	float InterpolationKey = 0.05f;
 	float interpolatedYaw;
 	float CurrentRightAxisValue;
@@ -56,6 +59,7 @@ protected:
 	FVector TargetLocation;
 	FVector currentLocation;
 public:
+	float GetMoveSpeed();
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
     void Server_MoveRight(float DeltaTime);
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
@@ -70,7 +74,8 @@ public:
 	void Server_Fire(EBallModificators Modificator);
 	UPROPERTY(EditAnywhere)
 	float RotateAngle=45;
-	
+	UFUNCTION()
+	UPlatformModificator* GetPlatformModificator() const;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APongBall> BallClass;
 	
@@ -97,7 +102,7 @@ public:
 	UPROPERTY()
 	bool bInvertedControl = false;
 	UFUNCTION()
-	void SetSpeedMultiplier(int32 Multiplier);
+	void SetSpeedMultiplier(float Multiplier);
 	UFUNCTION()
 	bool CheckScore(EBallModificators Modificator);
 

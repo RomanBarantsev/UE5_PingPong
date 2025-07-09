@@ -51,6 +51,8 @@ void APingPongPlatform::BeginPlay()
 	GetActorBounds(false,Origin,BoxExtended,false);
 	UKismetSystemLibrary::PrintText(GetWorld(),FText::AsNumber(BoxExtended.X));
 	currentLocation = MeshRoot->GetComponentLocation();
+	MoveSpeedMax=MoveSpeed*MoveSpeedMultiplier;
+	MoveSpeedMin=MoveSpeed/MoveSpeedMultiplier;
 }
 
 
@@ -94,14 +96,20 @@ bool APingPongPlatform::Server_GetForwardValue_Validate(float AxisValue)
 	return true;
 }
 
+UPlatformModificator* APingPongPlatform::GetPlatformModificator() const
+{
+	return PlatformModificator;
+}
+
 void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
-void APingPongPlatform::SetSpeedMultiplier(int32 Multiplier)
-{
-	MoveSpeed=MoveSpeed*Multiplier;
+void APingPongPlatform::SetSpeedMultiplier(float Multiplier)
+{	
+	MoveSpeed*=Multiplier;
+	MoveSpeed= FMath::Clamp(MoveSpeed,MoveSpeedMin,MoveSpeedMax);
 }
 
 bool APingPongPlatform::CheckScore(EBallModificators Modificator)
@@ -155,7 +163,7 @@ void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator
 	FTransform Transform;
 	Transform.SetLocation(ShootDirectionArrow->GetComponentLocation());
 	Transform.SetRotation(ShootDirectionArrow->GetComponentRotation().Quaternion());
-	BallsPoolComponent->SpawnBallOnServer(GetOwner(),Transform,Modificator);
+	BallsPoolComponent->SpawnBallOnServer(this,GetOwner(),Transform,Modificator);
 	//TODO why is it spawning when it should be already exist in pool?
 }
 
