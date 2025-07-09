@@ -33,7 +33,10 @@ public:
 	UFUNCTION()
 	void SetReverseControl();
 	UFUNCTION()
-	void SetPlatformSize();
+	void SetPlatformSize(float Modificator);
 	UFUNCTION()
-	void SetSpeedOfPlatform(int32 Multiplier);
+	void SetSpeedOfPlatform(float Multiplier);
+	
+	FTimerHandle ReverseTimer;
+	float ReverseDelay=15.0f;
 };

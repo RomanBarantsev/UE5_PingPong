@@ -43,16 +43,28 @@ void UPlatformModificator::GetOwningPlatform()
 }
 
 void UPlatformModificator::SetReverseControl()
-{	
-		PingPongPlatform->bInvertedControl=!PingPongPlatform->bInvertedControl;
+{
+	if (PingPongPlatform->bInvertedControl)
+	{
+		PingPongPlatform->bInvertedControl=false;
+		return;
+	}
+	PingPongPlatform->bInvertedControl=!PingPongPlatform->bInvertedControl;
+	GetWorld()->GetTimerManager().SetTimer(
+			ReverseTimer,
+			this,
+			&UPlatformModificator::SetReverseControl,
+			ReverseDelay,
+			false
+		);
 }
 
-void UPlatformModificator::SetPlatformSize()
+void UPlatformModificator::SetPlatformSize(float Modificator)
 {	
 		PingPongPlatform->SetActorScale3D(FVector(1,0.5,1));
 }
 
-void UPlatformModificator::SetSpeedOfPlatform(int32 Multiplier)
+void UPlatformModificator::SetSpeedOfPlatform(float Multiplier)
 {
 	PingPongPlatform->SetSpeedMultiplier(Multiplier);
 }
