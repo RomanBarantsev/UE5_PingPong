@@ -227,7 +227,7 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 			}
 			if(Modificator==EBallModificators::Shrink)
 			{
-				PlatformModificator->SetPlatformSize(PingPongGameState->GetBallModificationValue(EBallModificators::Expand));
+				PlatformModificator->SetPlatformSize(-PingPongGameState->GetBallModificationValue(EBallModificators::Shrink));
 			}
 			if(Modificator==EBallModificators::Expand)
 			{
