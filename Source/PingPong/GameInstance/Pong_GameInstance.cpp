@@ -52,7 +52,7 @@ void UPong_GameInstance::OnServerListGet(TSharedPtr<IHttpRequest> HttpRequest, T
 void UPong_GameInstance::GetServersList()
 {
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-	FString req = "http://localhost:18080/servers";
+	FString req =  FString::Printf(TEXT("http://%s:18080/servers"),*ServerAddress);
 	Request->SetURL(req);
 	Request->SetVerb("GET");
 	Request->ProcessRequest();
@@ -63,15 +63,15 @@ void UPong_GameInstance::OnCreateHostCompleted(FHttpRequestPtr Request, FHttpRes
 {
 	if (!bWasSuccessful) return;
 	FString ResponseStr = Response->GetContentAsString();
-	FString ServerAddress;
+	FString ServerAddressURL;
 	FString QueryParams;
 
 	// Split IP and query
-	ResponseStr.Split(TEXT("?"), &ServerAddress, &QueryParams);
+	ResponseStr.Split(TEXT("?"), &ServerAddressURL, &QueryParams);
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (PC)
 	{		
-		PC->ClientTravel(ServerAddress, ETravelType::TRAVEL_Absolute);
+		PC->ClientTravel(ServerAddressURL, ETravelType::TRAVEL_Absolute);
 	}
 	// Now split and parse params
 	TMap<FString, FString> ParsedParams;
@@ -96,7 +96,7 @@ void UPong_GameInstance::OnCreateHostCompleted(FHttpRequestPtr Request, FHttpRes
 void UPong_GameInstance::CreateHost(FString map,FString serverName,uint32 id)
 {	
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-	FString req = "http://localhost:18080/connect?name="+ serverName + "&id=" + FString::FromInt(id);
+	FString req = FString::Printf(TEXT("http://%s:18080/connect?name=%s&id=%s"),*FString::FromInt(id),*ServerAddress,*serverName);
 	Request->SetURL(req);
 	Request->SetVerb("GET");
 	Request->ProcessRequest();
@@ -110,7 +110,7 @@ void UPong_GameInstance::PlayersUpdate()
 	int32 PlayerCount = GM->GetNumPlayers();
 	int32 Port = GM->GetWorld()->URL.Port;
 	
-	FString Url = FString::Printf(TEXT("http://localhost:18080/update?port=%d&players=%d"), Port, PlayerCount);
+	FString Url = FString::Printf(TEXT("http://%s:18080/update?port=%d&players=%d"),*ServerAddress, Port, PlayerCount);
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
@@ -123,7 +123,7 @@ void UPong_GameInstance::HostShutdown()
 	auto GM = UGameplayStatics::GetGameMode(GetWorld());
 	if (!GM) return;
 	int32 Port = GM->GetWorld()->URL.Port;
-	FString Url = FString::Printf(TEXT("http://localhost:18080/terminated?port=%d"), Port);
+	FString Url = FString::Printf(TEXT("http://%s:18080/terminated?port=%d"),*ServerAddress, Port);
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
 	Request->SetVerb("GET");
@@ -151,4 +151,9 @@ void UPong_GameInstance::Shutdown()
 {
 	Settings->SaveConfig();	
 	Super::Shutdown();
+}
+
+FString UPong_GameInstance::GetServerAddress() const
+{
+	return ServerAddress;
 }
