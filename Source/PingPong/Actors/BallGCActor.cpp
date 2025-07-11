@@ -11,7 +11,7 @@
 
 ABallGCActor::ABallGCActor()
 {
-	ConstructorHelpers::FObjectFinder<UGeometryCollection> GCAsset(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/PingPong/Blueprints/BP_PingPongBall_GeometryCollection.BP_PingPongBall_GeometryCollection'"));
+	ConstructorHelpers::FObjectFinder<UGeometryCollection> GCAsset(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/PingPong/Blueprints/BP_PongBall_GeometryCollection.BP_PongBall_GeometryCollection'"));
 	if(GCAsset.Succeeded())
 	{
 		GetGeometryCollectionComponent()->SetRestCollection(GCAsset.Object);			
