@@ -54,6 +54,7 @@ APongBall::APongBall()
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,FString{"No MeshAsset is found for ball"});
 	}
 	BodyMesh->OnComponentHit.AddDynamic(this,&APongBall::OnHit);
+	BodyMesh->BodyInstance.bUseCCD = true;
 	bReplicates=true;	
 }
 
