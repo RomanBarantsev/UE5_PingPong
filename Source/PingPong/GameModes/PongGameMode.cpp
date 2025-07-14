@@ -100,9 +100,7 @@ void APongGameMode::Logout(AController* Exiting)
 				}
 			}		
 		}
-	}
-	
-	
+	}	
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
