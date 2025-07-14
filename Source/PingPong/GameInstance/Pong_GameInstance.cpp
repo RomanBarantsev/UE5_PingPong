@@ -52,7 +52,7 @@ void UPong_GameInstance::OnServerListGet(TSharedPtr<IHttpRequest> HttpRequest, T
 void UPong_GameInstance::GetServersList()
 {
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-	FString req =  FString::Printf(TEXT("http://%s:18080/servers"),*ServerAddress);
+	FString req =  FString::Printf(TEXT("http://%s:18080/servers"),*ExternalServerAddress);
 	Request->SetURL(req);
 	Request->SetVerb("GET");
 	Request->ProcessRequest();
@@ -96,7 +96,7 @@ void UPong_GameInstance::OnCreateHostCompleted(FHttpRequestPtr Request, FHttpRes
 void UPong_GameInstance::CreateHost(FString map,FString serverName,uint32 id)
 {	
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-	FString req = FString::Printf(TEXT("http://%s:18080/connect?name=%s&id=%s"),*ServerAddress,*FString::FromInt(id),*serverName);
+	FString req = FString::Printf(TEXT("http://%s:18080/connect?name=%s&id=%s"),*ExternalServerAddress,*FString::FromInt(id),*serverName);
 	Request->SetURL(req);
 	Request->SetVerb("GET");
 	Request->ProcessRequest();
@@ -110,7 +110,7 @@ void UPong_GameInstance::PlayersUpdate()
 	int32 PlayerCount = GM->GetNumPlayers();
 	int32 Port = GM->GetWorld()->URL.Port;
 	
-	FString Url = FString::Printf(TEXT("http://locahost:18080/update?port=%d&players=%d"), Port, PlayerCount);
+	FString Url = FString::Printf(TEXT("http://%s:18080/update?port=%d&players=%d"),*InternalServerAddress, Port, PlayerCount);
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
@@ -123,7 +123,7 @@ void UPong_GameInstance::HostShutdown()
 	auto GM = UGameplayStatics::GetGameMode(GetWorld());
 	if (!GM) return;
 	int32 Port = GM->GetWorld()->URL.Port;
-	FString Url = FString::Printf(TEXT("http://locahost:18080/terminated?port=%d"), Port);
+	FString Url = FString::Printf(TEXT("http://%s:18080/terminated?port=%d"),*InternalServerAddress, Port);
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
 	Request->SetVerb("GET");
