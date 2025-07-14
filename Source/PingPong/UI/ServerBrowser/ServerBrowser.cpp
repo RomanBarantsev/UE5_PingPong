@@ -36,6 +36,14 @@ void UServerBrowser::OnServerListReady(const TArray<FServerInfo>& Servers)
 	}
 }
 
+void UServerBrowser::VisibilityChanged(ESlateVisibility InVisibility)
+{
+	if (ESlateVisibility::Visible == InVisibility)
+	{
+		PongGameInstance->GetServersList();
+	}
+}
+
 void UServerBrowser::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -46,4 +54,5 @@ void UServerBrowser::NativeConstruct()
 	PongGameInstance->OnServerListReady.BindDynamic(this, &UServerBrowser::OnServerListReady);
 	RefreshBtn->OnClicked.AddDynamic(this,&UServerBrowser::OnRefreshPressed);
 	BackButton->OnClicked.AddDynamic(this,&UServerBrowser::OnBackPressed);
+	OnNativeVisibilityChanged.Add(FNativeOnVisibilityChangedEvent::FDelegate::CreateUObject(this, &UServerBrowser::VisibilityChanged));
 }

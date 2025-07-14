@@ -38,8 +38,10 @@ protected:
 private:
 	UFUNCTION()
 	void OnServerListReady(const TArray<FServerInfo>& Servers);
+	UFUNCTION()
+	void VisibilityChanged(ESlateVisibility OnNativeVisibilityChanged);
 	virtual void NativeConstruct() override;	
-
+	FNativeOnVisibilityChangedEvent OnVisibilityChangedEvent;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UServerRow> ServerRowSubClass;
 	UPROPERTY()
