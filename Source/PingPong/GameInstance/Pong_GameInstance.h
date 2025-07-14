@@ -51,7 +51,7 @@ private:
 	UGameUserSettings* Settings;
 	virtual void Init() override;
 	virtual void Shutdown() override;
-	FString ServerAddress = TEXT("192.168.2.90");
+	FString ServerAddress = TEXT("85.93.44.254");
 public:
 FString GetServerAddress() const;
 };
