@@ -104,8 +104,23 @@ void APongGameMode::Logout(AController* Exiting)
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
+void APongGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APingPongPlatform::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors)
+	{
+		APingPongPlatform* Platform = Cast<APingPongPlatform>(Actor);
+		if (Platform && (!Platform->GetOwner() || Platform->GetOwner()->GetInstigatorController() == nullptr))
+		{
+			Platform->Destroy();
+		}
+	}
+}
+
 APongPlayerPawn* APongGameMode::CreatePawnForController(APongPlayerController* PingPongPlayerController,
-                                                                UWorld* World)
+                                                        UWorld* World)
 {
 	APongPlayerPawn* newPawn = Cast<APongPlayerPawn>(PingPongPlayerController->GetPawn());
 	if(!newPawn)
