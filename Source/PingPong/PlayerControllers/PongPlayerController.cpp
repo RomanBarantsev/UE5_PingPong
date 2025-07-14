@@ -186,7 +186,6 @@ void APongPlayerController::OpenMenu_Implementation()
 	if (!LocalHUD) return;
 	if (!PingPongHUD->IsWidgetVisible(Widgets::MainMenu))
 	{
-		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		SetShowMouseCursor(true);
 		PingPongHUD->SwitchUI(Widgets::MainMenu);		
 		//RequstPause(true); TODO Fix it!
