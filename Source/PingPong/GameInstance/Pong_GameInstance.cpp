@@ -152,8 +152,3 @@ void UPong_GameInstance::Shutdown()
 	Settings->SaveConfig();	
 	Super::Shutdown();
 }
-
-FString UPong_GameInstance::GetServerAddress() const
-{
-	return ServerAddress;
-}
