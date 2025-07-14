@@ -27,7 +27,6 @@ protected:
 	APongGameMode();
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
-	virtual void BeginPlay() override;
 	UFUNCTION()
 	APongPlayerPawn* CreatePawnForController(APongPlayerController* PingPongPlayerController,UWorld* World);
 	UFUNCTION(Server,Reliable)
