@@ -110,7 +110,7 @@ void UPong_GameInstance::PlayersUpdate()
 	int32 PlayerCount = GM->GetNumPlayers();
 	int32 Port = GM->GetWorld()->URL.Port;
 	
-	FString Url = FString::Printf(TEXT("http://%s:18080/update?port=%d&players=%d"),*ServerAddress, Port, PlayerCount);
+	FString Url = FString::Printf(TEXT("http://locahost:18080/update?port=%d&players=%d"), Port, PlayerCount);
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
@@ -123,7 +123,7 @@ void UPong_GameInstance::HostShutdown()
 	auto GM = UGameplayStatics::GetGameMode(GetWorld());
 	if (!GM) return;
 	int32 Port = GM->GetWorld()->URL.Port;
-	FString Url = FString::Printf(TEXT("http://%s:18080/terminated?port=%d"),*ServerAddress, Port);
+	FString Url = FString::Printf(TEXT("http://locahost:18080/terminated?port=%d"), Port);
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
 	Request->SetVerb("GET");
