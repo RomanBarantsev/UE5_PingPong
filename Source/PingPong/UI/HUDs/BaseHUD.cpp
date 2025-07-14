@@ -57,10 +57,27 @@ void ABaseHUD::BeginPlay()
 	}
 }
 
-void ABaseHUD::WidgetChanged(Widgets widget)
+void ABaseHUD::WidgetChanged(Widgets Widget)
 {
 	//widget==Widgets::MainMenu?  : SwitchUI((Widgets::MainMenu),1);
 	
 }
+
+bool ABaseHUD::IsWidgetVisible(Widgets UIName)
+{
+	if (UIWidgetsMap.Contains(UIName))
+	{
+		UUserWidget* widget = UIWidgetsMap[UIName];
+		if (widget)
+		{
+			if (widget->GetVisibility()==ESlateVisibility::Visible)
+				return true;
+			else
+				return false;
+		}
+	}
+	return false;
+}
+
 
 

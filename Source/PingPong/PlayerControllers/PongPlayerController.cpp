@@ -182,20 +182,20 @@ bool APongPlayerController::RequstPause_Validate(bool state)
 void APongPlayerController::OpenMenu_Implementation()
 {
 	AHUD* HUD = GetHUD();
-	AGameHUD* LocalHUD = HUD ? Cast<AGameHUD>(HUD) : nullptr;
+		AGameHUD* LocalHUD = HUD ? Cast<AGameHUD>(HUD) : nullptr;
 	if (!LocalHUD) return;
-	if (bShowMouseCursor)
-	{
-		SetShowMouseCursor(false);
-		PingPongHUD->SwitchUI(Widgets::MainMenu);		
-		RequstPause(false);
-	}
-	else
+	if (!PingPongHUD->IsWidgetVisible(Widgets::MainMenu))
 	{
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		SetShowMouseCursor(true);
-		PingPongHUD->SwitchUI(Widgets::MainMenu);
+		PingPongHUD->SwitchUI(Widgets::MainMenu);		
 		RequstPause(true);
+	}
+	else
+	{
+		SetShowMouseCursor(false);
+		PingPongHUD->SwitchUI(Widgets::MainMenu);
+		RequstPause(false);
 	}
 }
 

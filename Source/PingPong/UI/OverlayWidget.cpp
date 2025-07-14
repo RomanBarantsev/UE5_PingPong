@@ -53,7 +53,7 @@ void UOverlayWidget::SetCountDownTime(int32 Time)
 void UOverlayWidget::OnReadyButtonPushed()
 {
 	PingPongPlayerController->SetUIStatus(EUIStatus::ReadyButtonPressed);
-	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
+	ReadyButton->SetVisibility(ESlateVisibility::Hidden);	
 }
 
 void UOverlayWidget::OnMenuButtonPushed()

@@ -28,6 +28,8 @@ class PINGPONG_API ABaseHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION()
+	bool IsWidgetVisible(Widgets UIName);
 	virtual void SwitchUI(Widgets UIName);
 	TMap<Widgets,UUserWidget*> UIWidgetsMap;
 protected:
@@ -41,5 +43,5 @@ protected:
 private:
 	FOnWidgetChanged OnWidgetChanged;
 	UFUNCTION()
-	void WidgetChanged(Widgets widget);
+	void WidgetChanged(Widgets Widget);
 };
