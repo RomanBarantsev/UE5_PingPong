@@ -24,9 +24,9 @@ void UServerBrowser::OnBackPressed()
 
 void UServerBrowser::OnServerListReady(const TArray<FServerInfo>& Servers)
 {
+	ServerList->ClearChildren();
 	for (const auto& Server : Servers)
 	{
-		ServerList->ClearChildren();
 		UServerRow* RowWidger = CreateWidget<UServerRow>(this,ServerRowSubClass);
 		RowWidger->IP = Server.IP;
 		RowWidger->Port = Server.Port;
