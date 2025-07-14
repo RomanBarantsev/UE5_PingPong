@@ -189,13 +189,13 @@ void APongPlayerController::OpenMenu_Implementation()
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this);
 		SetShowMouseCursor(true);
 		PingPongHUD->SwitchUI(Widgets::MainMenu);		
-		RequstPause(true);
+		//RequstPause(true); TODO Fix it!
 	}
 	else
 	{
 		SetShowMouseCursor(false);
 		PingPongHUD->SwitchUI(Widgets::MainMenu);
-		RequstPause(false);
+		//RequstPause(false);
 	}
 }
 
