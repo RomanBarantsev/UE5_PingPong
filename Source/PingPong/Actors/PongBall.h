@@ -114,8 +114,6 @@ private:
 public:
 	UFUNCTION(Server,Reliable,WithValidation)
 	void SetModification(EBallModificators mod);
-	UFUNCTION()
-	void SetSpeed(float Speed);
 private:
 	UPROPERTY(EditAnywhere);
 	bool Indestructible;

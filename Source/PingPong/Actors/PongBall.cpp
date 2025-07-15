@@ -39,10 +39,17 @@ APongBall::APongBall()
 	BodyMesh->GetBodyInstance()->bLockZRotation = true;
 	BodyMesh->GetBodyInstance()->SetDOFLock(EDOFMode::XYPlane);
 	SpeedEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>("SpeedEffectComponent");
-	SpeedEffectComponent->SetupAttachment(BodyMesh,"NONE");
+	//SpeedEffectComponent->SetupAttachment(BodyMesh,"NONE");
 	SpeedEffectComponent->bAutoActivate = false;
 	SpeedEffectComponent->SetRelativeRotation(FRotator(90, 0, 0));
 	SpeedEffectComponent->SetRelativeLocation(FVector(0, 0, 30));
+	BodyMesh->BodyInstance.bLockZTranslation = true;
+	BodyMesh->BodyInstance.bLockXRotation = true;
+	BodyMesh->BodyInstance.bLockYRotation = true;
+	BodyMesh->BodyInstance.bLockZRotation = true;
+	
+	// Apply settings
+	BodyMesh->RecreatePhysicsState();
 	// static ConstructorHelpers::FObjectFinder<UPhysicalMaterial> BodyMeshPhysicalAsset(TEXT("/Game/PingPong/Blueprints/NoFrictionMaterial.NoFrictionMaterial"));
 	// if(BodyMeshPhysicalAsset.Succeeded())
 	// {
@@ -154,11 +161,6 @@ void APongBall::AddScoreToPlayer_Implementation(AActor* Player)
 	PingPongPlayerState->SetScore(PingPongPlayerState->GetScore()+PingPongGameState->GetModificatorPoints(Modificator));
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 	PingPongGameState->AddMaxScore(PingPongPlayerState->GetScore());
-}
-
-void APongBall::SetSpeed(float Speed)
-{
-	MoveSpeed=Speed;
 }
 
 void APongBall::ReturnToPool()
