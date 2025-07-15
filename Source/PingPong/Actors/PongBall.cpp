@@ -19,6 +19,7 @@
 #include "PingPong/PlayerStates/PongPlayerState.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "GeometryCollection/GeometryCollectionSizeSpecificUtility.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 APongBall::APongBall()
@@ -34,6 +35,14 @@ APongBall::APongBall()
 	BodyMesh->BodyInstance.SetMassOverride(0);
 	BodyMesh->BodyInstance.bLockZTranslation=true;
 	BodyMesh->SetNotifyRigidBodyCollision(true);
+	BodyMesh->GetBodyInstance()->bLockZTranslation = true;
+	BodyMesh->GetBodyInstance()->bLockZRotation = true;
+	BodyMesh->GetBodyInstance()->SetDOFLock(EDOFMode::XYPlane);
+	SpeedEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>("SpeedEffectComponent");
+	SpeedEffectComponent->SetupAttachment(BodyMesh,"NONE");
+	SpeedEffectComponent->bAutoActivate = false;
+	SpeedEffectComponent->SetRelativeRotation(FRotator(90, 0, 0));
+	SpeedEffectComponent->SetRelativeLocation(FVector(0, 0, 30));
 	// static ConstructorHelpers::FObjectFinder<UPhysicalMaterial> BodyMeshPhysicalAsset(TEXT("/Game/PingPong/Blueprints/NoFrictionMaterial.NoFrictionMaterial"));
 	// if(BodyMeshPhysicalAsset.Succeeded())
 	// {
@@ -269,9 +278,22 @@ void APongBall::Server_StartMove()
 void APongBall::IncreaseBallSpeed()
 {
 	if(MoveSpeed<MaxBallSpeed)
+	{
 		MoveSpeed+=IncreaseSpeedStep;
-	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
-	BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
+		FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
+		BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
+		Multicast_SpeedEffect(false);
+	}
+	else
+	{
+		Multicast_SpeedEffect(true);
+	}
+		
+}
+
+void APongBall::Multicast_SpeedEffect_Implementation(bool Enable)
+{
+	SpeedEffectComponent->SetActive(Enable);
 }
 
 void APongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

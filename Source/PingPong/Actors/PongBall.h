@@ -52,6 +52,8 @@ protected:
 	float IncreaseSpeedStep = 300;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	UParticleSystem* HitEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
+	UParticleSystemComponent* SpeedEffectComponent;
 	UPROPERTY(Replicated,EditAnywhere)
 	bool isMoving = false;
 	
@@ -64,6 +66,8 @@ protected:
 	void IncreaseBallSpeed();
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_HitEffect(FVector location);
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_SpeedEffect(bool Enable);
 	virtual void GetLifetimeReplicatedProps(TArray < class FLifetimeProperty >& OutLifetimeProps) const override;
 	UFUNCTION(Server,Reliable)
 	virtual void OnBallHitAnything(FHitResult hitResult);
