@@ -15,19 +15,7 @@ void UMainMenu::OnJoinGameBtnClicked()
 
 void UMainMenu::OnCreateGameBtnClicked()
 {
-	auto GI=UGameplayStatics::GetGameInstance(GetWorld());	
-	if (GI)
-	{
-		UPong_GameInstance* Pong_GameInstance = Cast<UPong_GameInstance>(GI);
-		if (Pong_GameInstance)
-		{
-			auto PS = UGameplayStatics::GetPlayerState(GetWorld(),0);
-			if (PS)
-			{
-				Pong_GameInstance->CreateHost("GameMap",PS->GetPlayerName(),GetUniqueID());
-			}			
-		}
-	}
+	HUD->SwitchUI(Widgets::Hosting);
 }
 
 void UMainMenu::OnDisconnectBtnClicked()
