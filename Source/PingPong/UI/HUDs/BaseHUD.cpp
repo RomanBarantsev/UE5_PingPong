@@ -31,7 +31,8 @@ void ABaseHUD::SwitchUI(Widgets UIName)
 void ABaseHUD::BeginPlay()
 {
 	OnWidgetChanged.AddDynamic(this,&ABaseHUD::WidgetChanged);
-	Super::BeginPlay();	
+	Super::BeginPlay();
+	//TODO Make it simple - not repiting everything
 	if (MainMenuWidgetSubClass)
 	{
 		UUserWidget* MainMenu = CreateWidget<UUserWidget>(GetWorld(),MainMenuWidgetSubClass);
@@ -47,6 +48,11 @@ void ABaseHUD::BeginPlay()
 	{
 		UUserWidget* Settings = CreateWidget<UUserWidget>(GetWorld(),SettingsWidgetSubClass);	
 		UIWidgetsMap.Add(Widgets::Settings,Settings);
+	}
+	if (HostServerWidgetSubClass)
+	{
+		UUserWidget* Hosting = CreateWidget<UUserWidget>(GetWorld(),HostServerWidgetSubClass);	
+		UIWidgetsMap.Add(Widgets::Hosting,Hosting);
 	}
 	for (auto [type,widget] : UIWidgetsMap)
 	{

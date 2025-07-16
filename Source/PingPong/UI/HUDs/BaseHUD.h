@@ -19,7 +19,8 @@ enum Widgets
 	MainMenu,
 	Settings,
 	ServerList,
-	Overlay
+	Overlay,
+	Hosting
 };
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWidgetChanged,Widgets,widget);
 
@@ -40,6 +41,8 @@ protected:
 	TSubclassOf<UUserWidget> MainMenuWidgetSubClass;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> SettingsWidgetSubClass;
+UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
+	TSubclassOf<UUserWidget> HostServerWidgetSubClass;
 private:
 	FOnWidgetChanged OnWidgetChanged;
 	UFUNCTION()
