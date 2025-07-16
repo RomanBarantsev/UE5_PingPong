@@ -24,7 +24,7 @@ protected:
 	UButton* HostServerBtn;
 	UFUNCTION()
 	void MapChoosed(FString Name);
-	FString MapChoosedName;
+	FString MapChoosedName="GameMap";
 	virtual void NativeConstruct() override;
 	UFUNCTION()
 	void HostServerBtnClicked();
