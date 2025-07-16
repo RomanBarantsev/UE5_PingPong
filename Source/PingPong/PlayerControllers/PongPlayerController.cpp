@@ -127,8 +127,9 @@ void APongPlayerController::MoveRight(float AxisValue)
 {
 	if (APongSpectatorPawn* SpecPawn = Cast<APongSpectatorPawn>(GetPawn()))
 	{
-		// Spectator movement logic
-		SpecPawn->AddMovementInput(FVector::RightVector, AxisValue);
+		FRotator ControlRot = GetControlRotation();
+		const FVector Direction = FRotationMatrix(ControlRot).GetUnitAxis(EAxis::Y);
+		SpecPawn->AddMovementInput(Direction, AxisValue);
 	}
 	else if (APongPlayerPawn* GamePawn = Cast<APongPlayerPawn>(GetPawn()))
 	{
@@ -144,8 +145,9 @@ void APongPlayerController::MoveForward(float AxisValue)
 {
 	if (APongSpectatorPawn* SpecPawn = Cast<APongSpectatorPawn>(GetPawn()))
 	{
-		// Spectator movement logic
-		SpecPawn->AddMovementInput(FVector::ForwardVector, AxisValue);
+		FRotator ControlRot = GetControlRotation();
+		const FVector Direction = FRotationMatrix(ControlRot).GetUnitAxis(EAxis::X);
+		SpecPawn->AddMovementInput(Direction, AxisValue);
 	}
 	else if (APongPlayerPawn* GamePawn = Cast<APongPlayerPawn>(GetPawn()))
 	{
