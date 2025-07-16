@@ -13,15 +13,13 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCppMouseCaptureEnd, USoundClass*,float);
 UCLASS()
 class PINGPONG_API UPPSlider : public USlider
 {
+	GENERATED_BODY()
 public:
 	UPROPERTY()
 	USoundClass* AssociatedClass;
-	GENERATED_BODY()
 	FOnCppMouseCaptureEnd  OnCppMouseCaptureEnd;
-	virtual void SynchronizeProperties() override;
 	UFUNCTION()
-	void OnNativeCaptureEnd()
-	{
-		OnCppMouseCaptureEnd.Broadcast(AssociatedClass,GetValue());
-	}
+	void OnNativeCaptureEnd();	
+	virtual void SynchronizeProperties() override;
+	
 };

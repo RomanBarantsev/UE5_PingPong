@@ -3,8 +3,16 @@
 
 #include "PPSlider.h"
 
+void UPPSlider::OnNativeCaptureEnd()
+{	
+		OnCppMouseCaptureEnd.Broadcast(AssociatedClass,GetValue());
+}
+
 void UPPSlider::SynchronizeProperties()
 {
-	OnMouseCaptureEnd.AddDynamic(this, &UPPSlider::OnNativeCaptureEnd);
+	if (!OnMouseCaptureEnd.IsAlreadyBound(this, &UPPSlider::OnNativeCaptureEnd))
+	{
+		OnMouseCaptureEnd.AddDynamic(this, &UPPSlider::OnNativeCaptureEnd);
+	}	
 	Super::SynchronizeProperties();
 }
