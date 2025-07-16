@@ -9,6 +9,7 @@
 #include "ServerBrowser.generated.h"
 
 
+class UCheckBox;
 struct FServerInfo;
 class UPong_GameInstance;
 /**
@@ -25,6 +26,8 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	UButton* RefreshBtn;
+	UPROPERTY(BlueprintReadWrite,meta=(BindWidget))
+	UCheckBox* IsLocalCheckBox;
 	UPROPERTY(meta=(BindWidget))
 	UButton* ConnectBtn;
 	UPROPERTY(meta=(BindWidget))
@@ -45,5 +48,5 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UServerRow> ServerRowSubClass;
 	UPROPERTY()
-	UPong_GameInstance* PongGameInstance;
+	UPong_GameInstance* PongGameInstance;	
 };

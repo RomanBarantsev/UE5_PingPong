@@ -37,13 +37,9 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UMenuButton* JoinGame;
 	UPROPERTY(meta=(BindWidget))
-	UMenuButton* JoinLocalGame;
-	UPROPERTY(meta=(BindWidget))
 	UMenuButton* DisconnectBtn;
 	UPROPERTY(meta=(BindWidget))
 	UMenuButton* CreateGame;
-	UPROPERTY(meta=(BindWidget))
-	UMenuButton* CreateLocalGame;
 	UPROPERTY(meta=(BindWidget))
 	UMenuButton* Settings;
 	UPROPERTY(meta=(BindWidget))

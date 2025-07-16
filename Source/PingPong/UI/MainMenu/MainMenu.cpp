@@ -83,7 +83,5 @@ void UMainMenu::NativePreConstruct()
 	ResumeGame->SetButtonText(TEXT("Resume Game"));
 	Settings->SetButtonText(TEXT("Settings"));
 	Quit->SetButtonText(TEXT("Quit"));
-	JoinLocalGame->SetButtonText(TEXT("Join Local Game"));
-	CreateLocalGame->SetButtonText(TEXT("Create Local Game"));
 	Super::NativePreConstruct();
 }
