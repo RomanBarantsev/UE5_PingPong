@@ -47,6 +47,7 @@ protected:
 	float MinBallSpeed = 500;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float MaxBallSpeed = 1000;
+	UPROPERTY(Replicated)
 	float MoveSpeed = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
 	float IncreaseSpeedStep = 300;

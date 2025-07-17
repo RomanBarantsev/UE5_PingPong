@@ -33,15 +33,10 @@ APongBall::APongBall()
 	BodyMesh->SetWorldScale3D(FVector3d(0.3,0.3,0.3));
 	BodyMesh->SetSimulatePhysics(true);
 	BodyMesh->BodyInstance.SetMassOverride(0);
-	BodyMesh->BodyInstance.bLockZTranslation=true;
 	BodyMesh->SetNotifyRigidBodyCollision(true);
-	BodyMesh->GetBodyInstance()->bLockZTranslation = true;
-	BodyMesh->GetBodyInstance()->bLockZRotation = true;
-	BodyMesh->GetBodyInstance()->SetDOFLock(EDOFMode::XYPlane);
 	SpeedEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>("SpeedEffectComponent");
-	//SpeedEffectComponent->SetupAttachment(BodyMesh,"NONE");
+	SpeedEffectComponent->SetupAttachment(BodyMesh,"NONE");
 	SpeedEffectComponent->bAutoActivate = false;
-	SpeedEffectComponent->SetRelativeRotation(FRotator(90, 0, 0));
 	SpeedEffectComponent->SetRelativeLocation(FVector(0, 0, 30));
 	BodyMesh->BodyInstance.bLockZTranslation = true;
 	BodyMesh->BodyInstance.bLockXRotation = true;
@@ -179,7 +174,13 @@ void APongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 	{
 		OnBallHitAnything(Hit);
 		IncreaseBallSpeed();
-	}	
+	}
+	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
+	if (!Velocity.IsNearlyZero())
+	{
+		FRotator ThrustRotation = FRotationMatrix::MakeFromZ(-Velocity.GetSafeNormal()).Rotator();
+		SpeedEffectComponent->SetWorldRotation(ThrustRotation);
+	}
 }
 
 
@@ -223,7 +224,7 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 	{
 		if(hitResult.GetActor()->GetOwner())
 			PlayHitPlatformSound();
-		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
+		/*UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
 		if(!ActorComponent)
 			return;
 		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
@@ -250,7 +251,7 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 				PlatformModificator->SetReverseControl();
 			}
 			SetModification(EBallModificators::None);	
-		}
+		}*/
 	}	
 }
 
@@ -282,15 +283,15 @@ void APongBall::IncreaseBallSpeed()
 	if(MoveSpeed<MaxBallSpeed)
 	{
 		MoveSpeed+=IncreaseSpeedStep;
-		FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
-		BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
 		Multicast_SpeedEffect(false);
 	}
 	else
 	{
 		Multicast_SpeedEffect(true);
 	}
-		
+	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
+	BodyMesh->SetPhysicsLinearVelocity(UKismetMathLibrary::ClampVectorSize(Velocity,MoveSpeed,MoveSpeed));
+	UE_LOG(LogTemp,Warning,TEXT("Ball Speed is %f"),MoveSpeed);
 }
 
 void APongBall::Multicast_SpeedEffect_Implementation(bool Enable)
@@ -303,6 +304,7 @@ void APongBall::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(APongBall,isMoving);
 	DOREPLIFETIME(APongBall,BallColor);
+	DOREPLIFETIME(APongBall,MoveSpeed);
 }
 
 void APongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
