@@ -171,7 +171,7 @@ void APingPongPlatform::Server_MoveForward_Implementation(float DeltaTime)
 {
 	if(bInvertedControl)
 	{
-		CurrentRightAxisValue=-CurrentRightAxisValue;
+		CurrentForwardAxisValue=-CurrentForwardAxisValue;
 	}	
 	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue,CurrentForwardAxisValue,InterpolationKey);
 	SetSoundPitch(FMath::Abs(targetForwardAxisValue)+1);	
