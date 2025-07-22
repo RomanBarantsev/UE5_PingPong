@@ -224,7 +224,7 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 	{
 		if(hitResult.GetActor()->GetOwner())
 			PlayHitPlatformSound();
-		/*UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
+		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
 		if(!ActorComponent)
 			return;
 		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
@@ -251,12 +251,14 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 				PlatformModificator->SetReverseControl();
 			}
 			SetModification(EBallModificators::None);	
-		}*/
+		}
 	}	
 }
 
 void APongBall::SetModification_Implementation(EBallModificators mod)
 {
+	if (Modificator==mod)
+		return;
 	Modificator=mod;	
 	BallColor = PingPongGameState->GetModificatorColor(mod);
 	MoveSpeed = PingPongGameState->GetBallSpeed(mod);
