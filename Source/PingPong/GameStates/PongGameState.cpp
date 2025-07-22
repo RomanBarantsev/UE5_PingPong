@@ -83,7 +83,7 @@ void APongGameState::IncreaseReadyPlayer_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("READY"));
 	ReadyPlayers++;
-	GameMode = Cast<APongGameMode>(GetDefaultGameMode());
+	GameMode = Cast<APongGameMode>(GetWorld()->GetAuthGameMode());
 	if(ReadyPlayers==GameMode->GetPlayersCount())
 	{
 		SetMatchState(MatchState::WaitingToStart);
@@ -94,7 +94,7 @@ void APongGameState::IncreaseLoadedPlayer_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("INCREASE"));
 	LoadedPlayers++;
-	GameMode = Cast<APongGameMode>(GetDefaultGameMode());
+	GameMode = Cast<APongGameMode>(GetWorld()->GetAuthGameMode());
 	if(PlayerStates.Num()==GameMode->GetPlayersCount())
 	{		
 		SetMatchState(MatchState::EnteringMap);
@@ -111,7 +111,7 @@ void APongGameState::IncreaseStartedPlayers_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("STARTED++"));
 	StartedPlayers++;
-	GameMode = Cast<APongGameMode>(GetDefaultGameMode());
+	GameMode = Cast<APongGameMode>(GetWorld()->GetAuthGameMode());
 	if(StartedPlayers==GameMode->GetPlayersCount())
 	{
 		SetMatchState(MatchState::InProgress);

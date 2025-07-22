@@ -24,6 +24,19 @@ APongGameMode::APongGameMode()
 	PlayerStateClass = APongPlayerState::StaticClass();
 }
 
+void APongGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+	if (MapName.Contains(TEXT("4Players")))
+	{
+		PlayersCount = 4;
+	}
+	else
+	{
+		//PlayersCount = 2;
+	}
+}
+
 void APongGameMode::PostLogin(APlayerController* NewPlayer)
 {	
 	UWorld* world = GetWorld();
@@ -141,7 +154,6 @@ int APongGameMode::GetPlayersCount() const
 {
 	return PlayersCount;
 }
-
 
 void APongGameMode::SetPawnRotationAndLocation_Implementation(APongPlayerPawn* PingPongPlayerPawn,
                                                                   APongPlayerController* PingPongPlayerController)
