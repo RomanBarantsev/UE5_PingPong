@@ -96,7 +96,7 @@ void UPong_GameInstance::OnCreateHostCompleted(FHttpRequestPtr Request, FHttpRes
 void UPong_GameInstance::CreateHost(FString map,FString serverName,uint32 id)
 {	
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
-	FString req = FString::Printf(TEXT("http://%s:18080/connect?name=%s&id=%s"),*PublicServerAddress,*FString::FromInt(id),*serverName);
+	FString req = FString::Printf(TEXT("http://%s:18080/connect?name=%s&id=%s&map=%s"),*PublicServerAddress,*FString::FromInt(id),*serverName,*map);
 	Request->SetURL(req);
 	Request->SetVerb("GET");
 	Request->ProcessRequest();
