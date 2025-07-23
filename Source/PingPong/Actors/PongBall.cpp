@@ -229,7 +229,7 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 			return;
 		UPlatformModificator* PlatformModificator = Cast<UPlatformModificator>(ActorComponent);
 		if(PlatformModificator)
-		{
+		{		
 			if(Modificator==EBallModificators::Fast)
 			{
 				OwningPlatform->GetPlatformModificator()->SetSpeedOfPlatform(PingPongGameState->GetBallModificationValue(EBallModificators::Fast));				
