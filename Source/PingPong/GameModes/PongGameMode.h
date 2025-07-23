@@ -21,8 +21,6 @@ protected:
 	
 	UPROPERTY()
 	TArray<APlayerStart*> PlayerStarts;
-	UPROPERTY()
-	int32 PlayersCount;
 	
 protected:
 	APongGameMode();
