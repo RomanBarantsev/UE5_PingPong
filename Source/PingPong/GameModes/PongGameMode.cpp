@@ -2,8 +2,6 @@
 
 
 #include "PongGameMode.h"
-
-#include "GameFramework/GameSession.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "Kismet/GameplayStatics.h"
@@ -31,11 +29,11 @@ void APongGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 	Super::InitGame(MapName, Options, ErrorMessage);
 	if (MapName.Contains(TEXT("4Players")))
 	{
-		GameSession->MaxPlayers=4;
+		PlayersCount = 4;
 	}
 	else
 	{
-		GameSession->MaxPlayers=2;
+		//PlayersCount = 2;
 	}
 }
 
@@ -45,7 +43,7 @@ void APongGameMode::PostLogin(APlayerController* NewPlayer)
 	check(world);
 	PingPongGameState = Cast<APongGameState>( GetGameState<APongGameState>());
 	check(PingPongGameState);
-	if (PingPongGameState->PlayerStates.Num()==GameSession->MaxPlayers)
+	if (PingPongGameState->PlayerStates.Num()==PlayersCount)
 	{
 		auto NewwPawn = GetWorld()->SpawnActor<ASpectatorPawn>(APongSpectatorPawn::StaticClass());
 		NewwPawn->SetActorLocation(FVector::Zero());
@@ -154,7 +152,7 @@ void APongGameMode::SetClosestGoalOwner(APongPlayerPawn* PingPongPlayerPawn)
 
 int APongGameMode::GetPlayersCount() const
 {
-	return GameSession->MaxPlayers;
+	return PlayersCount;
 }
 
 void APongGameMode::SetPawnRotationAndLocation_Implementation(APongPlayerPawn* PingPongPlayerPawn,
