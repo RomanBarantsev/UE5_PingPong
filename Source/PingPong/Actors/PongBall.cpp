@@ -168,6 +168,10 @@ void APongBall::ReturnToPool()
 
 void APongBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector normalImpulse, const FHitResult& Hit)
 {
+	if (isMoving==false)
+	{
+		return;
+	}
 	if (IsHidden())
 		return;
 	if(HasAuthority())
