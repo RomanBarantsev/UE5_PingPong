@@ -33,7 +33,7 @@ void APongGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 	}
 	else
 	{
-		//PlayersCount = 2;
+		PlayersCount = 2;
 	}
 }
 
