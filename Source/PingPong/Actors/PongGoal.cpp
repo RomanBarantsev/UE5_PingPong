@@ -14,7 +14,17 @@ APongGoal::APongGoal()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
-	BoxCollision = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
+	BoxCollision = CreateDefaultSubobject<UStaticMeshComponent>("BoxCollision");
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(TEXT("/Game/PingPong/Materials/M_Goal2.M_Goal2"));
+	if (Material.Succeeded())
+	{
+		BoxCollision->SetMaterial(0,Material.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> BoxCollisionMeshAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if(BoxCollisionMeshAsset.Succeeded())
+	{
+		BoxCollision->SetStaticMesh(BoxCollisionMeshAsset.Object);
+	}
 	SetRootComponent(BoxCollision);
 	LightBox = CreateDefaultSubobject<UStaticMeshComponent>("LightBox");
 	LightBox->SetupAttachment(BoxCollision);

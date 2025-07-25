@@ -28,7 +28,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 protected:
 	UPROPERTY(EditAnywhere)
-	UBoxComponent* BoxCollision;
+	UStaticMeshComponent* BoxCollision;
 	
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
