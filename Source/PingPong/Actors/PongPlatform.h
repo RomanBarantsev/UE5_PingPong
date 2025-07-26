@@ -6,20 +6,20 @@
 #include "GameFramework/Actor.h"
 #include "PingPong/ActorComponents/PongBallPool.h"
 #include "PingPong/ActorComponents/PlatformModificator.h"
-#include "PingPongPlatform.generated.h"
+#include "PongPlatform.generated.h"
 
 class APongPlayerController;
 class UBoxComponent;
 class UArrowComponent;
 
 UCLASS()
-class PINGPONG_API APingPongPlatform : public AActor
+class PINGPONG_API APongPlatform : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APingPongPlatform();
+	APongPlatform();
 
 protected:
 	// Called when the game starts or when spawned
@@ -58,6 +58,8 @@ protected:
 	float targetForwardAxisValue;
 	FVector TargetLocation;
 	FVector currentLocation;
+	UPROPERTY()
+	APongGameState* PingPongGameState;
 public:
 	float GetMoveSpeed();
 	UFUNCTION(NetMulticast, Reliable, WithValidation)

@@ -3,7 +3,7 @@
 
 #include "PlatformModificator.h"
 
-#include "PingPong/Actors/PingPongPlatform.h"
+#include "PingPong/Actors/PongPlatform.h"
 #include "PingPong/PlayerControllers/PongPlayerController.h"
 
 // Sets default values for this component's properties
@@ -38,7 +38,7 @@ void UPlatformModificator::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UPlatformModificator::GetOwningPlatform()
 {
 	AActor* OwningActor = GetOwner();
-	PingPongPlatform = Cast<APingPongPlatform>(OwningActor);
+	PingPongPlatform = Cast<APongPlatform>(OwningActor);
 	check(PingPongPlatform);
 }
 

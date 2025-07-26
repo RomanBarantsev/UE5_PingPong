@@ -5,7 +5,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "PingPong/Actors/PingPongPlatform.h"
+#include "PingPong/Actors/PongPlatform.h"
 #include "PingPong/GameStates/PongGameState.h"
 #include "PingPong/Pawns/PongPlayerPawn.h"
 #include "PingPong/Pawns/PongSpectatorPawn.h"
@@ -79,7 +79,7 @@ void APongPlayerController::PreInitializeComponents()
 
 void APongPlayerController::SpawnPlatform_Implementation()
 {
-	Platform = (APingPongPlatform*)GetWorld()->SpawnActor<APingPongPlatform>(PlatformClass);
+	Platform = (APongPlatform*)GetWorld()->SpawnActor<APongPlatform>(PlatformClass);
     if(Platform)
     {
 		Platform->SetActorLocation(StartTransform.GetLocation());

@@ -6,7 +6,7 @@
 #include "GameFramework/SpectatorPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/Actors/PongGoal.h"
-#include "PingPong/Actors/PingPongPlatform.h"
+#include "PingPong/Actors/PongPlatform.h"
 #include "PingPong/GameInstance/Pong_GameInstance.h"
 #include "PingPong/GameStates/PongGameState.h"
 #include "PingPong/Pawns/PongPlayerPawn.h"
@@ -83,7 +83,7 @@ void APongGameMode::Logout(AController* Exiting)
 	if (IsNetMode(NM_ListenServer) || IsNetMode(NM_DedicatedServer) || Exiting)
 	{
 		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APingPongPlatform::StaticClass(), FoundActors);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APongPlatform::StaticClass(), FoundActors);
 		for(AActor* Actor : FoundActors)
 		{
 			if (Actor->GetOwner() && Actor->GetOwner()->GetInstigatorController()==nullptr)

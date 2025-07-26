@@ -39,9 +39,9 @@ protected:
 	UPROPERTY()
 	APongPlayerState* PingPongPlayerState;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
-	TSubclassOf<class APingPongPlatform> PlatformClass;
+	TSubclassOf<class APongPlatform> PlatformClass;
 	UPROPERTY()
-	class APingPongPlatform* Platform;
+	class APongPlatform* Platform;
 
 public:
 	APongPlayerController();

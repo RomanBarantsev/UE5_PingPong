@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PingPongPlatform.h"
+#include "PongPlatform.h"
 #include <Engine/World.h>
 #include <Kismet/GameplayStatics.h>
 #include "Net/UnrealNetwork.h"
@@ -12,7 +12,7 @@
 #include "PingPong/PlayerStates/PongPlayerState.h"
 
 // Sets default values
-APingPongPlatform::APingPongPlatform()
+APongPlatform::APongPlatform()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;	
@@ -39,9 +39,15 @@ APingPongPlatform::APingPongPlatform()
 }
 
 // Called when the game starts or when spawned
-void APingPongPlatform::BeginPlay()
+void APongPlatform::BeginPlay()
 {
 	Super::BeginPlay();
+	PingPongGameState = Cast<APongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	if (!PingPongGameState)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("APongPlatform::BeginPlay() - PingPongGameState is NULL"));
+		FGenericPlatformMisc::RequestExit(false);
+	}
 	StartRotatePos = BodyMesh->GetComponentRotation().Yaw;
 	SetReplicateMovement(true);
 	InitialZ=GetActorLocation().Z;
@@ -57,7 +63,7 @@ void APingPongPlatform::BeginPlay()
 
 
 // Called every frame
-void APingPongPlatform::Tick(float DeltaTime)
+void APongPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	Server_MoveRight(DeltaTime);
@@ -71,66 +77,69 @@ void APingPongPlatform::Tick(float DeltaTime)
 	//UE_LOG(LogTemp,Warning,TEXT("speed=%f"),FMath::Max(FMath::Abs(targetForwardAxisValue),FMath::Abs(targetRightAxisValue)))
 }
 
-bool APingPongPlatform::Server_Fire_Validate(EBallModificators Modificator)
+bool APongPlatform::Server_Fire_Validate(EBallModificators Modificator)
 {
 	return true;
 }
 
-void APingPongPlatform::Server_GetRightValue_Implementation(float AxisValue)
+void APongPlatform::Server_GetRightValue_Implementation(float AxisValue)
 {
 	CurrentRightAxisValue=AxisValue;
 }
 
-bool APingPongPlatform::Server_GetRightValue_Validate(float AxisValue)
+bool APongPlatform::Server_GetRightValue_Validate(float AxisValue)
 {
 	return true;
 }
 
-void APingPongPlatform::Server_GetForwardValue_Implementation(float AxisValue)
+void APongPlatform::Server_GetForwardValue_Implementation(float AxisValue)
 {
 	CurrentForwardAxisValue=AxisValue;
 }
 
-bool APingPongPlatform::Server_GetForwardValue_Validate(float AxisValue)
+bool APongPlatform::Server_GetForwardValue_Validate(float AxisValue)
 {
 	return true;
 }
 
-UPlatformModificator* APingPongPlatform::GetPlatformModificator() const
+UPlatformModificator* APongPlatform::GetPlatformModificator() const
 {
 	return PlatformModificator;
 }
 
-void APingPongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void APongPlatform::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
-void APingPongPlatform::SetSpeedMultiplier(float Multiplier)
+void APongPlatform::SetSpeedMultiplier(float Multiplier)
 {	
 	MoveSpeed*=Multiplier;
 	MoveSpeed= FMath::Clamp(MoveSpeed,MoveSpeedMin,MoveSpeedMax);
 }
 
-bool APingPongPlatform::CheckScore(EBallModificators Modificator)
+bool APongPlatform::CheckScore(EBallModificators Modificator)
 {
 	APongPlayerState* PlayerState = Cast<APongPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
 	check(PlayerState);
 	if(PlayerState->GetScore()-GameState->GetShotCost(Modificator)>0)
 	{
 		PlayerState->SetScore(PlayerState->GetScore()-GameState->GetShotCost(Modificator));
+		
+		PingPongGameState->UpdatePlayersScore(PlayerState->GetPlayerId(),PlayerState->GetScore());
+		PingPongGameState->AddMaxScore(PlayerState->GetScore());
 		return true;
 	}
 	return false;
 }
 
 
-void APingPongPlatform::SetSoundPitch_Implementation(float pitch)
+void APongPlatform::SetSoundPitch_Implementation(float pitch)
 {
 	AudioComponent->SetPitchMultiplier(pitch);
 }
 
-void APingPongPlatform::Floating_Implementation()
+void APongPlatform::Floating_Implementation()
 {
 	if (!bFloating) return;
 	FVector NewLocation = GetActorLocation();
@@ -139,7 +148,7 @@ void APingPongPlatform::Floating_Implementation()
 	RunningTime += 0.01;
 }
 
-void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
+void APongPlatform::Server_Rotate_Implementation(float AxisValue)
 {
 	if(AxisValue!=0)
 	{
@@ -152,12 +161,12 @@ void APingPongPlatform::Server_Rotate_Implementation(float AxisValue)
 	}
 }
 
-bool APingPongPlatform::Server_Rotate_Validate(float AxisValue)
+bool APongPlatform::Server_Rotate_Validate(float AxisValue)
 {
 	return true;
 }
 
-void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
+void APongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
 {
 	if(!CheckScore(Modificator)) return; //enough points to shoot
 	FTransform Transform;
@@ -167,7 +176,7 @@ void APingPongPlatform::Server_Fire_Implementation(EBallModificators Modificator
 	//TODO why is it spawning when it should be already exist in pool?
 }
 
-void APingPongPlatform::Server_MoveForward_Implementation(float DeltaTime)
+void APongPlatform::Server_MoveForward_Implementation(float DeltaTime)
 {
 	if(bInvertedControl)
 	{
@@ -182,12 +191,12 @@ void APingPongPlatform::Server_MoveForward_Implementation(float DeltaTime)
 	}
 }
 
-bool APingPongPlatform::Server_MoveForward_Validate(float DeltaTime)
+bool APongPlatform::Server_MoveForward_Validate(float DeltaTime)
 {
 	return true;
 }
 
-void APingPongPlatform::Server_MoveRight_Implementation(float DeltaTime)
+void APongPlatform::Server_MoveRight_Implementation(float DeltaTime)
 {
 	if(bInvertedControl)
 	{
@@ -202,7 +211,7 @@ void APingPongPlatform::Server_MoveRight_Implementation(float DeltaTime)
 	}
 }
 
-bool APingPongPlatform::Server_MoveRight_Validate(float AxisValue)
+bool APongPlatform::Server_MoveRight_Validate(float AxisValue)
 {
 	return true;
 }

@@ -7,7 +7,7 @@
 #include "PlatformModificator.generated.h"
 
 
-class APingPongPlatform;
+class APongPlatform;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PINGPONG_API UPlatformModificator : public UActorComponent
@@ -27,7 +27,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 	UPROPERTY()
-	APingPongPlatform* PingPongPlatform;
+	APongPlatform* PingPongPlatform;
 	void GetOwningPlatform();
 public:
 	UFUNCTION()

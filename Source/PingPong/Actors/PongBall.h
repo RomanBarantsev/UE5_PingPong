@@ -13,7 +13,7 @@ class AGeometryCollectionActor;
 class UGeometryCollection;
 class UGeometryCollectionComponent;
 class USoundCue;
-class APingPongPlatform;
+class APongPlatform;
 class APongGameMode;
 class APongGameState;
 class USphereComponent;
@@ -73,12 +73,12 @@ protected:
 	UFUNCTION(Server,Reliable)
 	virtual void OnBallHitAnything(FHitResult hitResult);
 	UPROPERTY()
-	APingPongPlatform* LastTouchedPlatform;
+	APongPlatform* LastTouchedPlatform;
 	UPROPERTY()
-	APingPongPlatform* OwningPlatform;
+	APongPlatform* OwningPlatform;
 public:
 	UFUNCTION()
-	void SetOwningPlaform(APingPongPlatform* Platform);
+	void SetOwningPlaform(APongPlatform* Platform);
 	UFUNCTION(BlueprintCallable)
 	void StartMove();
 	UFUNCTION(BlueprintCallable)

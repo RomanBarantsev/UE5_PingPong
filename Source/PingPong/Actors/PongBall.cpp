@@ -5,7 +5,7 @@
 
 #include "BallGCActor.h"
 #include "PongGoal.h"
-#include "PingPongPlatform.h"
+#include "PongPlatform.h"
 #include "Components/AudioComponent.h"
 #include "GeometryCollection/GeometryCollectionActor.h"
 #include "Kismet/GameplayStatics.h"
@@ -100,7 +100,7 @@ void APongBall::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void APongBall::SetOwningPlaform(APingPongPlatform* Platform)
+void APongBall::SetOwningPlaform(APongPlatform* Platform)
 {
 	OwningPlatform = Platform;
 }
@@ -122,9 +122,9 @@ void APongBall::RotateBallTo(FRotator Rotator)
 
 void APongBall::SetBallOwner(FHitResult HitResult)
 {
-	if(Cast<APingPongPlatform>(HitResult.GetActor()))
+	if(Cast<APongPlatform>(HitResult.GetActor()))
 	{		
-		LastTouchedPlatform=Cast<APingPongPlatform>(HitResult.GetActor());
+		LastTouchedPlatform=Cast<APongPlatform>(HitResult.GetActor());
 		SetOwner(LastTouchedPlatform->GetOwner());
 	}	
 }
@@ -225,7 +225,7 @@ void APongBall::SetColor_Implementation()
 
 void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 {
-	if(APingPongPlatform* PingPongPlatform = Cast<APingPongPlatform>(hitResult.GetActor()))
+	if(APongPlatform* PingPongPlatform = Cast<APongPlatform>(hitResult.GetActor()))
 	{
 		if(hitResult.GetActor()->GetOwner())
 			PlayHitPlatformSound();

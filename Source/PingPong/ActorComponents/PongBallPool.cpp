@@ -40,7 +40,7 @@ void UPongBallPool::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 
-void UPongBallPool::SpawnBallOnServer_Implementation(APingPongPlatform* Platform, AActor* Owner, FTransform spawnTransform,EBallModificators modification)
+void UPongBallPool::SpawnBallOnServer_Implementation(APongPlatform* Platform, AActor* Owner, FTransform spawnTransform,EBallModificators modification)
 {
 	APongBall* PingPongBall=nullptr;
 	for (const auto& Ball : BallsPool)
