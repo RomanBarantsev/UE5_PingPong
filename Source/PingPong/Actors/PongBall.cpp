@@ -72,9 +72,7 @@ APongBall::APongBall()
 void APongBall::MatchStateChanged(FName NewState)
 {
 	if (NewState==MatchState::InProgress)
-	{
-		double rand = UKismetMathLibrary::RandomFloatInRange(0,90);
-		RotateBallTo(FRotator(rand,rand,rand));
+	{		
 		StartMove();
 	}
 	if (NewState==MatchState::WaitingPostMatch)
@@ -117,6 +115,7 @@ void APongBall::StopMove()
 
 void APongBall::RotateBallTo(FRotator Rotator)
 {
+	
 	SetActorRotation(Rotator);
 }
 
@@ -281,10 +280,29 @@ void APongBall::Server_StartMove()
 {
 	isMoving = true;
 	MoveSpeed=MinBallSpeed;
-	FVector Impulse;
-	Impulse = FVector(BodyMesh->GetForwardVector());
-	BodyMesh->AddImpulse(Impulse);	
-	IncreaseBallSpeed();
+	if (Indestructible)
+	{
+		TArray<AActor*> Paddles;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APongPlatform::StaticClass(), Paddles);
+		if (Paddles.Num()==0)
+			return;
+		else
+		{
+			int32 Index = FMath::RandRange(0, Paddles.Num() - 1);
+			AActor* TargetPaddle = Paddles[Index];
+			FVector Direction = (TargetPaddle->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
+			FVector Velocity = Direction * MoveSpeed;
+			BodyMesh->SetPhysicsLinearVelocity(Velocity);
+			UE_LOG(LogTemp, Warning, TEXT("Initial Impulse: %s"), *Velocity.ToString());
+		}			
+	}
+	else
+	{
+		FVector Direction = BodyMesh->GetForwardVector().GetSafeNormal2D();
+		FVector Velocity = Direction * MoveSpeed;
+		BodyMesh->SetPhysicsLinearVelocity(Velocity);
+		UE_LOG(LogTemp, Warning, TEXT("Initial Impulse: %s"), *Velocity.ToString());
+	}	
 }
 
 void APongBall::IncreaseBallSpeed()
