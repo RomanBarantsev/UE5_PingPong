@@ -241,10 +241,14 @@ void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 			}
 			if(Modificator==EBallModificators::Slow)
 			{
+				if (OwningPlatform==PlatformModificator->GetOwner())
+					return;
 				PlatformModificator->SetSpeedOfPlatform(PingPongGameState->GetBallModificationValue(EBallModificators::Slow));
 			}
 			if(Modificator==EBallModificators::Shrink)
 			{
+				if (OwningPlatform==PlatformModificator->GetOwner())
+					return;
 				PlatformModificator->SetPlatformSize(-PingPongGameState->GetBallModificationValue(EBallModificators::Shrink));
 			}
 			if(Modificator==EBallModificators::Expand)
