@@ -62,7 +62,7 @@ void UPlatformModificator::SetReverseControl()
 void UPlatformModificator::SetPlatformSize(float Modificator)
 {
 		auto Scale = PingPongPlatform->GetActorScale3D();
-		Scale.Y -= Modificator;
+		Scale.Y += Modificator;			
 		PingPongPlatform->SetActorScale3D(Scale);
 }
 
