@@ -46,7 +46,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 2000;
+	float MoveSpeed = 1000;
 	float MoveSpeedMax{0};
 	float MoveSpeedMin {0};
 	float MoveSpeedMultiplier=2;
