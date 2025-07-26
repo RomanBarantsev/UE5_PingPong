@@ -133,7 +133,8 @@ void APongBall::CheckGoal_Implementation(FHitResult HitResult)
 {
 	APongGoal* PingPongGoal = Cast<APongGoal>(HitResult.GetActor());
 	if(PingPongGoal)
-	{		
+	{
+		MoveSpeed=MinBallSpeed;
 		AActor* GoalOwner = PingPongGoal->GetOwner();
 		check(GoalOwner);
 		if(GoalOwner!=GetOwner())
