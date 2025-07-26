@@ -226,9 +226,7 @@ void APongBall::SetColor_Implementation()
 void APongBall::OnPlatformHitModificator_Implementation(FHitResult hitResult)
 {
 	if(APongPlatform* PingPongPlatform = Cast<APongPlatform>(hitResult.GetActor()))
-	{
-		if(hitResult.GetActor()->GetOwner())
-			PlayHitPlatformSound();
+	{		
 		UActorComponent* ActorComponent = PingPongPlatform->GetComponentByClass(UPlatformModificator::StaticClass());
 		if(!ActorComponent)
 			return;
@@ -323,6 +321,10 @@ void APongBall::OnBallHitAnything_Implementation(FHitResult hitResult)
 	SetBallOwner(hitResult);
 	if(!hitResult.GetActor()->GetOwner())
 		PlayHitWallSound();
+	else
+	{
+		PlayHitPlatformSound();
+	}
 	if(GetOwner())
 	{
 		CheckGoal(hitResult);
