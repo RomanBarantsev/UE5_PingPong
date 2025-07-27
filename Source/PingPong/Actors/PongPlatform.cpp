@@ -66,8 +66,11 @@ void APongPlatform::BeginPlay()
 void APongPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Server_MoveRight(DeltaTime);
-	Server_MoveForward(DeltaTime);
+	if (HasAuthority())
+	{
+		Server_MoveRight(DeltaTime);
+		Server_MoveForward(DeltaTime);
+	}	
 	FVector vectorSpeed = (currentLocation - MeshRoot->GetComponentLocation());
 	double speed = vectorSpeed.X+vectorSpeed.Y;
 	speed =  FMath::Abs(speed);
@@ -100,6 +103,36 @@ void APongPlatform::Server_GetForwardValue_Implementation(float AxisValue)
 bool APongPlatform::Server_GetForwardValue_Validate(float AxisValue)
 {
 	return true;
+}
+
+void APongPlatform::Server_MoveRight(float DeltaTime)
+{
+	if(bInvertedControl)
+	{
+		CurrentRightAxisValue=-CurrentRightAxisValue;
+	}	
+	targetRightAxisValue = FMath::Lerp(targetRightAxisValue,CurrentRightAxisValue,InterpolationKey);
+	
+	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue*DeltaTime;		
+	if(!SetActorLocation(nextLocation, true))
+	{
+		
+	}
+}
+
+void APongPlatform::Server_MoveForward(float DeltaTime)
+{
+	if(bInvertedControl)
+	{
+		CurrentForwardAxisValue=-CurrentForwardAxisValue;
+	}	
+	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue,CurrentForwardAxisValue,InterpolationKey);
+	SetSoundPitch(FMath::Abs(targetForwardAxisValue)+1);	
+	FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * targetForwardAxisValue*DeltaTime;
+	if(!SetActorLocation(nextLocation, true))
+	{
+		
+	}
 }
 
 UPlatformModificator* APongPlatform::GetPlatformModificator() const
@@ -175,44 +208,3 @@ void APongPlatform::Server_Fire_Implementation(EBallModificators Modificator)
 	BallsPoolComponent->SpawnBallOnServer(this,GetOwner(),Transform,Modificator);
 	//TODO why is it spawning when it should be already exist in pool?
 }
-
-void APongPlatform::Server_MoveForward_Implementation(float DeltaTime)
-{
-	if(bInvertedControl)
-	{
-		CurrentForwardAxisValue=-CurrentForwardAxisValue;
-	}	
-	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue,CurrentForwardAxisValue,InterpolationKey);
-	SetSoundPitch(FMath::Abs(targetForwardAxisValue)+1);	
-	FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * targetForwardAxisValue*DeltaTime;
-	if(!SetActorLocation(nextLocation, true))
-	{
-		
-	}
-}
-
-bool APongPlatform::Server_MoveForward_Validate(float DeltaTime)
-{
-	return true;
-}
-
-void APongPlatform::Server_MoveRight_Implementation(float DeltaTime)
-{
-	if(bInvertedControl)
-	{
-		CurrentRightAxisValue=-CurrentRightAxisValue;
-	}	
-	targetRightAxisValue = FMath::Lerp(targetRightAxisValue,CurrentRightAxisValue,InterpolationKey);
-	
-	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue*DeltaTime;		
-	if(!SetActorLocation(nextLocation, true))
-	{
-		
-	}
-}
-
-bool APongPlatform::Server_MoveRight_Validate(float AxisValue)
-{
-	return true;
-}
-

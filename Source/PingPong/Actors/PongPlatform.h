@@ -62,9 +62,7 @@ protected:
 	APongGameState* PingPongGameState;
 public:
 	float GetMoveSpeed();
-	UFUNCTION(NetMulticast, Reliable, WithValidation)
     void Server_MoveRight(float DeltaTime);
-	UFUNCTION(NetMulticast, Reliable, WithValidation)
     void Server_MoveForward(float DeltaTime);
 	UFUNCTION(Server, Reliable, WithValidation)
     void Server_GetRightValue(float AxisValue);
