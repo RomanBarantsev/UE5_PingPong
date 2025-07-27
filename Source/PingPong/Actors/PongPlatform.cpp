@@ -68,13 +68,9 @@ void APongPlatform::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())
 	{
-		Server_MoveRight(DeltaTime);
-		Server_MoveForward(DeltaTime);
-	}	
-	FVector vectorSpeed = (currentLocation - MeshRoot->GetComponentLocation());
-	double speed = vectorSpeed.X+vectorSpeed.Y;
-	speed =  FMath::Abs(speed);
-	currentLocation = MeshRoot->GetComponentLocation();
+		TickMoveRight(DeltaTime);
+		TickMoveForward(DeltaTime);
+	}		
 	//TODO FIX SOUND ON CLIENT SIDE
 	SetSoundPitch(FMath::Max(FMath::Abs(targetForwardAxisValue),FMath::Abs(targetRightAxisValue))*5);
 	//UE_LOG(LogTemp,Warning,TEXT("speed=%f"),FMath::Max(FMath::Abs(targetForwardAxisValue),FMath::Abs(targetRightAxisValue)))
@@ -105,34 +101,21 @@ bool APongPlatform::Server_GetForwardValue_Validate(float AxisValue)
 	return true;
 }
 
-void APongPlatform::Server_MoveRight(float DeltaTime)
+void APongPlatform::TickMoveRight(float DeltaTime)
 {
-	if(bInvertedControl)
-	{
-		CurrentRightAxisValue=-CurrentRightAxisValue;
-	}	
-	targetRightAxisValue = FMath::Lerp(targetRightAxisValue,CurrentRightAxisValue,InterpolationKey);
-	
-	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue*DeltaTime;		
-	if(!SetActorLocation(nextLocation, true))
-	{
-		
-	}
+	float rightValue = bInvertedControl ? -CurrentRightAxisValue : CurrentRightAxisValue;
+	targetRightAxisValue = FMath::Lerp(targetRightAxisValue, rightValue, InterpolationKey);
+
+	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue * DeltaTime;
 }
 
-void APongPlatform::Server_MoveForward(float DeltaTime)
+void APongPlatform::TickMoveForward(float DeltaTime)
 {
-	if(bInvertedControl)
-	{
-		CurrentForwardAxisValue=-CurrentForwardAxisValue;
-	}	
-	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue,CurrentForwardAxisValue,InterpolationKey);
-	SetSoundPitch(FMath::Abs(targetForwardAxisValue)+1);	
-	FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * targetForwardAxisValue*DeltaTime;
-	if(!SetActorLocation(nextLocation, true))
-	{
-		
-	}
+	float forwardValue = bInvertedControl ? -CurrentForwardAxisValue : CurrentForwardAxisValue;
+	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue, forwardValue, InterpolationKey);
+    
+	FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * targetForwardAxisValue * DeltaTime;
+	SetActorLocation(nextLocation, true);
 }
 
 UPlatformModificator* APongPlatform::GetPlatformModificator() const
