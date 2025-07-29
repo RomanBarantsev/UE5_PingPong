@@ -17,10 +17,11 @@ APongPlayerPawn::APongPlayerPawn()
 	RootComponent = root;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->SetRelativeRotation(FRotator(0.0f, -25.0f, 0.0f));
-	SpringArm->TargetArmLength = 3250.0f;
+	SpringArm->SetRelativeRotation(FRotator(0.0f, -25.0f, 0.0f));	
+	SpringArm->TargetArmLength = 1500.0f;
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+	Camera->SetFieldOfView(120.f);
 	SetReplicates(true);
 	bReplicates=true;
 }
