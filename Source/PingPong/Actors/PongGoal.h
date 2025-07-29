@@ -30,9 +30,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* BoxCollision;
 	
-protected:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	UStaticMeshComponent* LightBox;
+protected:	
 	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
 	

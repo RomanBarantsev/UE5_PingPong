@@ -26,24 +26,11 @@ APongGoal::APongGoal()
 		BoxCollision->SetStaticMesh(BoxCollisionMeshAsset.Object);
 	}
 	SetRootComponent(BoxCollision);
-	LightBox = CreateDefaultSubobject<UStaticMeshComponent>("LightBox");
-	LightBox->SetupAttachment(BoxCollision);
-	LightBox->SetRelativeScale3D(FVector{0.63,0.63,0.63});
-	LightBox->SetRelativeLocation(FVector{0,0,-30});
+	
 	LightTimelineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("LightTimelineComp"));
 	
 	//Initialize Brightness Multiplier
-	BrightnessMultiplier = 20.0f;	
-	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube'"));
-	if(MeshAsset.Succeeded())
-	{
-		LightBox->SetStaticMesh(MeshAsset.Object);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,FString{"No Static Mesh for Goal is found"});
-	}
+	BrightnessMultiplier = 20.0f;
 	bReplicates=true;
 	//TODO make goal blink on touch float blend = 0.5f + FMath::Cos(GetWorld()->TimeSeconds)/2;
 }
@@ -54,11 +41,11 @@ void APongGoal::BeginPlay()
 	Super::BeginPlay();
 	if(!DynamicMaterial)
 	{
-		auto Material = LightBox->GetMaterial(0);
+		auto Material = BoxCollision->GetMaterial(0);
 		DynamicMaterial = UMaterialInstanceDynamic::Create(Material,nullptr);
 		if(!DynamicMaterial)
 			return;
-		LightBox->SetMaterial(0,DynamicMaterial);		
+		BoxCollision->SetMaterial(0,DynamicMaterial);		
 	}
 	else
 	{
