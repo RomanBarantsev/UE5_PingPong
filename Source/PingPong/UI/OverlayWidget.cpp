@@ -144,7 +144,13 @@ void UOverlayWidget::AllPlayersConnected()
 void UOverlayWidget::AllPlayersReady()
 {	
 	TimerText->SetVisibility(ESlateVisibility::Visible);
-	GetWorld()->GetTimerManager().SetTimer(CountDownTimerHandle, this, &UOverlayWidget::UpdateCountdown, 1.0f, true);	
+	GetWorld()->GetTimerManager().SetTimer(CountDownTimerHandle, this, &UOverlayWidget::UpdateCountdown, 1.0f, true);
+	PlayCountDownTimer();
+}
+
+void UOverlayWidget::PlayCountDownTimer()
+{
+	PlaySound(CountdownSound);
 }
 
 

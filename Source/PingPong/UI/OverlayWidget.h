@@ -76,4 +76,10 @@ public:
 	void AllPlayersConnected();
 	UFUNCTION()
 	void AllPlayersReady();
+protected:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	USoundWave* CountdownSound;
+public:
+	UFUNCTION()
+	void PlayCountDownTimer();
 };
