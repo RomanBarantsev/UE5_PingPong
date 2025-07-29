@@ -103,10 +103,17 @@ bool APongPlatform::Server_GetForwardValue_Validate(float AxisValue)
 
 void APongPlatform::TickMoveRight(float DeltaTime)
 {
-	float rightValue = bInvertedControl ? -CurrentRightAxisValue : CurrentRightAxisValue;
-	targetRightAxisValue = FMath::Lerp(targetRightAxisValue, rightValue, InterpolationKey);
-
-	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue * DeltaTime;
+	if(bInvertedControl)
+	{
+		CurrentRightAxisValue=-CurrentRightAxisValue;
+	}	
+	targetRightAxisValue = FMath::Lerp(targetRightAxisValue,CurrentRightAxisValue,InterpolationKey);
+	
+	FVector nextLocation = GetActorLocation() + GetActorRightVector() * MoveSpeed * targetRightAxisValue*DeltaTime;		
+	if(!SetActorLocation(nextLocation, true))
+	{
+		
+	}
 }
 
 void APongPlatform::TickMoveForward(float DeltaTime)
