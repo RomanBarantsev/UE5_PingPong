@@ -63,8 +63,7 @@ protected:
 	void MoveForward(float AxisValue);
 	UFUNCTION()
     void RotatePlatform(float AxisValue);    	
-	UFUNCTION(Server,Reliable,WithValidation)
-	void Fire();
+	
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue);
 	UFUNCTION(Server,Reliable,WithValidation)
@@ -72,6 +71,8 @@ protected:
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformRotate(float AxisValue);
 public:
+	UFUNCTION(Server,Reliable,WithValidation)
+	void Fire();
 	UFUNCTION(Client,Reliable,WithValidation)
 	void OpenMenu();
 	UFUNCTION(Server,Reliable,WithValidation)
@@ -97,7 +98,7 @@ private:
 	UFUNCTION()
 	void ScrollColor(float Axis);
 	UFUNCTION(Client,Reliable)
-	void SetColorAndPriceUI(FLinearColor Color,int32 Price);
+	void SetColorAndPriceUI(FLinearColor Color,int32 Price,FLinearColor TextColor);
 
 private:
 	bool bIsMovingSides=false;

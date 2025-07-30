@@ -57,6 +57,12 @@ void APongGameState::HandlePlayerStatesUpdated()
 	PlayerStates=PlayerArray;
 }
 
+FLinearColor APongGameState::GetTextColor(EBallModificators Modificator)
+{
+	FBallModificatorsTable* RowMod = GetModificationRow(Modificator);
+	return RowMod->TextColor;
+}
+
 void APongGameState::AddMaxScore(int Score)
 {
 	if (Score>=ScoreToEnd)

@@ -32,6 +32,8 @@ struct FBallModificatorsTable :public FTableRowBase
 	UPROPERTY(EditAnywhere)
 	FLinearColor Color=FLinearColor::Black;
 	UPROPERTY(EditAnywhere)
+	FLinearColor TextColor=FLinearColor::Black;
+	UPROPERTY(EditAnywhere)
 	int32 Points=1;
 	UPROPERTY(EditAnywhere)
 	int32 ShotCost=1;
@@ -120,6 +122,8 @@ public:
 	EBallModificators GetModifcation(int8 mod);
 	UFUNCTION()
 	FLinearColor GetModificatorColor(EBallModificators modificator);
+	UFUNCTION()
+	FLinearColor GetTextColor(EBallModificators Modificator);
 	UFUNCTION()
 	int32 GetModificatorPoints(EBallModificators modificator);
 	UFUNCTION()

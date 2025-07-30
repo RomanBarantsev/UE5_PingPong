@@ -30,11 +30,11 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UButton* ReadyButton;
 	UPROPERTY(meta=(BindWidget))
+	UButton* ShotButton;
+	UPROPERTY(meta=(BindWidget))
 	UButton* MenuBtn;
 	UPROPERTY(meta=(BindWidget))
 	UButton* ExitGame;
-	UPROPERTY(meta=(BindWidget))
-	UBorder* BallColor;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* BallCost;	
 	UPROPERTY(meta=(BindWidget))
@@ -43,6 +43,8 @@ protected:
 	TSubclassOf<UUserWidget> PlayerScoreWidgetSub;
 	UFUNCTION()
 	void OnExitGamePushed();
+	UFUNCTION()
+	void OnShotButtonPressed();
 	virtual void NativeConstruct() override;
 protected:
 	UFUNCTION()
@@ -56,6 +58,8 @@ protected:
 public:	
 	UFUNCTION()
 	void ShowWaitingForPlayers();
+	UFUNCTION()
+	void SetBallShotCostTextColor(FLinearColor TextColor);
 	int32 CountdownTime;
 	UFUNCTION()
 	void SetCountDownTime(int32 Time);
@@ -67,7 +71,7 @@ public:
 	UFUNCTION()
 	void UpdatePlayerList();
 	UFUNCTION()
-	void SetBallSquareColor(FLinearColor Color);
+	void SetBallColor(FLinearColor Color);
 	UFUNCTION()
 	void SetBallShotCostText(int32 score);
 	UFUNCTION()

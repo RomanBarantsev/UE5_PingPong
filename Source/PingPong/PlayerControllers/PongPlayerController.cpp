@@ -46,7 +46,6 @@ void APongPlayerController::BeginPlay()
 	{
 		SetShowMouseCursor(false);
 	}
-	
 }
 
 void APongPlayerController::Tick(float DeltaSeconds)
@@ -299,7 +298,8 @@ void APongPlayerController::ScrollColorOnServer_Implementation(float Axis)
 	// Update UI
 	SetColorAndPriceUI(
 		PingPongGameState->GetModificatorColor(PingPongPlayerState->GetModificator()),
-		PingPongGameState->GetShotCost(PingPongPlayerState->GetModificator())
+		PingPongGameState->GetShotCost(PingPongPlayerState->GetModificator()),
+		PingPongGameState->GetTextColor(PingPongPlayerState->GetModificator())
 	);
 }
 
@@ -412,10 +412,11 @@ bool APongPlayerController::ServerIncreaseUILoaded_Validate()
 	return true;
 }
 
-void APongPlayerController::SetColorAndPriceUI_Implementation(FLinearColor Color,int32 Price)
+void APongPlayerController::SetColorAndPriceUI_Implementation(FLinearColor Color,int32 Price,FLinearColor TextColor)
 {
-	PingPongHUD->GetOverlayWidget()->SetBallSquareColor(Color);
+	PingPongHUD->GetOverlayWidget()->SetBallColor(Color);
 	PingPongHUD->GetOverlayWidget()->SetBallShotCostText(Price);
+	PingPongHUD->GetOverlayWidget()->SetBallShotCostTextColor(TextColor);
 }
 
 void APongPlayerController::SetNewScore_Implementation(int32 PlayerId, float Score)

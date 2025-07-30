@@ -15,6 +15,11 @@ void UOverlayWidget::OnExitGamePushed()
 	UGameplayStatics::OpenLevel(GetWorld(),"EntryMap",true);
 }
 
+void UOverlayWidget::OnShotButtonPressed()
+{
+	PingPongPlayerController->Fire();
+}
+
 void UOverlayWidget::NativeConstruct()
 {
 	FString PlatformName = UGameplayStatics::GetPlatformName();
@@ -26,6 +31,7 @@ void UOverlayWidget::NativeConstruct()
 	ReadyButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnReadyButtonPushed);
 	MenuBtn->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnMenuButtonPushed);
 	ExitGame->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnExitGamePushed);
+	ShotButton->OnPressed.AddUniqueDynamic(this,&UOverlayWidget::OnShotButtonPressed);
 	PingPongPlayerController = Cast<APongPlayerController>(GetOwningPlayer());
 	check(PingPongPlayerController);
 	ReadyButton->SetVisibility(ESlateVisibility::Hidden);
@@ -43,6 +49,11 @@ void UOverlayWidget::ShowWaitingForPlayers()
 	TimerText->SetVisibility(ESlateVisibility::Hidden);
 	WaitingPlayersText->SetVisibility(ESlateVisibility::Visible);
 	UWidgetBlueprintLibrary::SetInputMode_GameOnly(UGameplayStatics::GetPlayerController(GetWorld(),0));
+}
+
+void UOverlayWidget::SetBallShotCostTextColor(FLinearColor TextColor)
+{
+	BallCost->SetColorAndOpacity(TextColor);
 }
 
 void UOverlayWidget::SetCountDownTime(int32 Time)
@@ -116,9 +127,18 @@ void UOverlayWidget::UpdatePlayerList()
 	}
 }
 
-void UOverlayWidget::SetBallSquareColor(FLinearColor Color)
+void UOverlayWidget::SetBallColor(FLinearColor Color)
 {
-	BallColor->SetBrushColor(Color);
+	FLinearColor NormalColor = Color;// or any color
+	FButtonStyle ButtonStyle = ShotButton->WidgetStyle;
+	// Set the normal state color
+	ButtonStyle.Normal.TintColor = FSlateColor(NormalColor);
+	// Optional: style for hovered and pressed states
+	ButtonStyle.Hovered.TintColor = FSlateColor(NormalColor * 1.2f);
+	ButtonStyle.Pressed.TintColor = FSlateColor(NormalColor * 0.8f);
+	// Apply the updated style back to the button
+	ShotButton->SetStyle(ButtonStyle);
+	ShotButton->SetColorAndOpacity(Color);
 }
 
 void UOverlayWidget::SetBallShotCostText(int32 score)
