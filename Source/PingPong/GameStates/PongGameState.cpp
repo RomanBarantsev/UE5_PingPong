@@ -36,7 +36,7 @@ void APongGameState::BeginPlay()
 
 void APongGameState::OnrepPlayerStatesUpdated()
 {
-	if (!HasAuthority())
+	if (GetWorld()->GetNetMode() != NM_DedicatedServer)
 	{
 		TArray<UUserWidget*> foundWidgets;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(),foundWidgets,UOverlayWidget::StaticClass());
