@@ -130,7 +130,7 @@ void UOverlayWidget::UpdatePlayerList()
 void UOverlayWidget::SetBallColor(FLinearColor Color)
 {
 	FLinearColor NormalColor = Color;// or any color
-	FButtonStyle ButtonStyle = ShotButton->WidgetStyle;
+	FButtonStyle ButtonStyle = ShotButton->GetStyle();
 	// Set the normal state color
 	ButtonStyle.Normal.TintColor = FSlateColor(NormalColor);
 	// Optional: style for hovered and pressed states
