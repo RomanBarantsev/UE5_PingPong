@@ -132,6 +132,7 @@ void UPong_GameInstance::HostShutdown()
 
 void UPong_GameInstance::Init()
 {
+	
 	Settings = GEngine->GameUserSettings;
 	if (Settings)
 	{
@@ -144,6 +145,7 @@ void UPong_GameInstance::Init()
 		UKismetSystemLibrary::QuitGame(GetWorld(),GetPrimaryPlayerController(),EQuitPreference::Quit,true);
 		UKismetSystemLibrary::LogString(TEXT("No Settings class in GameInstance class"), true);
 	}
+	GetWorld()->GetTimerManager().SetTimer(ShutDownServerHandle, this, &UPong_GameInstance::OnTimer, WaitTime, false);
 	Super::Init();
 }
 
@@ -151,4 +153,18 @@ void UPong_GameInstance::Shutdown()
 {
 	Settings->SaveConfig();	
 	Super::Shutdown();
+}
+
+void UPong_GameInstance::OnTimer()
+{
+	if (GetWorld()->GetNetMode() != NM_DedicatedServer)
+		return;
+	auto GameMode = UGameplayStatics::GetGameMode(GetWorld());
+	if (GameMode)
+	{
+		if (GameMode->GetNumPlayers()==0)
+		{
+			FGenericPlatformMisc::RequestExit(false);
+		}
+	}
 }

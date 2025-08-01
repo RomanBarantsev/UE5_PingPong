@@ -53,4 +53,7 @@ private:
 	virtual void Shutdown() override;
 	FString PublicServerAddress = TEXT("193.124.254.197");
 	FString CrowServerAddress = TEXT("localhost");
+	FTimerHandle ShutDownServerHandle;
+	void OnTimer();
+	float WaitTime=15;
 };
