@@ -17,9 +17,15 @@ void UHostGame::MapChoosed(FString Name)
 	MapChoosedName = Name;
 }
 
+void UHostGame::ExitButtonBtnClicked()
+{
+	this->SetVisibility(ESlateVisibility::Collapsed);
+}
+
 void UHostGame::NativeConstruct()
 {
 	HostServerBtn->OnClicked.AddDynamic(this,&UHostGame::HostServerBtnClicked);
+	ExitButton->OnClicked.AddDynamic(this,&UHostGame::ExitButtonBtnClicked);
 	auto Childrens = MapsGridPanel->GetAllChildren();
 	for (const auto& Children : Childrens)
 	{

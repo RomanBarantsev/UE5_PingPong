@@ -22,9 +22,13 @@ protected:
 	UCheckBox* bIsLocalServer;
 	UPROPERTY(meta=(BindWidget))
 	UButton* HostServerBtn;
+	UPROPERTY(meta=(BindWidget))
+	UButton* ExitButton;
 	UFUNCTION()
 	void MapChoosed(FString Name);
 	FString MapChoosedName="GameMap";
+	UFUNCTION()
+	void ExitButtonBtnClicked();
 	virtual void NativeConstruct() override;
 	UFUNCTION()
 	void HostServerBtnClicked();
