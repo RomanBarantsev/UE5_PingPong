@@ -193,6 +193,8 @@ void APongPlayerController::OpenMenu_Implementation()
 	}
 	else
 	{
+		if (PingPongHUD->IsWidgetVisible(Widgets::Settings))
+			return;
 		SetShowMouseCursor(false);
 		PingPongHUD->SwitchUI(Widgets::MainMenu);
 		//RequstPause(false);
