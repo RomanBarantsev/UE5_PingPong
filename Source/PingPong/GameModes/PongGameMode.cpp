@@ -45,10 +45,10 @@ void APongGameMode::PostLogin(APlayerController* NewPlayer)
 	check(PingPongGameState);
 	if (PingPongGameState->PlayerStates.Num()==PlayersCount)
 	{
-		auto NewwPawn = GetWorld()->SpawnActor<ASpectatorPawn>(APongSpectatorPawn::StaticClass());
-		NewwPawn->SetActorLocation(FVector::Zero());
-		NewwPawn->SetActorRotation(FRotator(0, 0, 0));
-		NewPlayer->Possess(NewwPawn);
+		auto NewPawn = GetWorld()->SpawnActor<ASpectatorPawn>(APongSpectatorPawn::StaticClass());
+		NewPawn->SetActorLocation(FVector::Zero());
+		NewPawn->SetActorRotation(FRotator(0, 0, 0));
+		NewPlayer->Possess(NewPawn);
 	}
 	else
 	{
