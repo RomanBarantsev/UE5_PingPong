@@ -157,7 +157,7 @@ void UPong_GameInstance::Shutdown()
 
 void UPong_GameInstance::OnTimer()
 {
-	if (GetWorld()->GetNetMode() != NM_DedicatedServer)
+	if (GetWorld()->GetNetMode() != NM_DedicatedServer || UE_EDITOR)
 		return;
 	auto GameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (GameMode)
