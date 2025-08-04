@@ -72,25 +72,7 @@ void UPong_GameInstance::OnCreateHostCompleted(FHttpRequestPtr Request, FHttpRes
 	if (PC)
 	{		
 		PC->ClientTravel(ServerAddressURL, ETravelType::TRAVEL_Absolute);
-	}
-	// Now split and parse params
-	TMap<FString, FString> ParsedParams;
-	TArray<FString> Pairs;
-	QueryParams.ParseIntoArray(Pairs, TEXT("?"), true);
-	
-	for (const FString& Pair : Pairs)
-	{
-		FString Key, Value;
-		if (Pair.Split(TEXT("="), &Key, &Value))
-		{
-			ParsedParams.Add(Key, Value);
-		}
-	}
-
-	// ✅ Usage
-	FString PlayerName = ParsedParams.Contains("PlayerName") ? ParsedParams["PlayerName"] : TEXT("");
-	FString IDPlayer   = ParsedParams.Contains("IDPlayer")   ? ParsedParams["IDPlayer"]   : TEXT("");
-	FString Color      = ParsedParams.Contains("Color")      ? ParsedParams["Color"]      : TEXT("");
+	}	
 }
 
 void UPong_GameInstance::CreateHost(FString map,FString serverName,uint32 id)
