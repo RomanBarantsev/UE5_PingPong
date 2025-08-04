@@ -164,6 +164,7 @@ void UPong_GameInstance::OnTimer()
 	{
 		if (GameMode->GetNumPlayers()==0)
 		{
+			HostShutdown();
 			FGenericPlatformMisc::RequestExit(false);
 		}
 	}
