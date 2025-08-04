@@ -93,7 +93,7 @@ void APongGameMode::Logout(AController* Exiting)
 		}
 	}	
 	Super::Logout(Exiting);
-	if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
+	if (GetNetMode() == NM_DedicatedServer && !UE_EDITOR)
 	{
 		auto GI = UGameplayStatics::GetGameInstance(GetWorld());
 		if (GI)
