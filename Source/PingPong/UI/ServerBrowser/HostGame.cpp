@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "PingPong/GameInstance/Pong_GameInstance.h"
+#include "PingPong/UI/HUDs/GameHUD.h"
 
 void UHostGame::MapChoosed(FString Name)
 {
@@ -52,6 +53,13 @@ void UHostGame::HostServerBtnClicked()
 				if (PS)
 				{
 					Pong_GameInstance->CreateHost(MapChoosedName,PS->GetPlayerName(),GetUniqueID());
+					auto HUD = GetOwningPlayer()->GetHUD();
+					ABaseHUD* BaseHUD = Cast<ABaseHUD>(HUD);
+					if (BaseHUD)
+					{
+						BaseHUD->SwitchUI(Widgets::Loading);
+					}
+					this->SetVisibility(ESlateVisibility::Collapsed);
 				}			
 			}
 		}

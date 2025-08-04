@@ -20,7 +20,8 @@ enum Widgets
 	Settings,
 	ServerList,
 	Overlay,
-	Hosting
+	Hosting,
+	Loading
 };
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWidgetChanged,Widgets,widget);
 
@@ -38,6 +39,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> ServerBrowserWidgetSubClass;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
+	TSubclassOf<UUserWidget> LoadingScreenSubClass;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> MainMenuWidgetSubClass;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> SettingsWidgetSubClass;
@@ -47,4 +50,5 @@ private:
 	FOnWidgetChanged OnWidgetChanged;
 	UFUNCTION()
 	void WidgetChanged(Widgets Widget);
+	void WidgetToTMap(Widgets type,TSubclassOf<UUserWidget> subWidget);
 };

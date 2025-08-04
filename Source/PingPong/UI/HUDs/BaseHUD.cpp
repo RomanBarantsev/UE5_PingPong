@@ -35,24 +35,23 @@ void ABaseHUD::BeginPlay()
 	//TODO Make it simple - not repiting everything
 	if (MainMenuWidgetSubClass)
 	{
-		UUserWidget* MainMenu = CreateWidget<UUserWidget>(GetWorld(),MainMenuWidgetSubClass);
-		
-		UIWidgetsMap.Add(Widgets::MainMenu,MainMenu);
+		WidgetToTMap(Widgets::MainMenu,MainMenuWidgetSubClass);
 	}	
 	if (ServerBrowserWidgetSubClass)
 	{
-		UUserWidget* ServerBrowser = CreateWidget<UUserWidget>(GetWorld(),ServerBrowserWidgetSubClass);
-		UIWidgetsMap.Add(Widgets::ServerList,ServerBrowser);
+		WidgetToTMap(Widgets::ServerList,ServerBrowserWidgetSubClass);
 	}
 	if (SettingsWidgetSubClass)
 	{
-		UUserWidget* Settings = CreateWidget<UUserWidget>(GetWorld(),SettingsWidgetSubClass);	
-		UIWidgetsMap.Add(Widgets::Settings,Settings);
+		WidgetToTMap(Widgets::Settings,SettingsWidgetSubClass);
 	}
 	if (HostServerWidgetSubClass)
 	{
-		UUserWidget* Hosting = CreateWidget<UUserWidget>(GetWorld(),HostServerWidgetSubClass);	
-		UIWidgetsMap.Add(Widgets::Hosting,Hosting);
+		WidgetToTMap(Widgets::Hosting,HostServerWidgetSubClass);
+	}
+	if (LoadingScreenSubClass)
+	{
+		WidgetToTMap(Widgets::Loading,LoadingScreenSubClass);
 	}
 	for (auto [type,widget] : UIWidgetsMap)
 	{
@@ -67,6 +66,15 @@ void ABaseHUD::WidgetChanged(Widgets Widget)
 {
 	//widget==Widgets::MainMenu?  : SwitchUI((Widgets::MainMenu),1);
 	
+}
+
+void ABaseHUD::WidgetToTMap(Widgets type, TSubclassOf<UUserWidget> subWidget)
+{
+	if (subWidget)
+	{
+		UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(),subWidget);
+		UIWidgetsMap.Add(type,widget);
+	}
 }
 
 bool ABaseHUD::IsWidgetVisible(Widgets UIName)
