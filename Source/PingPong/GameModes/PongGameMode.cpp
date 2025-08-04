@@ -57,7 +57,7 @@ void APongGameMode::PostLogin(APlayerController* NewPlayer)
 		SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 		SetClosestGoalOwner(Pawn);
 		Super::PostLogin(NewPlayer);
-		if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
+		if (HasAuthority() && GetNetMode() == NM_DedicatedServer && !UE_EDITOR)
 		{
 			auto GI = UGameplayStatics::GetGameInstance(GetWorld());
 			if (GI)
