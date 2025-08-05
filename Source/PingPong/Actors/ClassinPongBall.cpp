@@ -44,23 +44,29 @@ void AClassinPongBall::ClampReflectionAngel()
 	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
 	if (Velocity.IsNearlyZero()) return;
 
-	// Only consider X-Y plane for 2D pong
-	FVector2D Direction2D = FVector2D(Velocity.X, Velocity.Y).GetSafeNormal();
+	FVector2D Dir2D = FVector2D(Velocity.X, Velocity.Y).GetSafeNormal();
 
-	// Convert to angle (in degrees)
-	float AngleRad = FMath::Atan2(Direction2D.Y, Direction2D.X);
-	float AngleDeg = FMath::RadiansToDegrees(AngleRad);
+	// Get angle from Y-axis (we use Atan2 with X first because Y is now forward)
+	float AngleDeg = FMath::RadiansToDegrees(FMath::Atan2(Dir2D.X, Dir2D.Y));
 
-	// Snap to nearest 45 degrees	
-	if (AngleDeg<45 || AngleDeg>0) AngleDeg=45.0f;
-	else if (AngleDeg>135 || AngleDeg<180) AngleDeg=135.0f;
-	else if (AngleDeg>135 || AngleDeg<180) AngleDeg=135.0f;
-	else if (AngleDeg<-45 || AngleDeg>0) AngleDeg=-45.0f;
-	else if (AngleDeg<-135 || AngleDeg>-180) AngleDeg=-135.0f;
-	// Convert back to direction vector
-	float SnappedAngleRad = FMath::DegreesToRadians(AngleDeg);
-	FVector2D SnappedDirection2D = FVector2D(FMath::Cos(AngleDeg), FMath::Sin(AngleDeg));
-	FVector NewVelocity = FVector(SnappedDirection2D.X, SnappedDirection2D.Y, 0) * MoveSpeed;
+	if (Velocity.Y >= 0)
+	{
+		// Moving UP → clamp to [-45°, +45°] from Y axis
+		AngleDeg = FMath::Clamp(AngleDeg, -45.f, 45.f);
+	}
+	else
+	{
+		// Moving DOWN → clamp to [135°, 180°] or [-180°, -135°]
+		if (AngleDeg > 0)
+			AngleDeg = FMath::Clamp(AngleDeg, 135.f, 180.f);
+		else
+			AngleDeg = FMath::Clamp(AngleDeg, -180.f, -135.f);
+	}
+
+	// Convert clamped angle to direction vector
+	float ClampedRad = FMath::DegreesToRadians(AngleDeg);
+	FVector2D NewDir2D = FVector2D(FMath::Sin(ClampedRad), FMath::Cos(ClampedRad));
+	FVector NewVelocity = FVector(NewDir2D.X, NewDir2D.Y, 0.f) * MoveSpeed;
 
 	BodyMesh->SetPhysicsLinearVelocity(NewVelocity);
 }
