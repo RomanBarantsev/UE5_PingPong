@@ -23,7 +23,8 @@ void AClassinPongBall::OnBallHitAnything(FHitResult hitResult)
 	else
 	{
 		Super::PlayHitPlatformSound();
-	}	
+	}
+	ClampReflectionAngel();
 	//Super::OnBallHitAnything(hitResult);
 }
 
@@ -36,6 +37,32 @@ void AClassinPongBall::AddScoreToPlayer(AActor* Player)
 	PingPongGameState->AddMaxScore(PingPongPlayerState->GetScore());
 	SetActorLocation((FVector::Zero()));
 	//Super::AddScoreToPlayer(Player);
+}
+
+void AClassinPongBall::ClampReflectionAngel()
+{
+	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
+	if (Velocity.IsNearlyZero()) return;
+
+	// Only consider X-Y plane for 2D pong
+	FVector2D Direction2D = FVector2D(Velocity.X, Velocity.Y).GetSafeNormal();
+
+	// Convert to angle (in degrees)
+	float AngleRad = FMath::Atan2(Direction2D.Y, Direction2D.X);
+	float AngleDeg = FMath::RadiansToDegrees(AngleRad);
+
+	// Snap to nearest 45 degrees	
+	if (AngleDeg<45 || AngleDeg>0) AngleDeg=45.0f;
+	else if (AngleDeg>135 || AngleDeg<180) AngleDeg=135.0f;
+	else if (AngleDeg>135 || AngleDeg<180) AngleDeg=135.0f;
+	else if (AngleDeg<-45 || AngleDeg>0) AngleDeg=-45.0f;
+	else if (AngleDeg<-135 || AngleDeg>-180) AngleDeg=-135.0f;
+	// Convert back to direction vector
+	float SnappedAngleRad = FMath::DegreesToRadians(AngleDeg);
+	FVector2D SnappedDirection2D = FVector2D(FMath::Cos(AngleDeg), FMath::Sin(AngleDeg));
+	FVector NewVelocity = FVector(SnappedDirection2D.X, SnappedDirection2D.Y, 0) * MoveSpeed;
+
+	BodyMesh->SetPhysicsLinearVelocity(NewVelocity);
 }
 
 // Sets default values

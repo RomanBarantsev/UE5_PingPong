@@ -14,6 +14,7 @@ class PINGPONG_API AClassinPongBall : public APongBall
 private:
 	virtual void OnBallHitAnything(FHitResult hitResult) override;
 	virtual void AddScoreToPlayer(AActor* Player) override;
+	void ClampReflectionAngel();
 public:
 	// Sets default values for this actor's properties
 	AClassinPongBall();
