@@ -97,7 +97,7 @@ UPROPERTY()
 
 protected:
 	UFUNCTION()
-	void SetBallOwner(FHitResult HitResult);
+	virtual void SetBallOwner(FHitResult HitResult);
 	UFUNCTION(Server,Reliable)
 	virtual void AddScoreToPlayer(AActor* Player);
 	UFUNCTION(Server,Reliable)
@@ -123,7 +123,7 @@ private:
 public:
 	UFUNCTION(NetMulticast,Reliable)
 	void SetColor();
-private:
+protected:
 	UFUNCTION(NetMulticast,Reliable)
 	void PlayHitWallSound();
 	UFUNCTION(NetMulticast,Reliable)
