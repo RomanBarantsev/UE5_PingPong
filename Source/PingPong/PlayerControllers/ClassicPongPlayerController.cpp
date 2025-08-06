@@ -13,6 +13,12 @@ void AClassicPongPlayerController::MoveForward(float AxisValue)
 	//Super::MoveForward(AxisValue);
 }
 
+void AClassicPongPlayerController::MoveRight(float AxisValue)
+{
+	AxisValue=-AxisValue;
+	Super::MoveRight(AxisValue);
+}
+
 void AClassicPongPlayerController::Fire()
 {
 	//Super::Fire();
