@@ -54,7 +54,7 @@ public:
 	void SpawnPlatform();
 	virtual void SetupInputComponent() override;
 
-protected:
+public:
 	UPROPERTY()
 	bool bBlockMovement=true;
 	UFUNCTION()
@@ -62,8 +62,11 @@ protected:
 	UFUNCTION()
 	virtual void MoveForward(float AxisValue);
 	UFUNCTION()
-    virtual void RotatePlatform(float AxisValue);    	
-	
+    virtual void RotatePlatform(float AxisValue);  
+	UFUNCTION(Server,Reliable,WithValidation)
+	virtual void Fire();
+	UFUNCTION(Client,Reliable,WithValidation)
+	void OpenMenu();
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformMoveRight(float AxisValue) ;
 	UFUNCTION(Server,Reliable,WithValidation)
@@ -71,10 +74,6 @@ protected:
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformRotate(float AxisValue);
 public:
-	UFUNCTION(Server,Reliable,WithValidation)
-	virtual void Fire();
-	UFUNCTION(Client,Reliable,WithValidation)
-	void OpenMenu();
 	UFUNCTION(Server,Reliable,WithValidation)
 	void RequstPause(bool state);
 	
