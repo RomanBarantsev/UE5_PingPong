@@ -14,15 +14,20 @@ AClassicPongPawn::AClassicPongPawn()
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArm->TargetArmLength=0.0f;
 	Camera->SetupAttachment(nullptr);
-	Camera->SetWorldLocation(FVector(0,0,2200));
+	Camera->SetWorldLocation(FVector(0,0,2200));	
 	Camera->SetWorldRotation(FRotator(-90,0,0));
+	Camera->ProjectionMode = ECameraProjectionMode::Orthographic;
+	Camera->OrthoWidth=12000;
+	Camera->OrthoFarClipPlane=true;
+	Camera->SetOrthoFarClipPlane(200000.0);
 }
 
 // Called when the game starts or when spawned
 void AClassicPongPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	FRotator InitialRotation = GetActorRotation();
+	Camera->SetWorldRotation(FRotator(-90,InitialRotation.Yaw-90,0));
 }
 
 // Called every frame
