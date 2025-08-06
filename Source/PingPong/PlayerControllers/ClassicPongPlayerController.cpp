@@ -17,3 +17,10 @@ void AClassicPongPlayerController::Fire()
 {
 	//Super::Fire();
 }
+
+void AClassicPongPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	InputComponent->BindAxis("MouseY", this,&APongPlayerController::MoveRight);	
+	
+}
