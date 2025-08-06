@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ClassinPongBall.h"
+#include "ClassicPongBall.h"
 
 #include "PongGoal.h"
 #include "AssetTypeActions/AssetDefinition_SoundBase.h"
@@ -9,14 +9,16 @@
 #include "PingPong/PlayerStates/PongPlayerState.h"
 
 
-void AClassinPongBall::OnBallHitAnything(FHitResult hitResult)
+void AClassicPongBall::OnBallHitAnything(FHitResult hitResult)
 {
+	ClampReflectionAngel();
 	APongGoal* PingPongGoal = Cast<APongGoal>(hitResult.GetActor());
 	if(PingPongGoal)
 	{
 		MoveSpeed=MinBallSpeed;
 		AddScoreToPlayer(PingPongGoal->GetOwner());
-		Multicast_HitEffect(hitResult.Location);
+		//Multicast_HitEffect(hitResult.Location);
+		return;
 	}	
 	if(!hitResult.GetActor()->GetOwner())
 	{
@@ -25,12 +27,11 @@ void AClassinPongBall::OnBallHitAnything(FHitResult hitResult)
 	else
 	{
 		Super::PlayHitPlatformSound();
-	}
-	ClampReflectionAngel();
+	}	
 	//Super::OnBallHitAnything(hitResult);
 }
 
-void AClassinPongBall::AddScoreToPlayer(AActor* Player)
+void AClassicPongBall::AddScoreToPlayer(AActor* Player)
 {
 	APongPlayerState* PingPongPlayerState=Player->GetInstigatorController()->GetPlayerState<APongPlayerState>();
 	check(PingPongPlayerState);
@@ -38,11 +39,11 @@ void AClassinPongBall::AddScoreToPlayer(AActor* Player)
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 	PingPongGameState->AddMaxScore(PingPongPlayerState->GetScore());
 	SetActorLocation((FVector::Zero()));
-	GoalSound->Play();
+	PlayGoalSound();
 	//Super::AddScoreToPlayer(Player);
 }
 
-void AClassinPongBall::ClampReflectionAngel()
+void AClassicPongBall::ClampReflectionAngel()
 {
 	FVector Velocity = BodyMesh->GetPhysicsLinearVelocity();
 	if (Velocity.IsNearlyZero()) return;
@@ -75,7 +76,7 @@ void AClassinPongBall::ClampReflectionAngel()
 }
 
 // Sets default values
-AClassinPongBall::AClassinPongBall()
+AClassicPongBall::AClassicPongBall()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -84,15 +85,20 @@ AClassinPongBall::AClassinPongBall()
 	MinBallSpeed = 5000.0f;
 }
 
+void AClassicPongBall::PlayGoalSound_Implementation()
+{
+	GoalSound->Play();
+}
+
 // Called when the game starts or when spawned
-void AClassinPongBall::BeginPlay()
+void AClassicPongBall::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AClassinPongBall::Tick(float DeltaTime)
+void AClassicPongBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

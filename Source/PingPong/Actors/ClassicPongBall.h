@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "PongBall.h"
-#include "ClassinPongBall.generated.h"
+#include "ClassicPongBall.generated.h"
 
 UCLASS()
-class PINGPONG_API AClassinPongBall : public APongBall
+class PINGPONG_API AClassicPongBall : public APongBall
 {
 	GENERATED_BODY()
 
@@ -18,9 +18,11 @@ private:
 	void ClampReflectionAngel();
 public:
 	// Sets default values for this actor's properties
-	AClassinPongBall();
+	AClassicPongBall();
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UAudioComponent* GoalSound;
+	UFUNCTION(NetMulticast, Reliable)
+	void PlayGoalSound();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
