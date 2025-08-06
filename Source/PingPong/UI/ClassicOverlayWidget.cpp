@@ -26,3 +26,9 @@ void UClassicOverlayWidget::UpdateScore(int32 playerId, float Score)
 	}
 	//Super::UpdateScore(playerId, Score);
 }
+
+void UClassicOverlayWidget::ShowGameOverText()
+{
+	AllPlayersConnected();
+	//Super::ShowGameOverText();	
+}

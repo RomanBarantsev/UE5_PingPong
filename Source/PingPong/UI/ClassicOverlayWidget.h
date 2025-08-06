@@ -23,4 +23,5 @@ class PINGPONG_API UClassicOverlayWidget : public UOverlayWidget
 	UPROPERTY()
 	int32 playerID;
 	virtual void UpdateScore(int32 playerId, float Score) override;
+	virtual void ShowGameOverText() override;
 };
