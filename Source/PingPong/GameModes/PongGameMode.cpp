@@ -117,8 +117,30 @@ void APongGameMode::Logout(AController* Exiting)
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
+APlayerController* APongGameMode::SpawnPlayerController(ENetRole InRemoteRole, const FString& Options)
+{
+	if (!PingPongGameState)
+		return Super::SpawnPlayerController(InRemoteRole, Options);;
+	if (PingPongGameState->PlayerStates.Num()==PlayersCount)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		auto SpectatorController = GetWorld()->SpawnActor<APongPlayerController>(
+		APongPlayerController::StaticClass(),
+		FVector::ZeroVector,
+		FRotator::ZeroRotator,
+		SpawnParams);
+		return SpectatorController;
+	}	
+	else
+	{
+		return Super::SpawnPlayerController(InRemoteRole, Options);
+	}
+	
+}
+
 APongPlayerPawn* APongGameMode::CreatePawnForController(APongPlayerController* PingPongPlayerController,
-                                                                UWorld* World)
+                                                        UWorld* World)
 {
 	APongPlayerPawn* newPawn = Cast<APongPlayerPawn>(PingPongPlayerController->GetPawn());
 	if(!newPawn)
