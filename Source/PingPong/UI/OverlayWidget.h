@@ -67,7 +67,7 @@ public:
 	UFUNCTION()
 	void UpdateCountdown();
 	UFUNCTION()
-	void UpdateScore(int32 playerId, float Score);
+	virtual void UpdateScore(int32 playerId, float Score);
 	UFUNCTION()
 	void UpdatePlayerList();
 	UFUNCTION()
