@@ -10,9 +10,7 @@ void APongPlayerState::BeginPlay()
 {
 	GameState = Cast<APongGameState>(UGameplayStatics::GetGameState(GetWorld()));
 	check(GameState);
-	#if WITH_EDITOR
-	SetScore(50);
-	#endif
+	ChangeScore(50);
 	Super::BeginPlay();
 	bReplicates=true;
 	maxModificator = GameState->GeBallModificatorsCount()-1;
@@ -41,4 +39,11 @@ void APongPlayerState::PrevModificator()
 EBallModificators APongPlayerState::GetModificator()
 {
 	return GameState->GetModifcation(Modificator);
+}
+
+void APongPlayerState::ChangeScore(int value)
+{
+#if WITH_EDITOR
+	SetScore(value);
+#endif
 }
