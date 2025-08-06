@@ -75,7 +75,7 @@ public:
 	UFUNCTION()
 	void SetBallShotCostText(int32 score);
 	UFUNCTION()
-	void ShowGameOverText();
+	virtual void ShowGameOverText();
 	UFUNCTION()
 	void AllPlayersConnected();
 	UFUNCTION()
