@@ -14,4 +14,7 @@ class PINGPONG_API AClassicPongGameState : public APongGameState
 {
 	GENERATED_BODY()
 	AClassicPongGameState();
+	virtual void AddMaxScore(int Score) override;
+public:
+	void ResetScore();
 };
