@@ -145,7 +145,7 @@ void APongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
 
 void APongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
 {
-	if (!HasAuthority())
+	if (GetNetMode()!=NM_DedicatedServer)
 	{
 		TArray<UUserWidget*> foundWidgets;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(),foundWidgets,UOverlayWidget::StaticClass());
