@@ -14,4 +14,13 @@ class PINGPONG_API UClassicOverlayWidget : public UOverlayWidget
 {
 	GENERATED_BODY()
 	virtual void NativeConstruct() override;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* Line;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* Score1;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* Score2;
+	UPROPERTY()
+	int32 playerID;
+	virtual void UpdateScore(int32 playerId, float Score) override;
 };
