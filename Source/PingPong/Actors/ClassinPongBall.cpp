@@ -4,6 +4,8 @@
 #include "ClassinPongBall.h"
 
 #include "PongGoal.h"
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
+#include "Components/AudioComponent.h"
 #include "PingPong/PlayerStates/PongPlayerState.h"
 
 
@@ -36,6 +38,7 @@ void AClassinPongBall::AddScoreToPlayer(AActor* Player)
 	PingPongGameState->UpdatePlayersScore(PingPongPlayerState->GetPlayerId(),PingPongPlayerState->GetScore());
 	PingPongGameState->AddMaxScore(PingPongPlayerState->GetScore());
 	SetActorLocation((FVector::Zero()));
+	GoalSound->Play();
 	//Super::AddScoreToPlayer(Player);
 }
 
@@ -76,6 +79,9 @@ AClassinPongBall::AClassinPongBall()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	GoalSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Goal Sound"));
+	GoalSound->SetAutoActivate(false);
+	MinBallSpeed = 5000.0f;
 }
 
 // Called when the game starts or when spawned

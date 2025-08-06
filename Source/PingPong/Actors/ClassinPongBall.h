@@ -12,13 +12,15 @@ class PINGPONG_API AClassinPongBall : public APongBall
 	GENERATED_BODY()
 
 private:
+	
 	virtual void OnBallHitAnything(FHitResult hitResult) override;
 	virtual void AddScoreToPlayer(AActor* Player) override;
 	void ClampReflectionAngel();
 public:
 	// Sets default values for this actor's properties
 	AClassinPongBall();
-
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UAudioComponent* GoalSound;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
