@@ -32,3 +32,10 @@ void UClassicOverlayWidget::ShowGameOverText()
 	AllPlayersConnected();
 	//Super::ShowGameOverText();	
 }
+
+void UClassicOverlayWidget::AllPlayersReady()
+{
+	Score1->SetText(FText::AsNumber(0));
+	Score2->SetText(FText::AsNumber(0));
+	Super::AllPlayersReady();
+}
