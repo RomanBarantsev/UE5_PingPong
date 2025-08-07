@@ -5,6 +5,7 @@
 
 #include "GameFramework/GameMode.h"
 #include "PingPong/GameStates/ClassicPongGameState.h"
+#include "PingPong/PlayerStates/PongPlayerState.h"
 #include "PingPong/UI/OverlayWidget.h"
 
 void AClassicPongPlayerController::RotatePlatform(float AxisValue)
@@ -37,17 +38,19 @@ void AClassicPongPlayerController::SetupInputComponent()
 
 void AClassicPongPlayerController::HandleMatchStateChange(FName NewState)
 {
-	if (NewState == MatchState::WaitingToStart)
+	if (!HasAuthority())
 	{
-		AClassicPongGameState* ClassicGS = Cast<AClassicPongGameState>(PingPongGameState);
-		if (ClassicGS)
+		if (NewState == MatchState::WaitingToStart)
 		{
-			ClassicGS->ResetScore();
-			if (PingPongHUD)
+			AClassicPongGameState* ClassicGS = Cast<AClassicPongGameState>(PingPongGameState);
+			if (ClassicGS)
 			{
-				PingPongHUD->GetOverlayWidget()->AllPlayersReady();
-			}			
+				PingPongHUD->GetOverlayWidget()->AllPlayersReady();		
+			}
+			
 		}
 	}
+	PingPongPlayerState=GetPlayerState<APongPlayerState>();
+	PingPongPlayerState->ChangeScore(0);
 	Super::HandleMatchStateChange(NewState);
 }
