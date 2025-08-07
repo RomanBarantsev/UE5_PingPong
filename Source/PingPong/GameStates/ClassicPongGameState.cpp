@@ -7,7 +7,7 @@
 
 AClassicPongGameState::AClassicPongGameState()
 {
-	ResetScore();
+	ScoreToEnd=15;
 }
 
 void AClassicPongGameState::AddMaxScore(int Score)
@@ -19,15 +19,4 @@ void AClassicPongGameState::AddMaxScore(int Score)
 		SetMatchState(MatchState::EnteringMap);
 	}
 	Super::AddMaxScore(Score);
-}
-
-void AClassicPongGameState::ResetScore()
-{
-	ScoreToEnd=15;
-}
-
-void AClassicPongGameState::IncreaseReadyPlayer()
-{
-	Super::IncreaseReadyPlayer();
-	ResetScore();
 }
