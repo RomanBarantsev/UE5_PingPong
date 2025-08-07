@@ -79,7 +79,7 @@ public:
 	UFUNCTION()
 	void AllPlayersConnected();
 	UFUNCTION()
-	void AllPlayersReady();
+	virtual void AllPlayersReady();
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	USoundWave* CountdownSound;

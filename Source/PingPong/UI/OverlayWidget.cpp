@@ -158,7 +158,7 @@ void UOverlayWidget::ShowGameOverText()
 void UOverlayWidget::AllPlayersConnected()
 {
 	ReadyButton->SetVisibility(ESlateVisibility::Visible);
-	WaitingPlayersText->SetVisibility(ESlateVisibility::Hidden);
+	WaitingPlayersText->SetVisibility(ESlateVisibility::Hidden);	
 }
 
 void UOverlayWidget::AllPlayersReady()
