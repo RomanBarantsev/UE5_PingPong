@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "PongGameMode.h"
-#include "PongClassicGameMode.generated.h"
+#include "ClassicPongGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PINGPONG_API APongClassicGameMode : public APongGameMode
+class PINGPONG_API AClassicPongGameMode : public APongGameMode
 {
 	GENERATED_BODY()
-	APongClassicGameMode();
+	AClassicPongGameMode();
 };
