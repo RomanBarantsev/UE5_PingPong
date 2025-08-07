@@ -18,4 +18,5 @@ class PINGPONG_API AClassicPongPlayerController : public APongPlayerController
 	virtual void MoveRight(float AxisValue) override;
 	virtual void Fire() override;
 	virtual void SetupInputComponent() override;
+	virtual void HandleMatchStateChange(FName NewState) override;
 };
