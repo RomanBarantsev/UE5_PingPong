@@ -25,3 +25,9 @@ void AClassicPongGameState::ResetScore()
 {
 	ScoreToEnd=15;
 }
+
+void AClassicPongGameState::IncreaseReadyPlayer()
+{
+	Super::IncreaseReadyPlayer();
+	ResetScore();
+}

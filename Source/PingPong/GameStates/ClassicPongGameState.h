@@ -17,4 +17,5 @@ class PINGPONG_API AClassicPongGameState : public APongGameState
 	virtual void AddMaxScore(int Score) override;
 public:
 	void ResetScore();
+	virtual void IncreaseReadyPlayer() override;
 };
