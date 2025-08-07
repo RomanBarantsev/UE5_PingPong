@@ -102,10 +102,10 @@ private:
 private:
 	bool bIsMovingSides=false;
 	bool bIsMovingForward=false;
-	
+public:
 	UFUNCTION()
-	void HandleMatchStateChange(FName NewState);
-	
+	virtual void HandleMatchStateChange(FName NewState);
+private:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerIncreaseUILoaded();
 	UFUNCTION(Server, Reliable, WithValidation)
