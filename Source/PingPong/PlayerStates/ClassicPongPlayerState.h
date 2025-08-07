@@ -14,5 +14,6 @@ class PINGPONG_API AClassicPongPlayerState : public APongPlayerState
 {
 	AClassicPongPlayerState();
 	virtual void ChangeScore(int value) override;
+	virtual void BeginPlay() override;
 	GENERATED_BODY()
 };

@@ -3,13 +3,24 @@
 
 #include "ClassicPongPlayerState.h"
 
+#include "Kismet/GameplayStatics.h"
+
 AClassicPongPlayerState::AClassicPongPlayerState()
 {
-	SetScore(0);
+	
 }
 
 void AClassicPongPlayerState::ChangeScore(int value)
 {
-	SetScore(0);
+	SetScore(value);
 	//Super::ChangeScore(value);
+}
+
+void AClassicPongPlayerState::BeginPlay()
+{
+	ChangeScore(0);
+	GameState = Cast<APongGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	check(GameState);
+	bReplicates=true;
+	//Super::BeginPlay();
 }
