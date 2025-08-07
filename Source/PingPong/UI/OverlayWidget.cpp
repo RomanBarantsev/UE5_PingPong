@@ -83,6 +83,7 @@ void UOverlayWidget::UpdateCountdown()
 		TimerText->SetVisibility(ESlateVisibility::Hidden);
 		GetWorld()->GetTimerManager().ClearTimer(CountDownTimerHandle);
 		PingPongPlayerController->SetUIStatus(EUIStatus::Started);
+		TimerText->SetText(FText::FromString(""));	
 	}
 	if(CountdownTime>0)
 	{
