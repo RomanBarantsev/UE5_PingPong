@@ -104,7 +104,7 @@ void APongGameState::IncreaseLoadedPlayer_Implementation()
 	if(PlayerStates.Num()==GameMode->GetPlayersCount())
 	{		
 		SetMatchState(MatchState::EnteringMap);
-	}
+	}	
 }
 
 void APongGameState::SetCountDownOnPlayerSide_Implementation()
@@ -120,7 +120,7 @@ void APongGameState::IncreaseStartedPlayers_Implementation()
 	GameMode = Cast<APongGameMode>(GetWorld()->GetAuthGameMode());
 	if(StartedPlayers==GameMode->GetPlayersCount())
 	{
-		SetMatchState(MatchState::InProgress);
+		SetMatchState(MatchState::InProgress);		
 	}
 }
 
