@@ -26,6 +26,7 @@ protected:
 	UButton* ExitButton;
 	UFUNCTION()
 	void MapChoosed(FString Name);
+	UPROPERTY(BlueprintReadOnly)
 	FString MapChoosedName="GameMap";
 	UFUNCTION()
 	void ExitButtonBtnClicked();
