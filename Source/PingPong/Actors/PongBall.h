@@ -44,9 +44,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UAudioComponent* HitPlatformSound;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
-	float MinBallSpeed = 1000;
+	float MinBallSpeed = 3000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
-	float MaxBallSpeed = 3000;
+	float MaxBallSpeed = 5000;
 	UPROPERTY(Replicated)
 	float MoveSpeed = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")

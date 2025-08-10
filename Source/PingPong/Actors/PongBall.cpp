@@ -269,7 +269,7 @@ void APongBall::SetModification_Implementation(EBallModificators mod)
 		return;
 	Modificator=mod;	
 	BallColor = PingPongGameState->GetModificatorColor(mod);
-	MoveSpeed = PingPongGameState->GetBallSpeed(mod);
+	MoveSpeed = MinBallSpeed+PingPongGameState->GetBallSpeed(mod);
 	SetColor();
 }
 
