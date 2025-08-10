@@ -85,7 +85,10 @@ void APongPlayerController::SpawnPlatform_Implementation()
 		Platform->SetActorRotation(StartTransform.GetRotation());
     	Platform->SetOwner(GetPawn());
     }
-
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("APongPlayerController::SpawnPlatform_Implementation: HAS NO Platform SUBClass!"));
+	}
 }
 
 bool APongPlayerController::SpawnPlatform_Validate()

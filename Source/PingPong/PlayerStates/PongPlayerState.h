@@ -31,4 +31,6 @@ public:
 	void PrevModificator();
 	UFUNCTION()
 	EBallModificators GetModificator();
+	UFUNCTION()
+	virtual void ChangeScore(int value);
 };

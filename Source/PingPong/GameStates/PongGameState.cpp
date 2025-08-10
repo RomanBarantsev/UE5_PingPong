@@ -104,7 +104,7 @@ void APongGameState::IncreaseLoadedPlayer_Implementation()
 	if(PlayerStates.Num()==GameMode->GetPlayersCount())
 	{		
 		SetMatchState(MatchState::EnteringMap);
-	}
+	}	
 }
 
 void APongGameState::SetCountDownOnPlayerSide_Implementation()
@@ -120,7 +120,7 @@ void APongGameState::IncreaseStartedPlayers_Implementation()
 	GameMode = Cast<APongGameMode>(GetWorld()->GetAuthGameMode());
 	if(StartedPlayers==GameMode->GetPlayersCount())
 	{
-		SetMatchState(MatchState::InProgress);
+		SetMatchState(MatchState::InProgress);		
 	}
 }
 
@@ -145,7 +145,7 @@ void APongGameState::DecreaseLoadedPlayer_Implementation(AController* PC)
 
 void APongGameState::UpdatePlayersScore_Implementation(int32 playerId, int32 Score)
 {
-	if (!HasAuthority())
+	if (GetNetMode()!=NM_DedicatedServer)
 	{
 		TArray<UUserWidget*> foundWidgets;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(),foundWidgets,UOverlayWidget::StaticClass());

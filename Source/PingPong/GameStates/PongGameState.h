@@ -70,8 +70,8 @@ public:
 	int ScoreToEnd=100;
 public:
 	UFUNCTION(Category="Score")
-	void AddMaxScore(int Score);
-private:
+	virtual void AddMaxScore(int Score);
+protected:
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;	
 	UPROPERTY(Replicated)
 	int32 ReadyPlayers{0};
@@ -92,11 +92,11 @@ private:
 	const APongGameMode* GameMode;
 public:
 	UFUNCTION(Server,Reliable)
-	void IncreaseReadyPlayer();
+	virtual void IncreaseReadyPlayer();
 	UFUNCTION(Server,Reliable)
 	void IncreaseLoadedPlayer();
 	UFUNCTION(Server,Reliable)
-	void IncreaseStartedPlayers();
+	virtual void IncreaseStartedPlayers();
 	UFUNCTION(Server,Reliable)
 	void DecreaseLoadedPlayer(AController* PC);
 	UFUNCTION(Server,Reliable)	

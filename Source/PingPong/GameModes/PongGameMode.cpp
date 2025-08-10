@@ -57,7 +57,7 @@ void APongGameMode::PostLogin(APlayerController* NewPlayer)
 		SetPawnRotationAndLocation(Pawn,PingPongPlayerController);
 		SetClosestGoalOwner(Pawn);
 		Super::PostLogin(NewPlayer);
-		if (HasAuthority() && GetNetMode() == NM_DedicatedServer)
+		if (HasAuthority() && GetNetMode() == NM_DedicatedServer && !UE_EDITOR)
 		{
 			auto GI = UGameplayStatics::GetGameInstance(GetWorld());
 			if (GI)
@@ -117,8 +117,30 @@ void APongGameMode::Logout(AController* Exiting)
 	PingPongGameState->HandlePlayerStatesUpdated();
 }
 
+APlayerController* APongGameMode::SpawnPlayerController(ENetRole InRemoteRole, const FString& Options)
+{
+	if (!PingPongGameState)
+		return Super::SpawnPlayerController(InRemoteRole, Options);;
+	if (PingPongGameState->PlayerStates.Num()==PlayersCount)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		auto SpectatorController = GetWorld()->SpawnActor<APongPlayerController>(
+		APongPlayerController::StaticClass(),
+		FVector::ZeroVector,
+		FRotator::ZeroRotator,
+		SpawnParams);
+		return SpectatorController;
+	}	
+	else
+	{
+		return Super::SpawnPlayerController(InRemoteRole, Options);
+	}
+	
+}
+
 APongPlayerPawn* APongGameMode::CreatePawnForController(APongPlayerController* PingPongPlayerController,
-                                                                UWorld* World)
+                                                        UWorld* World)
 {
 	APongPlayerPawn* newPawn = Cast<APongPlayerPawn>(PingPongPlayerController->GetPawn());
 	if(!newPawn)

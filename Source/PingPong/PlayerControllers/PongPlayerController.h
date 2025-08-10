@@ -54,27 +54,26 @@ public:
 	void SpawnPlatform();
 	virtual void SetupInputComponent() override;
 
-protected:
+public:
 	UPROPERTY()
 	bool bBlockMovement=true;
 	UFUNCTION()
-	void MoveRight(float AxisValue);
+	virtual void MoveRight(float AxisValue);
 	UFUNCTION()
-	void MoveForward(float AxisValue);
+	virtual void MoveForward(float AxisValue);
 	UFUNCTION()
-    void RotatePlatform(float AxisValue);    	
-	
+    virtual void RotatePlatform(float AxisValue);  
 	UFUNCTION(Server,Reliable,WithValidation)
-	void Server_PlatformMoveRight(float AxisValue);
+	virtual void Fire();
+	UFUNCTION(Client,Reliable,WithValidation)
+	void OpenMenu();
 	UFUNCTION(Server,Reliable,WithValidation)
-	void Server_PlatformMoveForward(float AxisValue);
+	void Server_PlatformMoveRight(float AxisValue) ;
+	UFUNCTION(Server,Reliable,WithValidation)
+	virtual void Server_PlatformMoveForward(float AxisValue);
 	UFUNCTION(Server,Reliable,WithValidation)
 	void Server_PlatformRotate(float AxisValue);
 public:
-	UFUNCTION(Server,Reliable,WithValidation)
-	void Fire();
-	UFUNCTION(Client,Reliable,WithValidation)
-	void OpenMenu();
 	UFUNCTION(Server,Reliable,WithValidation)
 	void RequstPause(bool state);
 	
@@ -103,10 +102,10 @@ private:
 private:
 	bool bIsMovingSides=false;
 	bool bIsMovingForward=false;
-	
+public:
 	UFUNCTION()
-	void HandleMatchStateChange(FName NewState);
-	
+	virtual void HandleMatchStateChange(FName NewState);
+private:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerIncreaseUILoaded();
 	UFUNCTION(Server, Reliable, WithValidation)

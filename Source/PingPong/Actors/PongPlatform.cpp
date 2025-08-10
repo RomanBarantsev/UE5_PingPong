@@ -118,8 +118,11 @@ void APongPlatform::TickMoveRight(float DeltaTime)
 
 void APongPlatform::TickMoveForward(float DeltaTime)
 {
-	float forwardValue = bInvertedControl ? -CurrentForwardAxisValue : CurrentForwardAxisValue;
-	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue, forwardValue, InterpolationKey);
+	if(bInvertedControl)
+	{
+		CurrentForwardAxisValue=-CurrentForwardAxisValue;
+	}	
+	targetForwardAxisValue = FMath::Lerp(targetForwardAxisValue, CurrentForwardAxisValue, InterpolationKey);
     
 	FVector nextLocation = GetActorLocation() + GetActorForwardVector() * MoveSpeed * targetForwardAxisValue * DeltaTime;
 	SetActorLocation(nextLocation, true);

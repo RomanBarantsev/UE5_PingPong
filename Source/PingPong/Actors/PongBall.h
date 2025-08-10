@@ -44,9 +44,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UAudioComponent* HitPlatformSound;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
-	float MinBallSpeed = 1000;
+	float MinBallSpeed = 3000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
-	float MaxBallSpeed = 3000;
+	float MaxBallSpeed = 5000;
 	UPROPERTY(Replicated)
 	float MoveSpeed = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball params")
@@ -97,7 +97,7 @@ UPROPERTY()
 
 protected:
 	UFUNCTION()
-	void SetBallOwner(FHitResult HitResult);
+	virtual void SetBallOwner(FHitResult HitResult);
 	UFUNCTION(Server,Reliable)
 	virtual void AddScoreToPlayer(AActor* Player);
 	UFUNCTION(Server,Reliable)
@@ -123,7 +123,7 @@ private:
 public:
 	UFUNCTION(NetMulticast,Reliable)
 	void SetColor();
-private:
+protected:
 	UFUNCTION(NetMulticast,Reliable)
 	void PlayHitWallSound();
 	UFUNCTION(NetMulticast,Reliable)
