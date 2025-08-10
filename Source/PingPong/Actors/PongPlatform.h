@@ -50,7 +50,7 @@ protected:
 	float MoveSpeedMax{0};
 	float MoveSpeedMin {0};
 	float MoveSpeedMultiplier=2;
-	float InterpolationKey = 0.05f;
+	float InterpolationKey = 0.5f;
 	float interpolatedYaw;
 	float CurrentRightAxisValue;
 	float targetRightAxisValue;
