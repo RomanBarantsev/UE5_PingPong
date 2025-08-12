@@ -38,7 +38,7 @@ void AClassicPongPlayerController::SetupInputComponent()
 
 void AClassicPongPlayerController::HandleMatchStateChange(FName NewState)
 {
-	if (!HasAuthority())
+	if (IsNetMode(NM_Client))
 	{
 		if (NewState == MatchState::WaitingToStart)
 		{
@@ -50,7 +50,10 @@ void AClassicPongPlayerController::HandleMatchStateChange(FName NewState)
 			
 		}
 	}
-	PingPongPlayerState=GetPlayerState<APongPlayerState>();
-	PingPongPlayerState->ChangeScore(0);
+	if (IsNetMode(NM_DedicatedServer) || IsNetMode(NM_ListenServer))
+	{
+		PingPongPlayerState=GetPlayerState<APongPlayerState>();
+		PingPongPlayerState->ChangeScore(0);
+	}	
 	Super::HandleMatchStateChange(NewState);
 }
