@@ -44,10 +44,8 @@ void AClassicPongPlayerController::HandleMatchStateChange(FName NewState)
 		{
 			AClassicPongGameState* ClassicGS = Cast<AClassicPongGameState>(PingPongGameState);
 			if (ClassicGS)
-			{
-				PingPongHUD->GetOverlayWidget()->AllPlayersReady();		
-			}
-			
+				if (PingPongHUD)
+					PingPongHUD->GetOverlayWidget()->AllPlayersReady();	
 		}
 	}
 	if (IsNetMode(NM_DedicatedServer) || IsNetMode(NM_ListenServer))
