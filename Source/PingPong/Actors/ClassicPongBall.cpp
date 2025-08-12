@@ -4,7 +4,6 @@
 #include "ClassicPongBall.h"
 
 #include "PongGoal.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Components/AudioComponent.h"
 #include "PingPong/PlayerStates/PongPlayerState.h"
 
