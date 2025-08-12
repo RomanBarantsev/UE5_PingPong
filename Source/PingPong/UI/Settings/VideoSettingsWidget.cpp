@@ -40,11 +40,12 @@ void UVideoSettingsWidget::NativeConstruct()
 	};
 	for (const auto& [Widget, getFunc,setFunc] : SelectionElement)
 	{
+		auto LocalSetFunc = setFunc;
 		const auto CurrentSelection = std::invoke(getFunc,GameUserSettings);
 		Widget->SetCurrentSelection(CurrentSelection);
-		Widget->OnSelectionChange.BindLambda([this,setFunc](int InSelection)
+		Widget->OnSelectionChange.BindLambda([this,LocalSetFunc](int InSelection)
 		{
-			std::invoke(setFunc,GameUserSettings,InSelection);
+			std::invoke(LocalSetFunc,GameUserSettings,InSelection);
 			GameUserSettings->ApplySettings(false);
 		}) ;
 	}
